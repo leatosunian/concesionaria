@@ -52,7 +52,7 @@ const handler = NextAuth({
       return token;
     },
     session({ session, token }) {
-      console.log(session, token);
+      //console.log(session, token);
       session.user = token.user as IAdminSession;
       return session;
     },

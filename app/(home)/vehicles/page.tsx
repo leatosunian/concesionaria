@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import styles from "@/app/css-modules/vehicles/vehicles.module.css";
+import buttonStyle from "@/app/css-modules/home.search.module.css";
 import {
   Card,
   CardDescription,
@@ -49,7 +50,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Check, CheckIcon, ChevronsUpDown } from "lucide-react";
 import { ICar } from "@/app/models/car";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import LoaderFullscreen from "@/components/page/LoaderFullscreen";
 
 const Page = () => {
@@ -58,47 +59,105 @@ const Page = () => {
   const [yearFilter, setYearFilter] = useState("");
   const [transmisionFilter, setTransmisionFilter] = useState("");
   const [doorsFilter, setDoorsFilter] = useState("");
+  const [vehicleFetch, setVehicleFetch] = useState<ICar[]>([]);
+
   const [vehicleList, setVehicleList] = useState<ICar[]>([]);
   const [sortBy, setSortBy] = useState("");
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
 
+  const searchParams = useSearchParams();
+  const searchFilter = searchParams.get("search");
+
   async function getCars() {
     try {
-      const carsFetch = await fetch("http://localhost:3000/api/cars", {
+      const url =
+        searchFilter && searchFilter !== "null"
+          ? `http://localhost:3000/api/cars/?search=${searchFilter}`
+          : `http://localhost:3000/api/cars/`;
+      const carsFetch = await fetch(url, {
         method: "GET",
         cache: "no-store",
       });
       const cars = await carsFetch.json();
       setVehicleList(cars);
+      setVehicleFetch(cars);
       setLoading(false);
     } catch (error) {
       return;
     }
   }
 
-  function sortVehicles(
-    sortBy: "price-asc" | "price-desc" | "date-asc" | "date-desc"
-  ): ICar[] {
-    return vehicleList.sort((a, b) => {
-      switch (sortBy) {
-        case "price-asc":
-          return a.price - b.price;
-        case "price-desc":
-          return b.price - a.price;
-        case "date-asc":
-          return a.createdAt!.getTime() - b.createdAt!.getTime();
-        case "date-desc":
-          return b.createdAt!.getTime() - a.createdAt!.getTime();
-        default:
-          return 0;
-      }
+  useEffect(() => {
+    console.log(vehicleList);
+  }, [vehicleList]);
+
+  function sortVehiclesByPriceDesc() {
+    const vehiclesSorted = [...vehicleList].sort(
+      (prev, next) => next.price - prev.price
+    );
+    setVehicleList(vehiclesSorted); // Actualiza el estado con el array ordenado
+  }
+
+  function sortVehiclesByPriceAsc() {
+    const vehiclesSorted = [...vehicleList].sort(
+      (prev, next) => prev.price - next.price
+    );
+    setVehicleList(vehiclesSorted); // Actualiza el estado con el array ordenado
+  }
+
+  function sortVehiclesByDateAsc() {
+    const vehiclesSorted = [...vehicleList].sort((a, b) => {
+      return (
+        new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime()
+      );
     });
+    setVehicleList(vehiclesSorted);
+  }
+
+  function sortVehiclesByDateDesc() {
+    const vehiclesSorted = [...vehicleList].sort((a, b) => {
+      return (
+        new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime()
+      );
+    });
+    setVehicleList(vehiclesSorted);
   }
 
   useEffect(() => {
     getCars();
   }, []);
+
+  function handleFilterByYear(year: string) {
+    const vehiclesFiltered = vehicleFetch.filter((vehicle) => {
+      return vehicle.year === Number(year);
+    });
+    setVehicleList(vehiclesFiltered);
+  }
+  function handleFilterByDoors(doors: string) {
+    const vehiclesFiltered = vehicleFetch.filter((vehicle) => {
+      return vehicle.doors === doors;
+    });
+    setVehicleList(vehiclesFiltered);
+  }
+  function handleFilterByBrand(brand: string) {
+    const vehiclesFiltered = vehicleFetch.filter((vehicle) => {
+      return vehicle.brand === brand;
+    });
+    setVehicleList(vehiclesFiltered);
+  }
+  function handleFilterByGearbox(gearbox: string) {
+    const vehiclesFiltered = vehicleFetch.filter((vehicle) => {
+      return vehicle.gearbox === gearbox;
+    });
+    setVehicleList(vehiclesFiltered);
+  }
+  function handleFilterByType(type: string) {
+    const vehiclesFiltered = vehicleFetch.filter((vehicle) => {
+      return vehicle.type === type;
+    });
+    setVehicleList(vehiclesFiltered);
+  }
 
   return (
     <>
@@ -128,28 +187,38 @@ const Page = () => {
           {/* sort by  */}
           <div className="hidden my-auto w-fit h-fit md:block">
             <div className="hidden ml-auto w-fit h-fit md:block">
-              <Select>
+              <Select
+                onValueChange={(type) => {
+                  console.log(type);
+                  if (type === "price-desc") {
+                    sortVehiclesByPriceDesc();
+                  }
+                  if (type === "price-asc") {
+                    sortVehiclesByPriceAsc();
+                  }
+                  if (type === "date-desc") {
+                    sortVehiclesByDateDesc();
+                  }
+                  if (type === "date-asc") {
+                    sortVehiclesByDateAsc();
+                  }
+                }}
+              >
                 <SelectTrigger className="w-[300px]">
                   <SelectValue placeholder="Ordenar por..." />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem
-                      onClick={() => setVehicleList(sortVehicles("price-desc"))}
-                      value="apple"
-                    >
+                    <SelectItem value="price-desc">
                       Mayor a menor precio
                     </SelectItem>
-                    <SelectItem
-                      onClick={() => setVehicleList(sortVehicles("price-asc"))}
-                      value="banana"
-                    >
+                    <SelectItem value="price-asc">
                       Menor a mayor precio
                     </SelectItem>
-                    <SelectItem value="blueberry">
+                    <SelectItem value="date-desc">
                       Mas recientes a mas antiguos
                     </SelectItem>
-                    <SelectItem value="grapes">
+                    <SelectItem value="date-asc">
                       Mas antiguos a mas recientes
                     </SelectItem>
                   </SelectGroup>
@@ -181,11 +250,11 @@ const Page = () => {
         </div>
 
         {/* VEHICLE LIST */}
-        <div className="flex mt-4 md:mt-7">
+        <div className="flex mt-4 mb-10 md:mt-7">
           {/* FILTERS SIDEBAR */}
           <div
             style={{ border: "1px solid #0000001c" }}
-            className="flex-col hidden w-1/4 p-5 rounded-md shadow-lg h-fit lg:flex"
+            className="flex-col hidden w-1/4 px-5 pt-3 pb-5 rounded-md shadow-lg h-fit lg:flex"
           >
             <div className="">
               <span className="text-lg font-semibold">Filtros</span>
@@ -196,14 +265,19 @@ const Page = () => {
                 width: "100%",
                 height: "1px",
                 backgroundColor: "#0000001c",
-                margin: "15px 0",
+                margin: "8px 0 12px  0 ",
               }}
             ></div>
 
             <div className="flex flex-col gap-5">
               <div className="flex flex-col gap-1">
                 <span className="text-sm font-medium">Tipo de vehículo</span>
-                <Select>
+                <Select
+                  onValueChange={(type) => {
+                    console.log(type);
+                    handleFilterByType(type);
+                  }}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Seleccionar tipo..." />
                   </SelectTrigger>
@@ -235,7 +309,7 @@ const Page = () => {
                   <PopoverContent className="w-full p-0">
                     <Command>
                       <CommandInput
-                        placeholder="Search brand..."
+                        placeholder="Buscar marca..."
                         className="h-9"
                       />
                       <CommandList>
@@ -246,7 +320,9 @@ const Page = () => {
                               key={brand}
                               value={brandFilter}
                               onSelect={() => {
+                                console.log(brand);
                                 setBrandFilter(brand);
+                                handleFilterByBrand(brand);
                                 setOpen(false);
                               }}
                             >
@@ -270,7 +346,12 @@ const Page = () => {
 
               <div className="flex flex-col gap-1">
                 <span className="text-sm font-medium">Cantidad de puertas</span>
-                <Select>
+                <Select
+                  onValueChange={(doors) => {
+                    console.log(doors);
+                    handleFilterByDoors(doors);
+                  }}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Seleccionar cantidad..." />
                   </SelectTrigger>
@@ -287,7 +368,11 @@ const Page = () => {
 
               <div className="flex flex-col gap-1">
                 <span className="text-sm font-medium">Año</span>
-                <Select>
+                <Select
+                  onValueChange={(year) => {
+                    handleFilterByYear(year);
+                  }}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Seleccionar año..." />
                   </SelectTrigger>
@@ -305,7 +390,11 @@ const Page = () => {
 
               <div className="flex flex-col gap-1">
                 <span className="text-sm font-medium">Transmisión</span>
-                <Select>
+                <Select
+                  onValueChange={(gearbox) => {
+                    handleFilterByGearbox(gearbox);
+                  }}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Seleccionar transm..." />
                   </SelectTrigger>
@@ -323,75 +412,93 @@ const Page = () => {
           {/* VEHICLES */}
 
           <div className="w-full mb-24 md:mb-32">
-            <div
-              className={`${styles.vehiclesCont} xl:gap-10 gap-5 2xl:gap-12 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 py-5 md:py-0 pl-0 lg:pl-10   `}
-            >
-              {vehicleList.map((car) => (
-                <>
-                  <div className="h-full col-span-1">
-                    <Card className="flex flex-col h-full shadow-lg">
-                      {" "}
-                      {/* Añadir flex y flex-col */}
-                      <Image
-                        src={`/carGallery/${car.imagePath}`}
-                        alt="auto"
-                        width={500}
-                        height={500}
-                        className="object-cover mb-4 overflow-hidden rounded-t-md"
-                      />
-                      <CardHeader style={{ padding: "0 16px 16px 16px" }}>
-                        <CardTitle className="text-base">{car.name}</CardTitle>
-                        <CardDescription>
-                          {car.year} - {car.kilometers} km
-                        </CardDescription>
-                        <p className="text-lg font-semibold">
-                          {car.currency} ${car.price}{" "}
-                        </p>
-                      </CardHeader>
-                      <CardFooter className="px-4 mt-auto">
-                        {" "}
-                        {/* mt-auto para mantener el botón abajo */}
-                        <Button
-                          onClick={() => {
-                            router.push(`/vehicles/${car.uuid}`);
-                          }}
-                          variant={"default"}
-                          className="w-full"
-                        >
-                          Ver más
-                        </Button>
-                      </CardFooter>
-                    </Card>
-                  </div>
-                </>
-              ))}
-            </div>
+            {vehicleList.length !== 0 && (
+              <>
+                <div
+                  className={`${styles.vehiclesCont} xl:gap-10 gap-5 2xl:gap-12 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 py-5 md:py-0 pl-0 lg:pl-10   `}
+                >
+                  {vehicleList.map((car) => (
+                    <>
+                      <div key={car.uuid} className="h-full col-span-1">
+                        <Card className="flex flex-col h-full shadow-lg">
+                          <Image
+                            src={`/carGallery/${car.imagePath}`}
+                            alt="auto"
+                            width={500}
+                            height={500}
+                            className="object-cover mb-4 overflow-hidden h-1/2 rounded-t-md"
+                          />
+                          <CardHeader style={{ padding: "0 16px 16px 16px" }}>
+                            <CardTitle className="text-base">
+                              {car.name}
+                            </CardTitle>
+                            <CardDescription>
+                              {car.year} - {car.kilometers} km
+                            </CardDescription>
+                            <p className="text-lg font-semibold">
+                              {car.currency} ${car.price}
+                            </p>
+                          </CardHeader>
+                          <CardFooter className="px-4 mt-auto">
+                            <Button
+                              onClick={() => {
+                                router.push(`/vehicles/${car.uuid}`);
+                              }}
+                              variant={"default"}
+                              className="w-full"
+                            >
+                              Ver más
+                            </Button>
+                          </CardFooter>
+                        </Card>
+                      </div>
+                    </>
+                  ))}
+                </div>
+                {/* pagination */}
+                <div className="mt-10 md:mt-20">
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious href="#" />
+                      </PaginationItem>
+                      <PaginationItem>
+                        <PaginationLink isActive href="#">
+                          1
+                        </PaginationLink>
+                      </PaginationItem>
+                      <PaginationItem>
+                        <PaginationLink href="#">2</PaginationLink>
+                      </PaginationItem>
+                      <PaginationItem>
+                        <PaginationLink href="#">3</PaginationLink>
+                      </PaginationItem>
 
-            {/* pagination */}
-            <div className="mt-10 md:mt-20">
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious href="#" />
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink isActive href="#">
-                      1
-                    </PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#">2</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#">3</PaginationLink>
-                  </PaginationItem>
-
-                  <PaginationItem>
-                    <PaginationNext href="#" />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </div>
+                      <PaginationItem>
+                        <PaginationNext href="#" />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
+              </>
+            )}
+            {vehicleList.length === 0 && (
+              <>
+                <div className="flex flex-col items-center justify-center w-full gap-5 my-32 h-fit">
+                  <span className="text-2xl font-semibold">
+                    No se encontró ningún resultado.
+                  </span>
+                  <button
+                    onClick={() => {
+                      setVehicleList(vehicleFetch);
+                    }}
+                    className={`${buttonStyle.button}`}
+                  >
+                    Eliminar filtros
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
 

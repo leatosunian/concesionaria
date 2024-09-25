@@ -19,7 +19,7 @@ const Footer = () => {
               <Image src={logo} alt="" width={260} height={200} className="block md:hidden"/>
               <Image src={logo} alt="" width={340} height={200} className="md:block hidden"/>
               <h5 className="mt-3 mb-2 ml-2 text-md md:text-base text-blueGray-600">
-                +20 años de trayectoria en el mercado de vehículos
+                +12 años de trayectoria en el mercado de vehículos
               </h5>
               <div className="mt-6 mb-6 lg:mb-0">
                 <button
