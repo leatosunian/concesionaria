@@ -474,14 +474,14 @@ const Page = () => {
                 >
                   {currentVehicles.map((car) => (
                     <>
-                      <div key={car.uuid} className="h-full col-span-1">
+                      <div key={car.uuid} className="col-span-1 md:h-full h-fit">
                         <Card className="flex flex-col h-full shadow-lg">
                           <Image
                             src={`/carGallery/${car.imagePath}`}
                             alt="auto"
                             width={500}
                             height={500}
-                            className="object-cover mb-4 overflow-hidden h-1/2 rounded-t-md"
+                            className="object-cover mb-4 overflow-hidden rounded-t-md"
                           />
                           <CardHeader style={{ padding: "0 16px 16px 16px" }}>
                             <CardTitle className="text-base">
