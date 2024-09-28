@@ -30,6 +30,7 @@ const NewProducts = ({ vehicles }: Props) => {
   const [api, setApi] = useState<CarouselApi>();
   const [latestVehicles, setLatestVehicles] = useState<ICar[]>([]);
   const [current, setCurrent] = useState(0);
+  
 
   useEffect(() => {
     if (!api) {
@@ -57,12 +58,16 @@ const NewProducts = ({ vehicles }: Props) => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ amount: "some", once: true }}
           transition={{ duration: 0.7, ease: "easeInOut" }}
-          className="flex flex-col items-center justify-center mx-auto overflow-hidden md:hidden"
+          className="flex flex-col items-start justify-center px-6 overflow-hidden md:hidden"
         >
-          <h4 className="text-xl font-bold sm:text-2xl">Últimos ingresos</h4>
-          <span className="text-sm text-gray-500 sm:text-base">
-            Estas son nuestras unidades mas recientes
-          </span>
+          <div className="flex flex-col ">
+            <span className="text-base font-bold text-red-500 upper ">
+              Últimos ingresos
+            </span>
+            <h4 className="text-2xl font-bold ">
+              Estas son nuestras unidades mas recientes
+            </h4>
+          </div>
         </motion.header>
         <motion.header
           initial={{ opacity: 0, y: -70 }}

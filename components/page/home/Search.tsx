@@ -7,19 +7,19 @@ import { useSearchParams, usePathname, useRouter } from "next/navigation";
 const Search = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const searchParams = useSearchParams();
-  const {push} = useRouter()
-  console.log(searchParams.get('search'));
+  const { push } = useRouter();
+  console.log(searchParams.get("search"));
 
   const handleSearch = () => {
     console.log(searchValue);
-    const params = new URLSearchParams(searchParams)
-    if(searchValue !== ''){
-      params.set('search', searchValue)
+    const params = new URLSearchParams(searchParams);
+    if (searchValue !== "") {
+      params.set("search", searchValue);
     } else {
-      params.delete('search')
+      params.delete("search");
     }
-    push(`/vehicles/?${params.toString()}`)
-    console.log(params.toString())
+    push(`/vehicles/?${params.toString()}`);
+    console.log(params.toString());
   };
 
   useEffect(() => {
@@ -52,8 +52,14 @@ const Search = () => {
           transition={{ duration: 0.7, ease: "easeInOut", delay: 0.5 }}
           className="w-full py-2 mt-0 overflow-hidden md:mt-2 px-auto md:w-fit h-hit"
         >
-          <form className={`${styles.form} mx-auto `}>
-            <button>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSearch();
+            }}
+            className={`${styles.form} mx-auto `}
+          >
+            <button type="button" disabled>
               <svg
                 width="17"
                 height="16"

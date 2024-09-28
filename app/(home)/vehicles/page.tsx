@@ -50,31 +50,35 @@ import {
 import { cn } from "@/lib/utils";
 import { Check, CheckIcon, ChevronsUpDown } from "lucide-react";
 import { ICar } from "@/app/models/car";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import LoaderFullscreen from "@/components/page/LoaderFullscreen";
 
 const Page = () => {
   const [open, setOpen] = useState(false);
   const [brandFilter, setBrandFilter] = useState("");
-  const [yearFilter, setYearFilter] = useState("");
-  const [transmisionFilter, setTransmisionFilter] = useState("");
-  const [doorsFilter, setDoorsFilter] = useState("");
   const [vehicleFetch, setVehicleFetch] = useState<ICar[]>([]);
 
   const [vehicleList, setVehicleList] = useState<ICar[]>([]);
-  const [sortBy, setSortBy] = useState("");
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
 
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const searchFilter = searchParams.get("search");
 
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [currentVehicles, setCurrentVehicles] = useState<ICar[]>([]);
+
+  const [vehiclesPerPage, setVehiclesPerPage] = useState<number>(12);
+  const lastVehicleIndex = currentPage * vehiclesPerPage;
+  const firstVehicleIndex = lastVehicleIndex - vehiclesPerPage;
+  const [numberOfPages, setNumberOfPages] = useState<number[]>([0]);
   async function getCars() {
     try {
       const url =
         searchFilter && searchFilter !== "null"
-          ? `http://localhost:3000/api/cars/?search=${searchFilter}`
-          : `http://localhost:3000/api/cars/`;
+          ? `/api/cars/?search=${searchFilter}`
+          : `/api/cars/`;
       const carsFetch = await fetch(url, {
         method: "GET",
         cache: "no-store",
@@ -83,14 +87,11 @@ const Page = () => {
       setVehicleList(cars);
       setVehicleFetch(cars);
       setLoading(false);
+      return cars;
     } catch (error) {
       return;
     }
   }
-
-  useEffect(() => {
-    console.log(vehicleList);
-  }, [vehicleList]);
 
   function sortVehiclesByPriceDesc() {
     const vehiclesSorted = [...vehicleList].sort(
@@ -98,14 +99,12 @@ const Page = () => {
     );
     setVehicleList(vehiclesSorted); // Actualiza el estado con el array ordenado
   }
-
   function sortVehiclesByPriceAsc() {
     const vehiclesSorted = [...vehicleList].sort(
       (prev, next) => prev.price - next.price
     );
     setVehicleList(vehiclesSorted); // Actualiza el estado con el array ordenado
   }
-
   function sortVehiclesByDateAsc() {
     const vehiclesSorted = [...vehicleList].sort((a, b) => {
       return (
@@ -114,7 +113,6 @@ const Page = () => {
     });
     setVehicleList(vehiclesSorted);
   }
-
   function sortVehiclesByDateDesc() {
     const vehiclesSorted = [...vehicleList].sort((a, b) => {
       return (
@@ -123,11 +121,6 @@ const Page = () => {
     });
     setVehicleList(vehiclesSorted);
   }
-
-  useEffect(() => {
-    getCars();
-  }, []);
-
   function handleFilterByYear(year: string) {
     const vehiclesFiltered = vehicleFetch.filter((vehicle) => {
       return vehicle.year === Number(year);
@@ -158,6 +151,50 @@ const Page = () => {
     });
     setVehicleList(vehiclesFiltered);
   }
+  function handlePrevAndNextPage(to: string) {
+    if (to === "PREV") {
+      if (currentPage === 1) return;
+      setCurrentPage(currentPage - 1);
+      return;
+    }
+    if (to === "NEXT") {
+      if (numberOfPages.length === currentPage) return;
+      setCurrentPage(currentPage + 1);
+      return;
+    }
+  }
+
+  function refresh() {
+    console.log(searchParams);
+    router.replace("/vehicles");
+    setTimeout(() => {
+      if (pathname === "/vehicles" && searchFilter !== "") {
+        window.location.reload();
+      }
+    }, 500);
+  }
+
+  useEffect(() => {
+    const currentVehicles = vehicleList.slice(
+      firstVehicleIndex,
+      lastVehicleIndex
+    );
+    setCurrentVehicles(currentVehicles);
+
+    let paginationPages: number[] = [];
+    for (let i = 1; i <= Math.ceil(vehicleList.length / vehiclesPerPage); i++) {
+      paginationPages.push(i);
+    }
+    setNumberOfPages(paginationPages);
+    console.log("vehiclelist", vehicleList);
+
+    console.log("numberOfPages", currentPage);
+    console.log("numberOfPages", numberOfPages);
+  }, [vehicleList, currentPage]);
+
+  useEffect(() => {
+    getCars();
+  }, []);
 
   return (
     <>
@@ -180,7 +217,7 @@ const Page = () => {
               Todos los vehículos
             </h4>
             <span className="mb-2 text-sm text-gray-400">
-              Mostrando 1-12 de 56 vehículos
+              Mostrando 1-12 de {vehicleList.length} vehículos
             </span>
           </div>
 
@@ -260,6 +297,7 @@ const Page = () => {
               <span className="text-lg font-semibold">Filtros</span>
             </div>
 
+            {/* divider */}
             <div
               style={{
                 width: "100%",
@@ -406,18 +444,35 @@ const Page = () => {
                   </SelectContent>
                 </Select>
               </div>
+
+              <Button
+                onClick={() => {
+                  console.log(searchFilter);
+
+                  if (searchFilter === "") {
+                    setVehicleList(vehicleFetch);
+                    return;
+                  }
+                  if (searchFilter !== "") {
+                    router.replace("/vehicles");
+                    refresh();
+                  }
+                }}
+              >
+                Remover filtros
+              </Button>
             </div>
           </div>
 
           {/* VEHICLES */}
 
           <div className="w-full mb-24 md:mb-32">
-            {vehicleList.length !== 0 && (
+            {currentVehicles.length !== 0 && (
               <>
                 <div
                   className={`${styles.vehiclesCont} xl:gap-10 gap-5 2xl:gap-12 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 py-5 md:py-0 pl-0 lg:pl-10   `}
                 >
-                  {vehicleList.map((car) => (
+                  {currentVehicles.map((car) => (
                     <>
                       <div key={car.uuid} className="h-full col-span-1">
                         <Card className="flex flex-col h-full shadow-lg">
@@ -442,6 +497,7 @@ const Page = () => {
                           <CardFooter className="px-4 mt-auto">
                             <Button
                               onClick={() => {
+                                setLoading(true);
                                 router.push(`/vehicles/${car.uuid}`);
                               }}
                               variant={"default"}
@@ -460,22 +516,34 @@ const Page = () => {
                   <Pagination>
                     <PaginationContent>
                       <PaginationItem>
-                        <PaginationPrevious href="#" />
+                        <PaginationPrevious
+                          href="#"
+                          onClick={() => handlePrevAndNextPage("PREV")}
+                        />
                       </PaginationItem>
-                      <PaginationItem>
-                        <PaginationLink isActive href="#">
-                          1
-                        </PaginationLink>
-                      </PaginationItem>
-                      <PaginationItem>
-                        <PaginationLink href="#">2</PaginationLink>
-                      </PaginationItem>
-                      <PaginationItem>
-                        <PaginationLink href="#">3</PaginationLink>
-                      </PaginationItem>
+                      {numberOfPages.map((page) => (
+                        <>
+                          <PaginationItem
+                            onClick={() => {
+                              console.log("setcurrentpage to ", page);
+                              setCurrentPage(page);
+                            }}
+                          >
+                            <PaginationLink
+                              isActive={currentPage === page}
+                              href="#"
+                            >
+                              {page}
+                            </PaginationLink>
+                          </PaginationItem>
+                        </>
+                      ))}
 
                       <PaginationItem>
-                        <PaginationNext href="#" />
+                        <PaginationNext
+                          href="#"
+                          onClick={() => handlePrevAndNextPage("NEXT")}
+                        />
                       </PaginationItem>
                     </PaginationContent>
                   </Pagination>
@@ -490,7 +558,16 @@ const Page = () => {
                   </span>
                   <button
                     onClick={() => {
-                      setVehicleList(vehicleFetch);
+                      console.log(searchFilter);
+
+                      if (searchFilter === "") {
+                        setVehicleList(vehicleFetch);
+                        return;
+                      }
+                      if (searchFilter !== "") {
+                        router.replace("/vehicles");
+                        refresh();
+                      }
                     }}
                     className={`${buttonStyle.button}`}
                   >

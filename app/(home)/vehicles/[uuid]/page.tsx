@@ -74,7 +74,7 @@ const Page = () => {
   async function getCarData(uuid: string) {
     try {
       // get vehicle data
-      const carsFetch = await fetch(`http://localhost:3000/api/cars/${uuid}`, {
+      const carsFetch = await fetch(`/api/cars/${uuid}`, {
         method: "GET",
         cache: "no-store",
       });
@@ -84,7 +84,7 @@ const Page = () => {
       console.log(uuid);
       // get vehicle gallery
       const galleryFetch = await fetch(
-        `http://localhost:3000/api/gallery/${uuid}`,
+        `/api/gallery/${uuid}`,
         {
           method: "GET",
           cache: "no-store",

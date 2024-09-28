@@ -63,7 +63,7 @@ const carList = [
 
 async function getCars() {
   try {
-    const carsFetch = await fetch("http://localhost:3000/api/cars", {
+    const carsFetch = await fetch(`${process.env.NEXTAUTH_URL}/api/cars`, {
       method: "GET",
       cache:'no-store'
     });
