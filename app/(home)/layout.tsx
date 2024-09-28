@@ -4,6 +4,7 @@ import "@/app/globals.css";
 import Link from "next/link";
 import Image from "next/image";
 import wp from "@/public/wp.png";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {children}
+        <Suspense>{children}</Suspense>
         <Link
           className="fixed bottom-0 right-0 m-5 cursor-pointer w-fit h-fit"
           target="_blank"
