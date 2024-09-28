@@ -197,8 +197,8 @@ const Page = () => {
   }, []);
 
   return (
-    <>
-      <Suspense>
+    <Suspense>
+      <>
         {loading && <LoaderFullscreen />}
         <Header />
         {/* HEADER SEPARATOR */}
@@ -584,8 +584,8 @@ const Page = () => {
 
           <Footer />
         </div>
-      </Suspense>
-    </>
+      </>
+    </Suspense>
   );
 };
 
