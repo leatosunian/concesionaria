@@ -204,7 +204,7 @@ const Page = () => {
       <div className="w-full h-16 md:h-20"></div>
 
       {/* BREADCRUMBS */}
-      <div className="w-full px-6 py-2 md:px-24 2xl:px-48 h-fit">
+      <div className="w-full px-6 pt-5 pb-3 md:pt-2 md:px-24 2xl:px-48 h-fit">
         <Breadcrumbs />
       </div>
 
@@ -470,7 +470,7 @@ const Page = () => {
             {currentVehicles.length !== 0 && (
               <>
                 <div
-                  className={`${styles.vehiclesCont} xl:gap-10 gap-5 2xl:gap-12 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 py-5 md:py-0 pl-0 lg:pl-10   `}
+                  className={`${styles.vehiclesCont} xl:gap-10 gap-14 2xl:gap-12 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 py-5 md:py-0 pl-0 lg:pl-10   `}
                 >
                   {currentVehicles.map((car) => (
                     <>
