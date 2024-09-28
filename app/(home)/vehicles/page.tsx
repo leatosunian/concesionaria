@@ -481,7 +481,7 @@ const Page = () => {
                             alt="auto"
                             width={500}
                             height={500}
-                            className="object-cover mb-4 overflow-hidden rounded-t-md"
+                            className="object-cover h-full mb-4 overflow-hidden md:h-1/2 rounded-t-md"
                           />
                           <CardHeader style={{ padding: "0 16px 16px 16px" }}>
                             <CardTitle className="text-base">
