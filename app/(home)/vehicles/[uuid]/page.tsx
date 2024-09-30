@@ -110,7 +110,7 @@ const Page = () => {
       <div className="w-full h-16 md:h-20"></div>
 
       {/* BREADCRUMBS */}
-      <div className="w-full px-6 py-6 md:px-24 2xl:px-64 h-fit">
+      <div className="w-full px-6 pt-5 pb-5 md:px-24 2xl:px-64 h-fit">
         <Breadcrumbs name={vehicleData?.name} />
       </div>
 

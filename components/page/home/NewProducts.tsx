@@ -19,8 +19,10 @@ import {
 import stylesSearch from "@/app/css-modules/home.search.module.css";
 import { Button } from "@/components/ui/button";
 import { ICar } from "@/app/models/car";
-import EmblaCarousel, { EmblaPluginType } from "embla-carousel";
 import { motion } from "framer-motion";
+import { FaRegCalendar } from "react-icons/fa";
+import { IoSpeedometerOutline } from "react-icons/io5";
+import Link from "next/link";
 
 interface Props {
   vehicles: ICar[];
@@ -30,7 +32,6 @@ const NewProducts = ({ vehicles }: Props) => {
   const [api, setApi] = useState<CarouselApi>();
   const [latestVehicles, setLatestVehicles] = useState<ICar[]>([]);
   const [current, setCurrent] = useState(0);
-  
 
   useEffect(() => {
     if (!api) {
@@ -85,9 +86,11 @@ const NewProducts = ({ vehicles }: Props) => {
             </h4>
           </div>
           <div className="flex justify-center mt-4 w-fit h-fit">
-            <button className={`${stylesSearch.button}`}>
-              Ver todos los vehículos
-            </button>{" "}
+            <Link href={'/vehicles'} className="w-fit h-fit">
+              <button className={`${stylesSearch.button}`}>
+                Ver todos los vehículos
+              </button>{" "}
+            </Link>
           </div>
         </motion.header>
         <div className="w-full mx-auto overflow-hidden">
@@ -115,7 +118,7 @@ const NewProducts = ({ vehicles }: Props) => {
                     key={car.uuid}
                     className="px-5 xs:basis-1/2 sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
                   >
-                    <div className="h-full p-1">
+                    <div className="p-1 md:h-full h-fit">
                       <Card className="flex flex-col h-full shadow-lg">
                         {" "}
                         {/* Añadir flex y flex-col */}
@@ -124,24 +127,37 @@ const NewProducts = ({ vehicles }: Props) => {
                           alt="auto"
                           width={500}
                           height={500}
-                          className="object-cover mb-4 overflow-hidden rounded-t-md h-1/2"
+                          className="object-cover h-full mb-4 overflow-hidden rounded-t-md md:h-1/2 "
                         />
-                        <CardHeader style={{ padding: "0 16px 16px 16px" }}>
-                          <CardTitle className="text-lg">{car.name}</CardTitle>
-                          <CardDescription>
-                            {car.year} - {car.kilometers} km
-                          </CardDescription>
-                          <p className="text-lg font-semibold">
-                            {car.currency} ${car.price}
-                          </p>
-                        </CardHeader>
-                        <CardFooter className="px-4 mt-auto">
-                          {" "}
-                          {/* mt-auto para mantener el botón abajo */}
-                          <Button variant={"default"} className="w-full">
-                            Ver más
-                          </Button>
-                        </CardFooter>
+                        <div className="flex flex-col justify-between w-full h-full md:h-1/2">
+                          <CardHeader style={{ padding: "0 16px 0px 16px" }}>
+                            <CardTitle className="text-lg textCut">
+                              {car.name}
+                            </CardTitle>
+                            <CardDescription className="flex items-center justify-between w-full pt-1 pb-2 ">
+                              <div className="flex items-center gap-2">
+                                <FaRegCalendar /> <span>{car.year}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <IoSpeedometerOutline size={20} />
+                                <span> {car.kilometers} km</span>
+                              </div>
+                            </CardDescription>
+                            <p className="text-lg font-semibold">
+                              {car.currency} ${car.price}
+                            </p>
+                          </CardHeader>
+                          <CardFooter className="px-4 pb-5 mt-5 md:mt-0">
+                            <Link
+                              href={`/vehicles/${car.uuid}`}
+                              className="w-full h-fit"
+                            >
+                              <Button variant={"default"} className="w-full">
+                                Ver más
+                              </Button>
+                            </Link>
+                          </CardFooter>
+                        </div>
                       </Card>
                     </div>
                   </CarouselItem>
@@ -155,9 +171,11 @@ const NewProducts = ({ vehicles }: Props) => {
           </div> */}
         </div>
         <div className="flex justify-center w-full mt-4 md:hidden h-fit">
-          <button className={`${stylesSearch.button}`}>
-            Ver todos los vehículos
-          </button>{" "}
+          <Link className="w-fit h-fit" href={"/vehicles"}>
+            <button className={`${stylesSearch.button}`}>
+              Ver todos los vehículos
+            </button>{" "}
+          </Link>
         </div>
       </section>
     </>

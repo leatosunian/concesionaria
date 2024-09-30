@@ -7,6 +7,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import React from "react";
 
 const Breadcrumbs = ({name}:{name:string | undefined}) => {
   return (
@@ -22,7 +23,7 @@ const Breadcrumbs = ({name}:{name:string | undefined}) => {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage className="font-medium">{name} </BreadcrumbPage>
+            <BreadcrumbPage className="font-medium textCutOneLine">{name} </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>

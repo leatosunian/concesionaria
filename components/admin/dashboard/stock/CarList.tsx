@@ -26,6 +26,7 @@ import carImg from "@/public/car.jpg";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import React from "react";
 
 const CarList = ({ cars }: { cars: ICar[] }) => {
   const [carList, setCarList] = useState<ICar[]>([]);
@@ -96,38 +97,40 @@ const CarList = ({ cars }: { cars: ICar[] }) => {
   return (
     <>
       {carList?.map((car) => (
-        <Card key={car.uuid}>
-          <Image
-            src={`/carGallery/${car.imagePath}`}
-            alt=""
-            width={500}
-            height={500}
-            className="object-cover mb-4 overflow-hidden rounded-t-md "
-          />
-          <CardHeader style={{ padding: "0 16px 16px 16px" }}>
-            <CardTitle className="text-lg">{car.name}</CardTitle>
-            <p>
-              {car.currency} ${car.price}
-            </p>
-            <CardDescription>
-              {car.year} - {car.kilometers} km
-            </CardDescription>
-          </CardHeader>
-          <CardFooter className="grid grid-cols-2 gap-3 px-4 ">
-            <Button onClick={() => handleEdit(car.uuid)} variant={"default"}>
-              Editar
-            </Button>
-            <Button
-              //onClick={() => handleDelete(car.uuid)}
-              onClick={() =>
-                openDeleteModal({ carName: car.name, uuid: car.uuid })
-              }
-              variant={"destructive"}
-            >
-              Eliminar
-            </Button>
-          </CardFooter>
-        </Card>
+        <div key={car.uuid} className="col-span-1 md:h-full h-fit">
+          <Card key={car.uuid} className="flex flex-col h-full shadow-lg">
+            <Image
+              src={`/carGallery/${car.imagePath}`}
+              alt=""
+              width={500}
+              height={500}
+              className="object-cover h-full mb-4 overflow-hidden md:h-1/2 rounded-t-md "
+            />
+            <CardHeader style={{ padding: "0 16px 16px 16px" }}>
+              <CardTitle className="text-lg textCut">{car.name}</CardTitle>
+              <p>
+                {car.currency} ${car.price}
+              </p>
+              <CardDescription>
+                {car.year} - {car.kilometers} km
+              </CardDescription>
+            </CardHeader>
+            <CardFooter className="grid grid-cols-2 gap-3 px-4 ">
+              <Button onClick={() => handleEdit(car.uuid)} variant={"default"}>
+                Editar
+              </Button>
+              <Button
+                //onClick={() => handleDelete(car.uuid)}
+                onClick={() =>
+                  openDeleteModal({ carName: car.name, uuid: car.uuid })
+                }
+                variant={"destructive"}
+              >
+                Eliminar
+              </Button>
+            </CardFooter>
+          </Card>
+        </div>
       ))}
       <div className="px-10 rounded-md">
         <AlertDialog>

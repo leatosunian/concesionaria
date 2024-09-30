@@ -52,6 +52,7 @@ import { Check, CheckIcon, ChevronsUpDown } from "lucide-react";
 import { ICar } from "@/app/models/car";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import LoaderFullscreen from "@/components/page/LoaderFullscreen";
+import Link from "next/link";
 
 const Page = () => {
   const [open, setOpen] = useState(false);
@@ -266,18 +267,38 @@ const Page = () => {
 
           {/* mobile sort by */}
           <div className="block md:hidden ">
-            <Select>
+            <Select
+              onValueChange={(type) => {
+                console.log(type);
+                if (type === "price-desc") {
+                  sortVehiclesByPriceDesc();
+                }
+                if (type === "price-asc") {
+                  sortVehiclesByPriceAsc();
+                }
+                if (type === "date-desc") {
+                  sortVehiclesByDateDesc();
+                }
+                if (type === "date-asc") {
+                  sortVehiclesByDateAsc();
+                }
+              }}
+            >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Ordenar por..." />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="apple">Mayor a menor precio</SelectItem>
-                  <SelectItem value="banana">Menor a mayor precio</SelectItem>
-                  <SelectItem value="blueberry">
+                  <SelectItem value="price-desc">
+                    Mayor a menor precio
+                  </SelectItem>
+                  <SelectItem value="price-asc">
+                    Menor a mayor precio
+                  </SelectItem>
+                  <SelectItem value="date-desc">
                     Mas recientes a mas antiguos
                   </SelectItem>
-                  <SelectItem value="grapes">
+                  <SelectItem value="date-asc">
                     Mas antiguos a mas recientes
                   </SelectItem>
                 </SelectGroup>
@@ -474,7 +495,10 @@ const Page = () => {
                 >
                   {currentVehicles.map((car) => (
                     <>
-                      <div key={car.uuid} className="col-span-1 md:h-full h-fit">
+                      <div
+                        key={car.uuid}
+                        className="col-span-1 md:h-full h-fit"
+                      >
                         <Card className="flex flex-col h-full shadow-lg">
                           <Image
                             src={`/carGallery/${car.imagePath}`}
@@ -483,29 +507,32 @@ const Page = () => {
                             height={500}
                             className="object-cover h-full mb-4 overflow-hidden md:h-1/2 rounded-t-md"
                           />
-                          <CardHeader style={{ padding: "0 16px 16px 16px" }}>
-                            <CardTitle className="text-base">
-                              {car.name}
-                            </CardTitle>
-                            <CardDescription>
-                              {car.year} - {car.kilometers} km
-                            </CardDescription>
-                            <p className="text-lg font-semibold">
-                              {car.currency} ${car.price}
-                            </p>
-                          </CardHeader>
-                          <CardFooter className="px-4 mt-auto">
-                            <Button
-                              onClick={() => {
-                                setLoading(true);
-                                router.push(`/vehicles/${car.uuid}`);
-                              }}
-                              variant={"default"}
-                              className="w-full"
-                            >
-                              Ver más
-                            </Button>
-                          </CardFooter>
+                          <div className="flex flex-col justify-between w-full h-full md:h-1/2">
+                            <CardHeader style={{ padding: "0 16px 10px 16px" }}>
+                              <CardTitle className="text-base textCut">
+                                {car.name}
+                              </CardTitle>
+                              <CardDescription>
+                                {car.year} - {car.kilometers} km
+                              </CardDescription>
+                              <p className="text-lg font-semibold">
+                                {car.currency} ${car.price}
+                              </p>
+                            </CardHeader>
+                            <CardFooter className="px-4 pb-5 mt-2 md:mt-0">
+                              <Link
+                                onClick={() => {
+                                  setLoading(true);
+                                }}
+                                href={`/vehicles/${car.uuid}`}
+                                className="w-full h-fit"
+                              >
+                                <Button variant={"default"} className="w-full">
+                                  Ver más
+                                </Button>
+                              </Link>
+                            </CardFooter>
+                          </div>
                         </Card>
                       </div>
                     </>

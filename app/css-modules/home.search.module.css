@@ -158,8 +158,8 @@
     repeating-linear-gradient(#84848433, #84848421);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .form {
-    width: 90%;
+    width: 100%;
   }
 }

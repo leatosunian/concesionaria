@@ -93,7 +93,7 @@ const RelatedVehicles = ({ vehicles }: Props) => {
                     key={car.uuid}
                     className="px-5 xs:basis-1/2 sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
                   >
-                    <div className="h-full p-1">
+                    <div className="p-1 md:h-full h-fit">
                       <Card className="flex flex-col h-full shadow-lg">
                         {" "}
                         {/* Añadir flex y flex-col */}
@@ -102,24 +102,28 @@ const RelatedVehicles = ({ vehicles }: Props) => {
                           alt="auto"
                           width={500}
                           height={500}
-                          className="object-cover mb-4 overflow-hidden rounded-t-md"
+                          className="object-cover h-full mb-4 overflow-hidden rounded-t-md md:h-1/2"
                         />
-                        <CardHeader style={{ padding: "0 16px 16px 16px" }}>
-                          <CardTitle className="text-lg">{car.name}</CardTitle>
-                          <CardDescription>
-                            {car.year} - {car.kilometers} km
-                          </CardDescription>
-                          <p className="text-lg font-semibold">
-                            {car.currency} ${car.price}
-                          </p>
-                        </CardHeader>
-                        <CardFooter className="px-4 mt-auto">
-                          {" "}
-                          {/* mt-auto para mantener el botón abajo */}
-                          <Button variant={"default"} className="w-full">
-                            Ver más
-                          </Button>
-                        </CardFooter>
+                        <div className="flex flex-col justify-between w-full h-full md:h-1/2">
+                          <CardHeader style={{ padding: "0 16px 0px 16px" }}>
+                            <CardTitle className="text-lg">
+                              {car.name}
+                            </CardTitle>
+                            <CardDescription>
+                              {car.year} - {car.kilometers} km
+                            </CardDescription>
+                            <p className="text-lg font-semibold">
+                              {car.currency} ${car.price}
+                            </p>
+                          </CardHeader>
+                          <CardFooter className="px-4 mt-auto">
+                            {" "}
+                            {/* mt-auto para mantener el botón abajo */}
+                            <Button variant={"default"} className="w-full">
+                              Ver más
+                            </Button>
+                          </CardFooter>
+                        </div>
                       </Card>
                     </div>
                   </CarouselItem>
