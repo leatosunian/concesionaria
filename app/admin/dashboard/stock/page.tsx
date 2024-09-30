@@ -65,11 +65,11 @@ async function getCars() {
   try {
     const carsFetch = await fetch(`${process.env.NEXTAUTH_URL}/api/cars`, {
       method: "GET",
-      cache:'no-store'
+      cache: "no-store",
     });
     const cars = await carsFetch.json();
     console.log(cars);
-    
+
     return cars;
   } catch (error) {
     return;
@@ -81,9 +81,7 @@ const StockList = async () => {
   return (
     <>
       <h3 className="mb-4 text-2xl font-medium md:mb-6 xl:mb-8 ">Mis autos</h3>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-4 xl:grid-cols-5">
-        <CarList cars={cars} />
-      </div>
+      <CarList cars={cars} />
     </>
   );
 };
