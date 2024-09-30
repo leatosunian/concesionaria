@@ -2,6 +2,7 @@ import { Separator } from "@/components/ui/separator";
 import AddProductForm from "@/components/admin/dashboard/addProduct/AddProductForm";
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 3; // 3MB
 const ACCEPTED_FILE_TYPES = ["image/png"];
+import React from "react";
 
 const AddProduct = () => {
   return (

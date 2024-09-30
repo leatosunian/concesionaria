@@ -1,5 +1,5 @@
 import CarList from "@/components/admin/dashboard/stock/CarList";
-import { useRouter } from "next/router";
+import React from "react";
 
 const carList = [
   {
@@ -68,6 +68,8 @@ async function getCars() {
       cache:'no-store'
     });
     const cars = await carsFetch.json();
+    console.log(cars);
+    
     return cars;
   } catch (error) {
     return;

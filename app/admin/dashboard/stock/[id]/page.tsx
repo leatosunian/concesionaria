@@ -4,6 +4,7 @@ import ImageGallery from "@/components/admin/dashboard/editProduct/ImageGallery"
 import EditProductForm from "@/components/admin/dashboard/editProduct/EditProductForm";
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 3; // 3MB
 const ACCEPTED_FILE_TYPES = ["image/png"];
+import React from "react";
 
 const EditProduct = ({ params }: { params: { id: string } }) => {
   return (
