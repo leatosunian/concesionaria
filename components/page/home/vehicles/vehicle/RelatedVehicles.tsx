@@ -116,8 +116,7 @@ const RelatedVehicles = ({ vehicles }: Props) => {
                               {car.currency} ${car.price}
                             </p>
                           </CardHeader>
-                          <CardFooter className="px-4 mt-auto">
-                            {" "}
+                          <CardFooter className="px-4 pb-5 mt-5 md:mt-0">
                             {/* mt-auto para mantener el botón abajo */}
                             <Button variant={"default"} className="w-full">
                               Ver más
