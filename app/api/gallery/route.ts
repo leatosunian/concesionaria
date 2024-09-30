@@ -17,7 +17,8 @@ export async function POST(request: NextRequest) {
     }
 
     for (const file of files) {
-      const buffer = Buffer.from(await file.arrayBuffer());
+      const buffer = new Uint8Array(await file.arrayBuffer());  // Cambiado a Uint8Array
+
       const pathUuid = Math.random().toString().split(".")[1];
 
       const imagePath = path.join(

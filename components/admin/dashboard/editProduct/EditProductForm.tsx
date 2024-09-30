@@ -45,10 +45,10 @@ import { Switch } from "@/components/ui/switch";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ICar } from "@/app/models/car";
 import { useToast } from "@/hooks/use-toast";
-import carImg from "@/public/car.jpg";
 import Image from "next/image";
 import ImageGallery from "./ImageGallery";
 import { CardContent } from "@/components/ui/card";
+import React from "react";
 
 const EditProductForm = ({ uuid }: { uuid: string }) => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -527,7 +527,10 @@ const EditProductForm = ({ uuid }: { uuid: string }) => {
                     <FormLabel>
                       Descripción <span className="">(opcional)</span>
                     </FormLabel>
-                    <Textarea placeholder="Ingresa una descripción" />
+                    <Textarea
+                      {...field}
+                      placeholder="Ingresa una descripción"
+                    />
                     <FormMessage />
                   </FormItem>
                 )}
