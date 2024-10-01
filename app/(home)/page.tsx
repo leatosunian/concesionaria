@@ -1,5 +1,5 @@
 "use client";
-
+import React from "react";
 import Header from "@/components/page/Header";
 import AdminHeader from "@/components/page/AdminHeader";
 import Footer from "@/components/page/home/Footer";

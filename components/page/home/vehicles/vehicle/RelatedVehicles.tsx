@@ -98,7 +98,7 @@ const RelatedVehicles = ({ vehicles }: Props) => {
                         {" "}
                         {/* Añadir flex y flex-col */}
                         <Image
-                          src={`/carGallery/${car.imagePath}`}
+                          src={`/api/gallery/getimage/${car.imagePath}`}
                           alt="auto"
                           width={500}
                           height={500}

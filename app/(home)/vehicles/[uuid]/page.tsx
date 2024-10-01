@@ -139,7 +139,7 @@ const Page = () => {
                       className="w-full h-full overflow-hidden rounded-md "
                     >
                       <Image
-                        src={`/carGallery/${image.path}`}
+                        src={`/api/gallery/getimage/${image.path}`}
                         alt={`Imagen `}
                         width={500}
                         objectFit="cover"

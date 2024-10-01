@@ -501,7 +501,7 @@ const Page = () => {
                       >
                         <Card className="flex flex-col h-full shadow-lg">
                           <Image
-                            src={`/carGallery/${car.imagePath}`}
+                            src={`/api/gallery/getimage/${car.imagePath}`}
                             alt="auto"
                             width={500}
                             height={500}
