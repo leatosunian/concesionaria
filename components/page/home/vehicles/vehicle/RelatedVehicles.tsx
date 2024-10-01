@@ -48,7 +48,7 @@ const RelatedVehicles = ({ vehicles }: Props) => {
   }, [vehicles]);
 
   useEffect(() => {
-    if(latestVehicles[0]) console.log(latestVehicles[0].imagePath);
+    console.log(latestVehicles);
   }, [latestVehicles]);
 
   const plugin = React.useRef(
