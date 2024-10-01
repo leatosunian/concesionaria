@@ -13,12 +13,15 @@ export async function POST(request: NextRequest) {
     const carID = data.get("carID") as string;
     console.log(carID);
     const files = data.getAll("gallery_images") as File[];
-
+    console.log('files', files);
+    
     if (files.length === 0) {
       return NextResponse.json({ msg: "NO_FILES_PROVIDED" }, { status: 400 });
     }
 
     for (const file of files) {
+      console.log('file', file);
+      
       const buffer = new Uint8Array(await file.arrayBuffer());
 
       const pathUuid = Math.random().toString().split(".")[1];
