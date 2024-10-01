@@ -13,7 +13,7 @@ export async function GET(request: NextRequest, context: any) {
             name: { $regex: new RegExp(search.toLowerCase(), "i") }, // Convertimos 'search' a minúsculas y hacemos una búsqueda insensible a mayúsculas
           }
         : {};
-    const cars = await CarModel.find(searchQuery);
+    const cars = await CarModel.find(searchQuery).sort({ createdAt: -1 }).limit(10);
     return NextResponse.json(cars);
   } catch (error) {
     return NextResponse.json({ msg: "ERROR_GET_CAR" });
