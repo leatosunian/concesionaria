@@ -55,9 +55,11 @@ const Page = () => {
     const latestVehicles = await fetch("/api/cars/latests", {
       method: "GET",
       cache: "no-cache",
-    }).then((response) => response.json());
-    if (latestVehicles.length !== 0) {
-      setLatestVehicles(latestVehicles);
+    });
+    const cars = await latestVehicles.json();
+
+    if (cars.length !== 0) {
+      setLatestVehicles(cars);
     }
     return latestVehicles;
   }
@@ -83,13 +85,10 @@ const Page = () => {
       setVehicleData(cars);
       console.log(uuid);
       // get vehicle gallery
-      const galleryFetch = await fetch(
-        `/api/gallery/${uuid}`,
-        {
-          method: "GET",
-          cache: "no-store",
-        }
-      );
+      const galleryFetch = await fetch(`/api/gallery/${uuid}`, {
+        method: "GET",
+        cache: "no-store",
+      });
       const gallery = await galleryFetch.json();
       setGallery(gallery);
       setLoading(false);

@@ -48,13 +48,13 @@ const NewProducts = ({ vehicles }: Props) => {
   }, [vehicles]);
 
   useEffect(() => {
-    console.log(latestVehicles);
+    console.log(latestVehicles[0].imagePath);
   }, [latestVehicles]);
 
   const plugin = React.useRef(
     Autoplay({ delay: 3500, stopOnInteraction: false })
   );
-
+  
   return (
     <>
       <section className="flex flex-col justify-center w-full gap-10 py-20 align-middle">
