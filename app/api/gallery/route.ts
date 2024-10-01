@@ -27,6 +27,7 @@ export async function POST(request: NextRequest) {
       );
 
       await writeFile(imagePath, buffer);
+      console.log("File written to: ", imagePath);
       await CarImageModel.create({
         carID,
         path: `${pathUuid}${file.name}`,

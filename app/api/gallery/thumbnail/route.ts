@@ -29,8 +29,7 @@ export async function POST(request: NextRequest) {
       );
 
       await writeFile(imagePath, buffer);
-      console.log(carID);
-      console.log(`${pathUuid}${file.name}`);
+      console.log("File written to: ", imagePath);
       const updatedCar = await CarModel.findOneAndUpdate(
         { uuid: carID },
         { imagePath: `${pathUuid}${file.name}` },
