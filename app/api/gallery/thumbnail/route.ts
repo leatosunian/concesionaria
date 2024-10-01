@@ -30,7 +30,8 @@ export async function POST(request: NextRequest) {
         process.cwd(),
         `public/carGallery/${pathUuid}${file.name}`
       );
-
+      console.log(imagePath);
+      
       await writeFile(imagePath, buffer);
       console.log("File written to: ", imagePath);
       const updatedCar = await CarModel.findOneAndUpdate(
