@@ -60,6 +60,8 @@ const Page = () => {
 
     if (cars.length !== 0) {
       setLatestVehicles(cars);
+      console.log(cars);
+      
     }
     return latestVehicles;
   }
