@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
 
       const imagePath = path.join(
         process.cwd(),
-        `app/uploads/carGallery/${pathUuid}${file.name}`
+        `uploads/carGallery/${pathUuid}${file.name}`
       );
 
       await writeFile(imagePath, buffer);
