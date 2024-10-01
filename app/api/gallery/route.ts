@@ -1,8 +1,9 @@
 import CarImageModel from "@/app/models/carimage";
-import { writeFile } from "fs/promises";
 import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
+import { mkdir, writeFile } from "fs/promises";
+import fs from "fs";
 
 // SAVE GALLERY IMAGES
 export async function POST(request: NextRequest) {
@@ -16,8 +17,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ msg: "NO_FILES_PROVIDED" }, { status: 400 });
     }
 
+    // Definir el directorio
+    const dir = path.join(process.cwd(), "uploads/carGallery"); // Asegúrate de usar una ruta correcta y accesible
+
+    // Crear la carpeta si no existe
+    if (!fs.existsSync(dir)) {
+      await mkdir(dir, { recursive: true });
+      console.log("Carpeta creada:", dir);
+    }
+
     for (const file of files) {
-      const buffer = new Uint8Array(await file.arrayBuffer());  // Cambiado a Uint8Array
+      const buffer = new Uint8Array(await file.arrayBuffer()); // Cambiado a Uint8Array
 
       const pathUuid = Math.random().toString().split(".")[1];
 
@@ -25,7 +35,6 @@ export async function POST(request: NextRequest) {
         process.cwd(),
         `uploads/carGallery/${pathUuid}${file.name}`
       );
-      
 
       await writeFile(imagePath, buffer);
       console.log("File written to: ", imagePath);
@@ -41,4 +50,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ msg: "NO_FILE_PROVIDED" }, { status: 400 });
   }
 }
-
