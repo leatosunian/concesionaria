@@ -127,6 +127,7 @@ const NewProducts = ({ vehicles }: Props) => {
                           alt="auto"
                           width={500}
                           height={500}
+                          unoptimized
                           className="object-cover h-full mb-4 overflow-hidden rounded-t-md md:h-1/2 "
                         />
                         <div className="flex flex-col justify-between w-full h-full md:h-1/2">

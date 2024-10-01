@@ -505,6 +505,7 @@ const Page = () => {
                             alt="auto"
                             width={500}
                             height={500}
+                            unoptimized
                             className="object-cover h-full mb-4 overflow-hidden md:h-1/2 rounded-t-md"
                           />
                           <div className="flex flex-col justify-between w-full h-full md:h-1/2">
