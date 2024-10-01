@@ -259,8 +259,9 @@ const EditProductForm = ({ uuid }: { uuid: string }) => {
                       width={500}
                       height={500}
                       className="w-full rounded-lg "
-                      src={`/carGallery/${vehicleData?.imagePath}`}
+                      src={`/api/gallery/getimage/${vehicleData?.imagePath}`}
                       alt=""
+                      unoptimized
                     />
                     <input
                       onChange={(e) => {

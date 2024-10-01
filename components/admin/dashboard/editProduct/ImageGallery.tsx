@@ -161,9 +161,10 @@ const ImageGallery = () => {
                             setImageToDelete(image.path);
                             handleImageClick();
                           }}
-                          src={`/carGallery/${image.path}`}
+                          src={`/api/gallery/getimage/${image.path}`}
                           width={500}
                           height={500}
+                          unoptimized
                         />
                       </CarouselItem>
                     ))}

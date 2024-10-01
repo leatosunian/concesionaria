@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
 
       const imagePath = path.join(
         process.cwd(),
-        `public/carGallery/${pathUuid}${file.name}`
+        `app/uploads/carGallery/${pathUuid}${file.name}`
       );
 
       await writeFile(imagePath, buffer);
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
         { imagePath: `${pathUuid}${file.name}` },
         { new: true }
       );
-      console.log(updatedCar);
+      console.log('MINIATURA DE VEHICULO ACTUALIZADO', updatedCar.imagePath);
     }
 
     return NextResponse.json({ msg: "THUMBNAIL_UPLOADED" });

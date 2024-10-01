@@ -45,39 +45,42 @@ export async function DELETE(
 }
 
 export async function GET(
-  request: NextRequest,
+  req: NextRequest,
   { params }: { params: { pathName: string } }
 ) {
-  const { pathName } = params;
+  try {
+    const { pathName } = params;
+    // Verificar la ruta completa donde se suben los archivos
+    const filePath = path.join(
+      process.cwd(),
+      `app/uploads/carGallery/${pathName}`
+    );
+    console.log("Buscando el archivo en:", filePath);
 
-  // Ruta de la carpeta donde se almacenan las imágenes
-  const imagesDir = path.join(process.cwd(), "public", "carGallery");
+    // Verificar si el archivo existe
+    if (!fs.existsSync(filePath)) {
+      console.log("Archivo no encontrado:", filePath);
+      return NextResponse.json({ message: "File not found" }, { status: 404 });
+    }
 
-  // Busca el archivo de imagen correspondiente al UUID
-  const imageFile = findImageByPathName(pathName, imagesDir);
+    const fileBuffer = fs.readFileSync(filePath);
 
-  if (imageFile) {
-    // Lee el archivo de imagen
-    const imagePath = path.join(imagesDir, imageFile);
-    const imageBuffer = fs.readFileSync(imagePath);
+    // Definir tipo MIME basado en la extensión del archivo
+    let contentType = "application/octet-stream";
+    if (pathName.endsWith(".webp")) contentType = "image/webp";
+    else if (pathName.endsWith(".jpg") || pathName.endsWith(".jpeg"))
+      contentType = "image/jpeg";
+    else if (pathName.endsWith(".png")) contentType = "image/png";
 
-    // Establece las cabeceras adecuadas y envía la imagen como respuesta
-    return new NextResponse(imageBuffer, {
-      status: 200,
-      headers: {
-        "Content-Type": '"image/jpeg", "image/png", "image/webp", "image/jpg"', // Ajusta el tipo MIME según el formato de la imagen
-      },
-    });
-  } else {
-    return NextResponse.json({ message: "Image not found" }, { status: 404 });
+    const response = new NextResponse(fileBuffer);
+    response.headers.set("Content-Type", contentType);
+
+    return response;
+  } catch (error) {
+    console.log("Error al obtener el archivo:", error);
+    return NextResponse.json(
+      { message: "Error fetching file" },
+      { status: 500 }
+    );
   }
-}
-
-// Función para buscar el archivo de imagen por pathName
-function findImageByPathName(
-  pathName: string,
-  dir: string
-): string | undefined {
-  const files = fs.readdirSync(dir);
-  return files.find((file) => file.includes(pathName));
 }
