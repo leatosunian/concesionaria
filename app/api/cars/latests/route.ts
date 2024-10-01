@@ -7,7 +7,7 @@ export async function GET(context: any) {
   const { params } = context;
   await connectDB();
   try {
-    const lastCars = await CarModel.find().sort({ createdAt: -1 }).limit(10);
+    const lastCars = await CarModel.find()
     console.log(lastCars);
     
     // Verifica si se encontraron documentos
