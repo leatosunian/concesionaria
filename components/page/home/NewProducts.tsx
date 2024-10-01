@@ -47,6 +47,10 @@ const NewProducts = ({ vehicles }: Props) => {
     setLatestVehicles(vehicles);
   }, [vehicles]);
 
+  useEffect(() => {
+    console.log(latestVehicles);
+  }, [latestVehicles]);
+
   const plugin = React.useRef(
     Autoplay({ delay: 3500, stopOnInteraction: false })
   );
@@ -120,8 +124,6 @@ const NewProducts = ({ vehicles }: Props) => {
                   >
                     <div className="p-1 md:h-full h-fit">
                       <Card className="flex flex-col h-full shadow-lg">
-                        {" "}
-                        {/* Añadir flex y flex-col */}
                         <Image
                           src={`/api/gallery/getimage/${car.imagePath}`}
                           alt="auto"
