@@ -52,7 +52,7 @@ const Page = () => {
   );
 
   async function getLastVehicles() {
-    const latestVehicles = await fetch("/api/cars/", {
+    const latestVehicles = await fetch("/api/cars/latests/", {
       method: "GET",
       cache: "no-store",
     });
