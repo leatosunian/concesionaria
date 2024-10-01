@@ -9,7 +9,7 @@ export async function GET(context: any) {
   const { params } = context;
   await connectDB();
   try {
-    const lastCars = await CarModel.find({new: true})
+    const lastCars = await CarModel.find()
       .sort({ createdAt: -1 }) 
       .limit(10); 
     return NextResponse.json(lastCars);
