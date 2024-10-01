@@ -53,7 +53,7 @@ export async function GET(
     // Verificar la ruta completa donde se suben los archivos
     const filePath = path.join(
       process.cwd(),
-      `app/uploads/carGallery/${pathName}`
+      `uploads/carGallery/${pathName}`
     );
     console.log("Buscando el archivo en:", filePath);
 

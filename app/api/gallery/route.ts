@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
         process.cwd(),
         `uploads/carGallery/${pathUuid}${file.name}`
       );
-
+      
 
       await writeFile(imagePath, buffer);
       console.log("File written to: ", imagePath);
