@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
 
       const imagePath = path.join(
         process.cwd(),
-        `uploads/carGallery/${pathUuid}${file.name}`
+        `public/carGallery/${pathUuid}${file.name}`
       );
       
 
