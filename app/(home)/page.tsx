@@ -15,16 +15,20 @@ import LoaderFullscreen from "@/components/page/LoaderFullscreen";
 const Home = () => {
   const [latestVehicles, setLatestVehicles] = useState<ICar[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+
   async function getLastVehicles() {
-    const latestVehicles = await fetch("/api/cars/latests", {
+    const latestVehicles = await fetch("/api/cars/latests/", {
       method: "GET",
-      cache: "no-cache",
-    }).then((response) => response.json());
-    if (latestVehicles.length !== 0) {
-      setLatestVehicles(latestVehicles);
+      cache: "no-store",
+    });
+    const cars = await latestVehicles.json();
+    if (cars.length !== 0) {
+      setLatestVehicles(cars);
       setLoading(false);
     }
+    return latestVehicles;
   }
+
 
   useEffect(() => {
     getLastVehicles();

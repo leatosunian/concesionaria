@@ -36,8 +36,12 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { FaRegCalendar } from "react-icons/fa";
+import { IoSpeedometerOutline } from "react-icons/io5";
+import LoaderFullscreen from "../../LoaderFullscreen";
 
 const CarList = ({ cars }: { cars: ICar[] }) => {
+  const [loading, setLoading] = useState(true);
   const [carList, setCarList] = useState<ICar[]>([]);
   const [selectedToDelete, setSelectedToDelete] = useState({
     uuid: "",
@@ -121,145 +125,175 @@ const CarList = ({ cars }: { cars: ICar[] }) => {
   useEffect(() => {
     const currentVehicles = carList.slice(firstVehicleIndex, lastVehicleIndex);
     setCurrentVehicles(currentVehicles);
-
     let paginationPages: number[] = [];
     for (let i = 1; i <= Math.ceil(carList.length / vehiclesPerPage); i++) {
       paginationPages.push(i);
     }
     setNumberOfPages(paginationPages);
-    console.log("vehiclelist", carList);
-
-    console.log("numberOfPages", currentPage);
-    console.log("numberOfPages", numberOfPages);
+    setLoading(false);
   }, [carList, currentPage]);
 
   useEffect(() => {
     router.refresh();
   }, []);
 
+
   return (
     <>
-      {currentVehicles.length === 0 && (
+      {loading && (
         <>
-          <div className="flex flex-col items-center justify-center w-full gap-5 py-36 h-fit">
-            <h4 className="text-base font-semibold md:text-2xl">
-              Todavía no tenés vehículos en tu stock.
-            </h4>
-            <Link href={"/admin/dashboard/stock/add"}>
-              <Button>Agregar vehículo</Button>
-            </Link>
+          <div
+            className="flex items-center justify-center w-full overflow-y-hidden bg-white dark:bg-background"
+            style={{ zIndex: "99999999", height: "67vh" }}
+          >
+            <div className=" loader"></div>
           </div>
         </>
       )}
-      {currentVehicles.length > 0 && (
+      {!loading && (
         <>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-4 xl:grid-cols-5">
-            {currentVehicles?.map((car) => (
-              <div key={car.uuid} className="col-span-1 md:h-full h-fit">
-                <Card key={car.uuid} className="flex flex-col h-full shadow-lg">
-                  <Image
-                    src={`/carGallery/${car.imagePath}`}
-                    alt=""
-                    width={500}
-                    height={500}
-                    className="object-cover h-full mb-4 overflow-hidden md:h-1/2 rounded-t-md "
-                  />
-                  <CardHeader style={{ padding: "0 16px 16px 16px" }}>
-                    <CardTitle className="text-lg textCut">
-                      {car.name}
-                    </CardTitle>
-                    <p>
-                      {car.currency} ${car.price}
-                    </p>
-                    <CardDescription>
-                      {car.year} - {car.kilometers} km
-                    </CardDescription>
-                  </CardHeader>
-                  <CardFooter className="grid grid-cols-2 gap-3 px-4 ">
-                    <Button
-                      onClick={() => handleEdit(car.uuid)}
-                      variant={"default"}
-                    >
-                      Editar
-                    </Button>
-                    <Button
-                      //onClick={() => handleDelete(car.uuid)}
-                      onClick={() =>
-                        openDeleteModal({ carName: car.name, uuid: car.uuid })
-                      }
-                      variant={"destructive"}
-                    >
-                      Eliminar
-                    </Button>
-                  </CardFooter>
-                </Card>
+          {currentVehicles.length === 0 && (
+            <>
+              <div className="flex flex-col items-center justify-center w-full gap-5 py-36 h-fit">
+                <h4 className="text-base font-semibold md:text-2xl">
+                  Todavía no tenés vehículos en tu stock.
+                </h4>
+                <Link href={"/admin/dashboard/stock/add"}>
+                  <Button>Agregar vehículo</Button>
+                </Link>
               </div>
-            ))}
-          </div>
-          <div className="px-10 rounded-md">
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  className="sr-only"
-                  ref={modalButtonRef}
-                  variant="outline"
-                >
-                  Show Dialog
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Eliminar vehículo</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    ¿Querés eliminar tu vehiculo {selectedToDelete.carName}?
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={() => handleDeleteConfirmed(selectedToDelete.uuid)}
-                  >
-                    Eliminar
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
-
-          {/* pagination */}
-          <div className="mt-10 md:mt-20">
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    href="#"
-                    onClick={() => handlePrevAndNextPage("PREV")}
-                  />
-                </PaginationItem>
-                {numberOfPages.map((page) => (
-                  <>
-                    <PaginationItem
-                      onClick={() => {
-                        console.log("setcurrentpage to ", page);
-                        setCurrentPage(page);
-                      }}
+            </>
+          )}
+          {currentVehicles.length > 0 && (
+            <>
+              <div className="grid grid-cols-1 gap-10 sm:gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+                {currentVehicles?.map((car) => (
+                  <div key={car.uuid} className="col-span-1 md:h-full h-fit">
+                    <Card
+                      key={car.uuid}
+                      className="flex flex-col h-full shadow-lg"
                     >
-                      <PaginationLink isActive={currentPage === page} href="#">
-                        {page}
-                      </PaginationLink>
-                    </PaginationItem>
-                  </>
+                      <Image
+                        src={`/api/gallery/getimage/${car.imagePath}`}
+                        alt=""
+                        width={500}
+                        height={500}
+                        className="object-cover h-full mb-4 overflow-hidden md:h-1/2 rounded-t-md "
+                      />
+                      <div className="flex flex-col justify-between w-full h-fit md:h-1/2">
+                        <CardHeader style={{ padding: "0 16px 10px 16px" }}>
+                          <CardTitle className="text-base textCut">
+                            {car.name}
+                          </CardTitle>
+                          <CardDescription className="flex items-center justify-between w-full pt-1 pb-2 ">
+                            <div className="flex items-center gap-2">
+                              <FaRegCalendar /> <span>{car.year}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <IoSpeedometerOutline size={20} />
+                              <span> {car.kilometers} km</span>
+                            </div>
+                          </CardDescription>
+                          <p className="text-lg font-semibold">
+                            {car.currency} ${car.price}
+                          </p>
+                        </CardHeader>
+                        <CardFooter className="grid grid-cols-2 gap-3 px-4 pb-5 mt-2 md:mt-0">
+                          <Button
+                            onClick={() => handleEdit(car.uuid)}
+                            variant={"default"}
+                          >
+                            Editar
+                          </Button>
+                          <Button
+                            //onClick={() => handleDelete(car.uuid)}
+                            onClick={() =>
+                              openDeleteModal({
+                                carName: car.name,
+                                uuid: car.uuid,
+                              })
+                            }
+                            variant={"destructive"}
+                          >
+                            Eliminar
+                          </Button>
+                        </CardFooter>
+                      </div>
+                    </Card>
+                  </div>
                 ))}
+              </div>
+              <div className="px-10 rounded-md">
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      className="sr-only"
+                      ref={modalButtonRef}
+                      variant="outline"
+                    >
+                      Show Dialog
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Eliminar vehículo</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        ¿Querés eliminar tu vehiculo {selectedToDelete.carName}?
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() =>
+                          handleDeleteConfirmed(selectedToDelete.uuid)
+                        }
+                      >
+                        Eliminar
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
 
-                <PaginationItem>
-                  <PaginationNext
-                    href="#"
-                    onClick={() => handlePrevAndNextPage("NEXT")}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
+              {/* pagination */}
+              <div className="mt-10 mb-6 md:mt-20">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        href="#"
+                        onClick={() => handlePrevAndNextPage("PREV")}
+                      />
+                    </PaginationItem>
+                    {numberOfPages.map((page) => (
+                      <>
+                        <PaginationItem
+                          onClick={() => {
+                            console.log("setcurrentpage to ", page);
+                            setCurrentPage(page);
+                          }}
+                        >
+                          <PaginationLink
+                            isActive={currentPage === page}
+                            href="#"
+                          >
+                            {page}
+                          </PaginationLink>
+                        </PaginationItem>
+                      </>
+                    ))}
+
+                    <PaginationItem>
+                      <PaginationNext
+                        href="#"
+                        onClick={() => handlePrevAndNextPage("NEXT")}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            </>
+          )}
         </>
       )}
     </>

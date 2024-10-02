@@ -10,32 +10,24 @@ export async function POST(request: NextRequest) {
   try {
     const data = await request.formData();
     const carID = data.get("carID") as string;
-    console.log(carID);
     const files = data.getAll("gallery_images") as File[];
 
     if (files.length === 0) {
       return NextResponse.json({ msg: "NO_FILES_PROVIDED" }, { status: 400 });
     }
-
-    // Definir el directorio
-    const dir = path.join(process.cwd(), "uploads/carGallery"); // Asegúrate de usar una ruta correcta y accesible
-
-    // Crear la carpeta si no existe
+    const dir = path.join(process.cwd(), "uploads/carGallery");
     if (!fs.existsSync(dir)) {
       await mkdir(dir, { recursive: true });
       console.log("Carpeta creada:", dir);
     }
 
     for (const file of files) {
-      const buffer = new Uint8Array(await file.arrayBuffer()); // Cambiado a Uint8Array
-
+      const buffer = new Uint8Array(await file.arrayBuffer());
       const pathUuid = Math.random().toString().split(".")[1];
-
       const imagePath = path.join(
         process.cwd(),
         `uploads/carGallery/${pathUuid}${file.name}`
       );
-
       await writeFile(imagePath, buffer);
       console.log("File written to: ", imagePath);
       await CarImageModel.create({

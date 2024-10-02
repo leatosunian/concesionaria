@@ -10,7 +10,7 @@ export async function GET(request: NextRequest, context: any) {
     const searchQuery =
       search && (search !== "null") !== null
         ? {
-            name: { $regex: new RegExp(search.toLowerCase(), "i") }, // Convertimos 'search' a minúsculas y hacemos una búsqueda insensible a mayúsculas
+            name: { $regex: new RegExp(search.toLowerCase(), "i") }
           }
         : {};
     const cars = await CarModel.find(searchQuery).sort({ createdAt: -1 }).limit(10);

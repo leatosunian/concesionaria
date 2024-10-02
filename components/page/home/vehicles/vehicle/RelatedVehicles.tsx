@@ -22,6 +22,7 @@ import { ICar } from "@/app/models/car";
 import EmblaCarousel, { EmblaPluginType } from "embla-carousel";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface Props {
   vehicles: ICar[];
@@ -63,14 +64,16 @@ const RelatedVehicles = ({ vehicles }: Props) => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ amount: "some", once: true }}
           transition={{ duration: 0.7, ease: "easeInOut" }}
-          className="flex flex-col items-center justify-center mx-auto"
+          className="flex flex-col items-start justify-center w-full px-6 sm:items-center"
         >
-          <h4 className="text-xl font-bold sm:text-2xl ">
-            Vehiculos relacionados
-          </h4>
-          <span className="text-sm text-gray-500 sm:text-base">
-            Unidades que podrían interesarte
-          </span>
+          <div className="flex flex-col ">
+            <span className="text-sm font-bold text-red-500 upper sm:text-base">
+              Vehiculos relacionados
+            </span>
+            <h4 className="text-xl font-bold sm:text-2xl">
+              Unidades que podrían interesarte
+            </h4>
+          </div>
         </motion.header>
         <div className="w-full mx-auto overflow-hidden">
           <motion.div
@@ -121,9 +124,11 @@ const RelatedVehicles = ({ vehicles }: Props) => {
                           </CardHeader>
                           <CardFooter className="px-4 pb-5 mt-5 md:mt-0">
                             {/* mt-auto para mantener el botón abajo */}
-                            <Button variant={"default"} className="w-full">
-                              Ver más
-                            </Button>
+                            <Link href={`/vehicles/${car.uuid}`}>
+                              <Button variant={"default"} className="w-full">
+                                Ver más
+                              </Button>
+                            </Link>
                           </CardFooter>
                         </div>
                       </Card>

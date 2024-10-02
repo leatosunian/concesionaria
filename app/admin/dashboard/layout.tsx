@@ -4,7 +4,8 @@ import { useTheme } from "next-themes";
 import Link from "next/link";
 import { TbHomeCog, TbUserEdit } from "react-icons/tb";
 import { IoCarSportOutline } from "react-icons/io5";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import Navbar from "@/components/admin/dashboard/Navbar";
 import Nav from "@/components/admin/dashboard/Nav";
 
 export default function DashboardLayout({
@@ -12,9 +13,22 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // Marcamos que el componente ya está montado en el cliente
+    setMounted(true);
+  }, []);
+
+  // Mientras no esté montado, devolvemos un `div` vacío o un spinner para evitar el error de hidratación
+  if (!mounted) {
+    return <div />;
+  }
   return (
     <>
-      <Nav />
+      {/* <Nav /> */}
+      <Navbar/>
       <div className="flex pt-16 overflow-hidden bg-white ">
         <aside
           id="sidebar"

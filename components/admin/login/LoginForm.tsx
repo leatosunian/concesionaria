@@ -17,6 +17,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import LoaderFullscreen from "../LoaderFullscreen";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -26,9 +28,11 @@ const formSchema = z.object({
     message: "Ingresa una contraseña válida.",
   }),
 });
+
 const LoginForm = () => {
-  const router = useRouter()
-  // 1. Define your form.
+  const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,59 +41,76 @@ const LoginForm = () => {
     },
   });
 
-  // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    setLoading(true)
     try {
       const login = await signIn("credentials", {
         username: values.username,
         password: values.password,
-        redirect: false
-      })
-      if(login?.ok){
-        router.push('/admin/dashboard/stock')
+        redirect: false,
+      });
+      if (login?.ok) {
+        router.push("/admin/dashboard/stock");
       }
-      console.log(login);
-      
     } catch (error) {
+      setLoading(false)
       console.log(error);
-      
     }
   }
   return (
-    <Form  {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField 
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem >
-              <FormLabel>Nombre de usuario</FormLabel>
-              <FormControl>
-                <Input placeholder="Ingresa tu usuario" type="text" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nombre de usuario</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Ingresa tu usuario"
+                    type="text"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Contraseña</FormLabel>
-              <FormControl>
-                <Input placeholder="Ingresa tu contraseña" type="password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Contraseña</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Ingresa tu contraseña"
+                    type="password"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <Button type="submit" className="w-full ">Iniciar sesión</Button>
-      </form>
-    </Form>
+          <Button type="submit" className="w-full ">
+            Iniciar sesión
+          </Button>
+        </form>
+      </Form>
+
+      {loading && (
+        <>
+          <div className="absolute top-0 left-0 w-screen h-screen">
+            <LoaderFullscreen />
+          </div>
+        </>
+      )}
+    </>
   );
 };
 
