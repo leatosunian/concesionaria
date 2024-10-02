@@ -119,7 +119,7 @@ export default function Navbar() {
                 {mounted && theme === "light" && (
                   <Image className="w-36" src={logoblack} alt="Logo" />
                 )} */}
-                 <Image className="w-36" src={logoblack} alt="Logo" />
+                <Image className="w-36" src={logoblack} alt="Logo" />
               </Link>
             </motion.div>
           </div>
@@ -185,7 +185,7 @@ export default function Navbar() {
               </DropdownMenu>
             </div>
           </motion.div>
-          {theme === "dark" && (
+          {/* {theme === "dark" && (
             <>
               <div className="md:hidden">
                 <button
@@ -226,7 +226,24 @@ export default function Navbar() {
                 </button>
               </div>
             </>
-          )}
+          )} */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="inline-flex items-center justify-center p-2 rounded-md "
+            >
+              <span className="sr-only">Open main menu</span>
+              {isOpen ? (
+                <RxCross2 size={28} color="white" />
+              ) : (
+                <RxHamburgerMenu
+                  size={25}
+                  color="white"
+                  className="block w-6 h-6"
+                />
+              )}
+            </button>
+          </div>
         </div>
       </div>
       {/* Mobile menu */}
