@@ -100,12 +100,6 @@ export default function Navbar() {
       <div className="mx-auto ">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <motion.div
-              className="flex-shrink-0"
-              transition={{ duration: 0.5, ease: "circInOut", delay: 0.2 }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
               <Link
                 href={"/admin/dashboard/stock"}
                 onClick={() => {
@@ -139,7 +133,6 @@ export default function Navbar() {
                 </div>
                 {/* <Image className="w-36" src={logo} alt="Logo" /> */}
               </Link>
-            </motion.div>
           </div>
           <motion.div
             style={{ zIndex: "9999999" }}
