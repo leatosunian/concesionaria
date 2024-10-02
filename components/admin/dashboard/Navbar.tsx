@@ -119,7 +119,7 @@ export default function Navbar() {
                 {mounted && theme === "light" && (
                   <Image className="w-36" src={logoblack} alt="Logo" />
                 )} */}
-                <Image className="w-36" src={logoblack} alt="Logo" />
+                <Image className="w-36" src={logo} alt="Logo" />
               </Link>
             </motion.div>
           </div>
