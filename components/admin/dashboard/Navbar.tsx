@@ -113,13 +113,23 @@ export default function Navbar() {
                   setOpenDropdown("");
                 }}
               >
-                {/* {mounted && theme === "dark" && (
-                  <Image className="w-36" src={logo} alt="Logo" />
-                )}
-                {mounted && theme === "light" && (
-                  <Image className="w-36" src={logoblack} alt="Logo" />
-                )} */}
-                <Image className="w-36" src={logo} alt="Logo" />
+                <div className="hidden md:block">
+                  {mounted && theme === "dark" && (
+                    <Image className="w-36" src={logo} alt="Logo" />
+                  )}
+                  {mounted && theme === "light" && (
+                    <Image className="w-36" src={logoblack} alt="Logo" />
+                  )}
+                </div>
+                <div className="block md:hidden">
+                  {theme === "dark" && (
+                    <Image className="w-36" src={logo} alt="Logo" />
+                  )}
+                  {theme === "light" && (
+                    <Image className="w-36" src={logoblack} alt="Logo" />
+                  )}
+                </div>
+                {/* <Image className="w-36" src={logo} alt="Logo" /> */}
               </Link>
             </motion.div>
           </div>
@@ -234,11 +244,15 @@ export default function Navbar() {
             >
               <span className="sr-only">Open main menu</span>
               {isOpen ? (
-                <RxCross2 size={28} color="white" />
+                <RxCross2
+                  size={28}
+                  color={theme === "light" ? "black" : "white"}
+                  className="dark:text-white text dark"
+                />
               ) : (
                 <RxHamburgerMenu
                   size={25}
-                  color="white"
+                  color={theme === "light" ? "black" : "white"}
                   className="block w-6 h-6"
                 />
               )}
@@ -257,6 +271,7 @@ export default function Navbar() {
           className="absolute inset-0 bg-black bg-opacity-65 "
           onClick={() => setIsOpen(false)}
         ></div>
+
         <div
           className={`absolute top-0 pt-2 right-0 w-64 h-full bg-white border-b border-gray-200 dark:bg-background dark:border-border bg-opacity-90 shadow-lg transform transition-transform duration-300 pb-4 ease-in-out flex flex-col justify-between ${
             isOpen ? "translate-x-0" : "translate-x-full"
