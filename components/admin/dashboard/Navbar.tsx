@@ -107,7 +107,7 @@ export default function Navbar() {
               animate={{ opacity: 1 }}
             >
               <Link
-                href={"/"}
+                href={"/admin/dashboard/stock"}
                 onClick={() => {
                   setIsOpen(false);
                   setOpenDropdown("");
@@ -150,7 +150,7 @@ export default function Navbar() {
                       <span className="sr-only">Toggle theme</span>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
+                  <DropdownMenuContent style={{zIndex:'9999999999'}} align="end">
                     <DropdownMenuItem onClick={() => setTheme("light")}>
                       Modo claro
                     </DropdownMenuItem>
@@ -168,7 +168,7 @@ export default function Navbar() {
                   {/* User Avatar */}
                   <CircleUserRound size={30} strokeWidth={1} />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-52">
+                <DropdownMenuContent align="end" style={{zIndex:'9999999999'}} className="w-52">
                   <DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
