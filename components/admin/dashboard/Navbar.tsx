@@ -125,10 +125,10 @@ export default function Navbar() {
                 </div> */}
                 <div className="">
                   {theme === "dark" && (
-                    <Image className="w-36" src={logo} alt="Logo" />
+                    <Image  className="w-36" src={logo} alt="Logo" />
                   )}
                   {theme === "light" && (
-                    <Image className="w-36" src={logoblack} alt="Logo" />
+                    <Image  className="w-36" src={logoblack} alt="Logo" />
                   )}
                 </div>
                 {/* <Image className="w-36" src={logo} alt="Logo" /> */}
