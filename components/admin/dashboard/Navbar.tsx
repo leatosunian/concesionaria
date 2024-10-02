@@ -113,12 +113,13 @@ export default function Navbar() {
                   setOpenDropdown("");
                 }}
               >
-                {mounted && theme === "dark" && (
+                {/* {mounted && theme === "dark" && (
                   <Image className="w-36" src={logo} alt="Logo" />
                 )}
                 {mounted && theme === "light" && (
                   <Image className="w-36" src={logoblack} alt="Logo" />
-                )}
+                )} */}
+                 <Image className="w-36" src={logoblack} alt="Logo" />
               </Link>
             </motion.div>
           </div>
