@@ -113,7 +113,7 @@ export default function Navbar() {
                   setOpenDropdown("");
                 }}
               >
-                <div className="hidden md:block">
+                {/* <div className="hidden md:block">
                   {mounted && theme === "dark" && (
                     <Image className="w-36" src={logo} alt="Logo" />
                   )}
@@ -122,6 +122,14 @@ export default function Navbar() {
                   )}
                 </div>
                 <div className="block md:hidden">
+                  {theme === "dark" && (
+                    <Image className="w-36" src={logo} alt="Logo" />
+                  )}
+                  {theme === "light" && (
+                    <Image className="w-36" src={logoblack} alt="Logo" />
+                  )}
+                </div> */}
+                <div className="">
                   {theme === "dark" && (
                     <Image className="w-36" src={logo} alt="Logo" />
                   )}
@@ -150,7 +158,10 @@ export default function Navbar() {
                       <span className="sr-only">Toggle theme</span>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent style={{zIndex:'9999999999'}} align="end">
+                  <DropdownMenuContent
+                    style={{ zIndex: "9999999999" }}
+                    align="end"
+                  >
                     <DropdownMenuItem onClick={() => setTheme("light")}>
                       Modo claro
                     </DropdownMenuItem>
@@ -168,7 +179,11 @@ export default function Navbar() {
                   {/* User Avatar */}
                   <CircleUserRound size={30} strokeWidth={1} />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" style={{zIndex:'9999999999'}} className="w-52">
+                <DropdownMenuContent
+                  align="end"
+                  style={{ zIndex: "9999999999" }}
+                  className="w-52"
+                >
                   <DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
