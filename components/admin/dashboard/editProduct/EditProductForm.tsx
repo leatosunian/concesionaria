@@ -97,7 +97,6 @@ const EditProductForm = ({ uuid }: { uuid: string }) => {
   }
   useEffect(() => {
     getVehicleData();
-    toast({ description: "¡Vehículo editado!", variant: "default" });
   }, []);
 
   useEffect(() => {
