@@ -109,7 +109,6 @@ const EditProductForm = ({ uuid }: { uuid: string }) => {
   }, [scrollToDiv]);
 
   async function handleEdit() {
-    setLoading(true)
     try {
       const vehicle = await fetch("/api/cars/" + uuid, {
         method: "PUT",
