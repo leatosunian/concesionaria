@@ -124,7 +124,10 @@ const RelatedVehicles = ({ vehicles }: Props) => {
                           </CardHeader>
                           <CardFooter className="px-4 pb-5 mt-5 md:mt-0">
                             {/* mt-auto para mantener el botón abajo */}
-                            <Link href={`/vehicles/${car.uuid}`}>
+                            <Link
+                              href={`/vehicles/${car.uuid}`}
+                              className="w-full h-fit"
+                            >
                               <Button variant={"default"} className="w-full">
                                 Ver más
                               </Button>
