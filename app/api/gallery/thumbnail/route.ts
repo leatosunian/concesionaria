@@ -22,22 +22,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ msg: "NO_FILES_PROVIDED" }, { status: 400 });
     }
 
-    const dir = path.join(process.cwd(), "uploads/carGallery");
-    if (!fs.existsSync(dir)) {
-      await mkdir(dir, { recursive: true });
-    }
-
     for (const file of files) {
       const buffer = new Uint8Array(await file.arrayBuffer());
-      const pathUuid = Math.random().toString().split(".")[1];
-      const imagePath = path.join(
-        process.cwd(),
-        `uploads/carGallery/${pathUuid}${file.name}`
-      );
       try {
-        await writeFile(imagePath, buffer);
-        console.log("File written to:", imagePath);
-
         const cloudinaryResponse: any = await new Promise((resolve, reject) => {
           cloudinary.uploader
             .upload_stream({}, (error, result) => {
