@@ -23,7 +23,8 @@ export async function POST(request: NextRequest) {
     }
 
     for (const file of files) {
-      const buffer = new Uint8Array(await file.arrayBuffer());
+      const bytes = await file.arrayBuffer()
+      const buffer = Buffer.from(bytes)
       try {
         const cloudinaryResponse: any = await new Promise((resolve, reject) => {
           cloudinary.uploader
