@@ -272,6 +272,8 @@ const AddProductForm = () => {
                       <SelectContent>
                         <SelectItem value="CAR">Automóvil</SelectItem>
                         <SelectItem value="BIKE">Motocicleta</SelectItem>
+                        <SelectItem value="QUAD">Cuatriciclo</SelectItem>
+                        <SelectItem value="UTV">UTV</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />

@@ -3,7 +3,8 @@ import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import SessionWrapper from "@/components/SessionWrapper";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"],  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Concesionaria | Inicio",

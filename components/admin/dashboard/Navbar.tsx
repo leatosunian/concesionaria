@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import styles from "@/app/css-modules/dashboard/navbar/dashboard.navbar.module.css";
 import { usePathname } from "next/navigation";
 import { CircleUserRound, Moon, Sun } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { LogOut, Settings, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,6 +32,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { TbUserEdit } from "react-icons/tb";
+import { BsShop } from "react-icons/bs";
+import { FaUsers } from "react-icons/fa";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -58,6 +61,8 @@ export default function Navbar() {
     };
   }, [isOpen]);
 
+  const { data: session }: any = useSession();
+
   useEffect(() => {
     if (pathname !== "/") {
       return setNavbarBg("bg-black");
@@ -83,10 +88,6 @@ export default function Navbar() {
   const { setTheme } = useTheme();
   const { theme } = useTheme();
 
-  useEffect(() => {
-    console.log(theme);
-  }, [theme]);
-
   // hydration bug fix on logos
   useEffect(() => {
     setMounted(true);
@@ -100,14 +101,14 @@ export default function Navbar() {
       <div className="mx-auto ">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-              <Link
-                href={"/admin/dashboard/stock"}
-                onClick={() => {
-                  setIsOpen(false);
-                  setOpenDropdown("");
-                }}
-              >
-                {/* <div className="hidden md:block">
+            <Link
+              href={"/admin/dashboard/stock"}
+              onClick={() => {
+                setIsOpen(false);
+                setOpenDropdown("");
+              }}
+            >
+              {/* <div className="hidden md:block">
                   {mounted && theme === "dark" && (
                     <Image className="w-36" src={logo} alt="Logo" />
                   )}
@@ -123,16 +124,16 @@ export default function Navbar() {
                     <Image className="w-36" src={logoblack} alt="Logo" />
                   )}
                 </div> */}
-                <div className="">
-                  {theme === "dark" && (
-                    <Image  className="w-36" src={logo} alt="Logo" />
-                  )}
-                  {theme === "light" && (
-                    <Image  className="w-36" src={logoblack} alt="Logo" />
-                  )}
-                </div>
-                {/* <Image className="w-36" src={logo} alt="Logo" /> */}
-              </Link>
+              <div className="">
+                {theme === "dark" && (
+                  <Image className="w-36" src={logo} alt="Logo" />
+                )}
+                {theme === "light" && (
+                  <Image className="w-36" src={logoblack} alt="Logo" />
+                )}
+              </div>
+              {/* <Image className="w-36" src={logo} alt="Logo" /> */}
+            </Link>
           </div>
           <motion.div
             style={{ zIndex: "9999999" }}
@@ -160,9 +161,6 @@ export default function Navbar() {
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => setTheme("dark")}>
                       Modo oscuro
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setTheme("system")}>
-                      Tema del sistema
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -302,6 +300,37 @@ export default function Navbar() {
             >
               <IoMdAdd />
               <span className="ml-3 ">Agregar producto</span>
+            </Link>
+
+            {session?.user?.role && session?.user?.role === "ADMIN" && (
+              <Link
+                href="/admin/dashboard/employees"
+                className="flex items-center gap-1 px-3 py-3 text-sm font-medium transition-colors duration-300 rounded-md backgroundOrangHover"
+                onClick={() => setIsOpen(false)}
+              >
+                <TbUserEdit />
+                <span className="ml-3 ">Mis empleados</span>
+              </Link>
+            )}
+
+            {session?.user?.role && session?.user?.role === "ADMIN" && (
+              <Link
+                href="/admin/dashboard/branches"
+                className="flex items-center gap-1 px-3 py-3 text-sm font-medium transition-colors duration-300 rounded-md backgroundOrangHover"
+                onClick={() => setIsOpen(false)}
+              >
+                <BsShop />
+                <span className="ml-3 ">Sucursales</span>
+              </Link>
+            )}
+
+            <Link
+              href="/admin/dashboard/leads"
+              className="flex items-center gap-1 px-3 py-3 text-sm font-medium transition-colors duration-300 rounded-md backgroundOrangHover"
+              onClick={() => setIsOpen(false)}
+            >
+              <FaUsers />
+              <span className="ml-3 ">Leads</span>
             </Link>
             <div
               className="flex items-center gap-1 px-3 py-3 text-sm font-medium transition-colors duration-300 rounded-md backgroundOrangHover"

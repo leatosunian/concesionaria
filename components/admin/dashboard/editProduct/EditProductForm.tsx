@@ -265,7 +265,7 @@ const EditProductForm = ({ uuid }: { uuid: string }) => {
                         width={500}
                         height={500}
                         className="w-full rounded-lg "
-                        src={`/api/gallery/getimage/${vehicleData?.imagePath}`}
+                        src={vehicleData?.imagePath!}
                         alt=""
                         unoptimized
                       />
@@ -454,6 +454,8 @@ const EditProductForm = ({ uuid }: { uuid: string }) => {
                           <SelectContent>
                             <SelectItem value="CAR">Automóvil</SelectItem>
                             <SelectItem value="BIKE">Motocicleta</SelectItem>
+                            <SelectItem value="QUAD">Cuatriciclo</SelectItem>
+                            <SelectItem value="UTV">UTV</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />

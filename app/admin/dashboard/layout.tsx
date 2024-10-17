@@ -7,28 +7,32 @@ import { IoCarSportOutline } from "react-icons/io5";
 import React, { useEffect, useState } from "react";
 import Navbar from "@/components/admin/dashboard/Navbar";
 import Nav from "@/components/admin/dashboard/Nav";
+import { BsShop } from "react-icons/bs";
+import { FaUsers } from "react-icons/fa";
+import { useSession } from "next-auth/react";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Marcamos que el componente ya está montado en el cliente
+    // indica componente montado
     setMounted(true);
   }, []);
 
-  // Mientras no esté montado, devolvemos un `div` vacío o un spinner para evitar el error de hidratación
+  const { data: session }: any = useSession();
+
+  // si no está montado, renderiza div vacío para evitar error de hidratación
   if (!mounted) {
     return <div />;
   }
   return (
     <>
       {/* <Nav /> */}
-      <Navbar/>
+      <Navbar />
       <div className="flex pt-16 overflow-hidden bg-white ">
         <aside
           id="sidebar"
@@ -47,7 +51,7 @@ export default function DashboardLayout({
                       <IoCarSportOutline />
                       <span className="ml-3 ">Mi stock</span>
                     </Link>
-                  </li>{" "}
+                  </li>
                   <li>
                     <Link
                       href={"/admin/dashboard/stock/add"}
@@ -57,31 +61,39 @@ export default function DashboardLayout({
                       <span className="ml-3 ">Agregar producto</span>
                     </Link>
                   </li>
+                  {session?.user?.role && session?.user?.role === 'ADMIN' && (
+                    <>
+                      <li>
+                        <Link
+                          href={"/admin/dashboard/employees"}
+                          className="flex items-center p-2 text-base font-normal text-black capitalize rounded-lg hover:text-white dark:text-white dark:hover:text-black hover:bg-black dark:hover:bg-gray-100 dark:bg-background group"
+                        >
+                          <TbUserEdit />
+                          <span className="ml-3 ">Mis empleados</span>
+                        </Link>
+                      </li>
+                    </>
+                  )}
+                  {session?.user?.role && session?.user?.role  === 'ADMIN' && (
+                    <>
+                      <li>
+                        <Link
+                          href={"/admin/dashboard/branches"}
+                          className="flex items-center p-2 text-base font-normal text-black capitalize rounded-lg hover:text-white dark:text-white dark:hover:text-black hover:bg-black dark:hover:bg-gray-100 dark:bg-background group"
+                        >
+                          <BsShop />
+                          <span className="ml-3 ">Sucursales</span>
+                        </Link>
+                      </li>
+                    </>
+                  )}
                   <li>
                     <Link
-                      href={"/admin/dashboard/stock/add"}
+                      href={"/admin/dashboard/leads"}
                       className="flex items-center p-2 text-base font-normal text-black capitalize rounded-lg hover:text-white dark:text-white dark:hover:text-black hover:bg-black dark:hover:bg-gray-100 dark:bg-background group"
                     >
-                      <IoMdAdd />
-                      <span className="ml-3 ">Clientes</span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href={"/admin/dashboard/stock/add"}
-                      className="flex items-center p-2 text-base font-normal text-black capitalize rounded-lg hover:text-white dark:text-white dark:hover:text-black hover:bg-black dark:hover:bg-gray-100 dark:bg-background group"
-                    >
-                      <TbUserEdit />
-                      <span className="ml-3 ">Mis empleados</span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href={"/admin/dashboard/stock/add"}
-                      className="flex items-center p-2 text-base font-normal text-black capitalize rounded-lg hover:text-white dark:text-white dark:hover:text-black hover:bg-black dark:hover:bg-gray-100 dark:bg-background group"
-                    >
-                      <TbHomeCog />
-                      <span className="ml-3 ">Sucursales</span>
+                      <FaUsers />
+                      <span className="ml-3 ">Leads</span>
                     </Link>
                   </li>
                 </ul>

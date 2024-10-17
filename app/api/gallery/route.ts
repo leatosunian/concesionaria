@@ -4,6 +4,7 @@ import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import { mkdir, writeFile } from "fs/promises";
 import fs from "fs";
+import { v2 as cloudinary } from "cloudinary";
 
 // SAVE GALLERY IMAGES
 export async function POST(request: NextRequest) {
@@ -11,7 +12,11 @@ export async function POST(request: NextRequest) {
     const data = await request.formData();
     const carID = data.get("carID") as string;
     const files = data.getAll("gallery_images") as File[];
-
+    cloudinary.config({
+      cloud_name: "duiw7lwlb",
+      api_key: "435529513686272",
+      api_secret: process.env.CLOUDINARY_SECRET,
+    });
     if (files.length === 0) {
       return NextResponse.json({ msg: "NO_FILES_PROVIDED" }, { status: 400 });
     }
@@ -30,9 +35,11 @@ export async function POST(request: NextRequest) {
       );
       await writeFile(imagePath, buffer);
       console.log("File written to: ", imagePath);
+      const cloudinaryResponse = await cloudinary.uploader.upload(imagePath);
+      console.log(cloudinaryResponse);
       await CarImageModel.create({
         carID,
-        path: `${pathUuid}${file.name}`,
+        path: cloudinaryResponse.secure_url,
         uuid: uuidv4(),
       });
     }

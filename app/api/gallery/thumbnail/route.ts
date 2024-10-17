@@ -1,3 +1,4 @@
+import { v2 as cloudinary } from "cloudinary";
 import CarModel from "@/app/models/car";
 import { mkdir, writeFile } from "fs/promises";
 import { NextRequest, NextResponse } from "next/server";
@@ -11,11 +12,17 @@ export async function POST(request: NextRequest) {
     const carID = data.get("carID") as string;
     const files = data.getAll("gallery_images") as File[];
 
+    cloudinary.config({
+      cloud_name: "duiw7lwlb",
+      api_key: "435529513686272",
+      api_secret: process.env.CLOUDINARY_SECRET,
+    });
+
     if (files.length === 0) {
       return NextResponse.json({ msg: "NO_FILES_PROVIDED" }, { status: 400 });
     }
 
-    const dir = path.join(process.cwd(), "uploads/carGallery"); 
+    const dir = path.join(process.cwd(), "uploads/carGallery");
     if (!fs.existsSync(dir)) {
       await mkdir(dir, { recursive: true });
     }
@@ -30,6 +37,16 @@ export async function POST(request: NextRequest) {
       try {
         await writeFile(imagePath, buffer);
         console.log("File written to:", imagePath);
+
+        const cloudinaryResponse = await cloudinary.uploader.upload(imagePath);
+        console.log(cloudinaryResponse);
+        const updatedCar = await CarModel.findOneAndUpdate(
+          { uuid: carID },
+          { imagePath: cloudinaryResponse.secure_url },
+          { new: true }
+        );
+        console.log(updatedCar);
+         
       } catch (writeError) {
         console.error("Error writing file:", writeError);
         return NextResponse.json(
@@ -37,11 +54,6 @@ export async function POST(request: NextRequest) {
           { status: 500 }
         );
       }
-      const updatedCar = await CarModel.findOneAndUpdate(
-        { uuid: carID },
-        { imagePath: `${pathUuid}${file.name}` },
-        { new: true }
-      );
     }
     return NextResponse.json({ msg: "THUMBNAIL_UPLOADED" });
   } catch (error) {

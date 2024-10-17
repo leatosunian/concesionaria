@@ -493,7 +493,7 @@ const Page = () => {
                 <div
                   className={`${styles.vehiclesCont} xl:gap-10 gap-14 2xl:gap-12 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 py-5 md:py-0 pl-0 lg:pl-10   `}
                 >
-                  {currentVehicles.map((car) => (
+                  {currentVehicles.length > 0 && currentVehicles.map((car) => (
                     <>
                       <div
                         key={car.uuid}
@@ -501,7 +501,7 @@ const Page = () => {
                       >
                         <Card className="flex flex-col h-full shadow-lg">
                           <Image
-                            src={`/api/gallery/getimage/${car.imagePath}`}
+                            src={car?.imagePath!}
                             alt="auto"
                             width={500}
                             height={500}

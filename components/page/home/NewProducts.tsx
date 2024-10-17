@@ -125,7 +125,7 @@ const NewProducts = ({ vehicles }: Props) => {
                     <div className="p-1 md:h-full h-fit">
                       <Card className="flex flex-col h-full shadow-lg">
                         <Image
-                          src={`/api/gallery/getimage/${car.imagePath}`}
+                          src={car?.imagePath!}
                           alt="auto"
                           width={500}
                           height={500}
@@ -177,7 +177,7 @@ const NewProducts = ({ vehicles }: Props) => {
           <Link className="w-fit h-fit" href={"/vehicles"}>
             <button className={`${stylesSearch.button}`}>
               Ver todos los vehículos
-            </button>{" "}
+            </button>
           </Link>
         </div>
       </section>

@@ -19,6 +19,8 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import LoaderFullscreen from "../LoaderFullscreen";
+import { useToast } from "@/hooks/use-toast";
+import { Toaster } from "@/components/ui/toaster";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -31,7 +33,7 @@ const formSchema = z.object({
 
 const LoginForm = () => {
   const [loading, setLoading] = useState(false);
-
+  const { toast } = useToast();
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -42,18 +44,25 @@ const LoginForm = () => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setLoading(true)
+    setLoading(true);
     try {
       const login = await signIn("credentials", {
         username: values.username,
         password: values.password,
         redirect: false,
       });
+
       if (login?.ok) {
         router.push("/admin/dashboard/stock");
+      } else {
+        setLoading(false);
+        toast({
+          description: "Usuario o contraseña incorrectos",
+          variant: "destructive",
+        });
       }
     } catch (error) {
-      setLoading(false)
+      setLoading(false);
       console.log(error);
     }
   }
@@ -110,6 +119,7 @@ const LoginForm = () => {
           </div>
         </>
       )}
+      <Toaster />
     </>
   );
 };

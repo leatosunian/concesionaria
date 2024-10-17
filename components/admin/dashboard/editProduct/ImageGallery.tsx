@@ -161,7 +161,7 @@ const ImageGallery = () => {
                             setImageToDelete(image.path);
                             handleImageClick();
                           }}
-                          src={`/api/gallery/getimage/${image.path}`}
+                          src={image.path}
                           width={500}
                           height={500}
                           unoptimized

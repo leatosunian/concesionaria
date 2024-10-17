@@ -8,6 +8,9 @@ export interface IAdmin extends Document {
   password?: string;
   uuid: string;
   role: "ADMIN" | "EMPLOYEE";
+  phone: string;
+  email: string;
+  _id?: string;
 }
 
 const adminSchema: Schema = new Schema<IAdmin>(
@@ -21,6 +24,14 @@ const adminSchema: Schema = new Schema<IAdmin>(
       required: true,
     },
     surname: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    phone: {
       type: String,
       required: true,
     },

@@ -6,7 +6,7 @@ export interface ICar extends Document {
   year: number;
   kilometers: number;
   motor: string;
-  type: "BIKE" | "CAR";
+  type: "BIKE" | "CAR" | "QUAD" | "UTV";
   price: number;
   currency: "ARS" | "USD";
   brand:
