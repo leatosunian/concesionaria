@@ -612,186 +612,153 @@ const LeadDetails = () => {
                 Creá una tarea para comenzar la gestión de tu lead.
               </span>
 
-              {/* <Button type="submit" className="w-full mt-7 md:w-1/4">
-            Crear tarea
-          </Button> */}
-
               {/* create task modal */}
-              <div className="px-10 rounded-md"></div>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button type="submit" className="w-full mt-7 md:w-1/4">
-                    Crear tarea
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                  <DialogHeader>
-                    <DialogTitle className="text-left">Nueva tarea</DialogTitle>
-                    <DialogDescription className="text-left">
-                      Ingresá la fecha y el titulo de la tarea a realizar.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="flex flex-col gap-3">
-                      <Label htmlFor="name" className="font-semibold text-left">
-                        Tarea a realizar
-                      </Label>
-                      <Input
-                        id="name"
-                        value=""
-                        placeholder="Enviar presupuesto por Whatsapp"
-                        className="w-full"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-3">
-                      <Label htmlFor="name" className="font-semibold text-left">
-                        Día a realizar
-                      </Label>
-                      <Input
-                        type="date"
-                        id="name"
-                        value=""
-                        placeholder="Pedro"
-                        className="w-full"
-                      />
-                    </div>
-                  </div>
-
-                  <DialogFooter>
-                    <Button type="submit">Crear tarea</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+              <Button
+                type="submit"
+                onClick={() => setOpenCreateModal(true)}
+                className="w-full mt-7 md:w-1/4"
+              >
+                Crear tarea
+              </Button>
               {/* create task modal */}
             </div>
           </>
         )}
 
         {/* task list */}
-        {pendingTasks?.length > 0 ||
-          (completedTasks?.length > 0 && (
-            <>
-              <div className="flex flex-col w-full gap-10 my-5 mb-5 h-fit">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <MdPendingActions size={29} />
-                    <span className="text-base font-medium"> Pendientes</span>
-                  </div>
-                  <Separator className="my-4" />
-                  {pendingTasks?.length === 0 && (
-                    <>
-                      <div className="flex flex-col items-center gap-1 justify-center w-full min-h-[200px] h-full">
-                        <BiTaskX size={50} strokeWidth={0} />
-                        <span>No tenés tareas pendientes</span>
-                        <span className="text-sm opacity-50">
-                          Creá una tarea para comenzar la gestión de tu lead.
-                        </span>
-                      </div>
-                    </>
-                  )}
-                  {pendingTasks?.length > 0 && (
-                    <>
-                      <div className="flex flex-col gap-5">
-                        {pendingTasks?.map((task) => (
-                          <>
-                            <Card className="flex items-center justify-between px-4 py-4">
-                              <div className="flex flex-col w-full gap-3 pr-5">
-                                <h4 className="font-semibold">{task.title}</h4>
-                                <Separator className="" />
-                                <span className="text-sm">
-                                  <b>Día a realizar:</b>{" "}
-                                  {dayjs(task.dateToDo).format(
-                                    "dddd D [de] MMMM "
-                                  )}
-                                </span>
-                              </div>
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button
-                                    variant="outline"
-                                    className="p-2 w-fit h-fit"
+        {(pendingTasks.length > 0 || completedTasks.length > 0) && (
+          <>
+            <div className="flex flex-col w-full gap-10 my-5 mb-5 h-fit">
+              <div>
+                <div className="flex items-center gap-2">
+                  <MdPendingActions size={29} />
+                  <span className="text-base font-medium"> Pendientes</span>
+                </div>
+                <Separator className="my-4" />
+                {pendingTasks?.length === 0 && (
+                  <>
+                    <div className="flex flex-col items-center gap-1 justify-center w-full min-h-[200px] h-full">
+                      <BiTaskX size={50} strokeWidth={0} />
+                      <span>No tenés tareas pendientes</span>
+                      <span className="text-sm opacity-50">
+                        Creá una tarea para comenzar la gestión de tu lead.
+                      </span>
+                      <Button
+                        type="submit"
+                        onClick={() => setOpenCreateModal(true)}
+                        className="w-full mt-5 md:w-1/4"
+                      >
+                        Crear tarea
+                      </Button>
+                    </div>
+                  </>
+                )}
+                {pendingTasks?.length > 0 && (
+                  <>
+                    <div className="flex flex-col gap-5">
+                      {pendingTasks?.map((task) => (
+                        <>
+                          <Card className="flex items-center justify-between px-4 py-4">
+                            <div className="flex flex-col w-full gap-3 pr-5">
+                              <h4 className="font-semibold">{task.title}</h4>
+                              <Separator className="" />
+                              <span className="text-sm">
+                                <b>Día a realizar:</b>{" "}
+                                {dayjs(task.dateToDo).format(
+                                  "dddd D [de] MMMM "
+                                )}
+                              </span>
+                            </div>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  className="p-2 w-fit h-fit"
+                                >
+                                  <IoMdMore size={15} />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent className="w-56">
+                                <DropdownMenuGroup>
+                                  <DropdownMenuItem
+                                    onClick={() => {
+                                      setSelectedTaskToEdit(task);
+                                      setOpenEditModal(true);
+                                    }}
                                   >
-                                    <IoMdMore size={15} />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent className="w-56">
-                                  <DropdownMenuGroup>
-                                    <DropdownMenuItem
-                                      onClick={() => {
-                                        setSelectedTaskToEdit(task);
-                                        setOpenEditModal(true);
-                                      }}
-                                    >
-                                      Editar tarea
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                      onClick={() => {
-                                        setSelectedTaskToEdit(task);
-                                        setOpenCompleteModal(true);
-                                      }}
-                                    >
-                                      Completar tarea
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                      onClick={() => {
-                                        setSelectedTaskToEdit(task);
-                                        setOpenDeleteTaskModal(true);
-                                      }}
-                                    >
-                                      Eliminar tarea
-                                    </DropdownMenuItem>
-                                  </DropdownMenuGroup>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </Card>
-                          </>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                <div>
-                  <div className="flex items-center gap-2">
-                    <BiTask size={28} />
-                    <span className="text-base font-medium">Completadas</span>
-                  </div>
-                  <Separator className="my-4" />
-                  <div className="flex flex-col gap-5">
-                    {completedTasks?.map((task) => (
-                      <>
-                        <Card className="flex items-center justify-between px-4 py-4">
-                          <div className="flex flex-col w-full gap-3 pr-5">
-                            <h4 className="font-semibold">{task.title}</h4>
-                            <Separator className="" />
-                            <span className="text-sm">
-                              <b>Completado el:</b>{" "}
-                              {dayjs(task.completedDate).format(
-                                "dddd D [de] MMMM "
-                              )}
-                            </span>
-                            <span className="text-sm">
-                              <b>Observaciones:</b> {task.observations}
-                            </span>
-                          </div>
-                          <Button
-                            variant="outline"
-                            onClick={() => {
-                              setOpenTaskDetailsModal(true);
-                              setSelectedTaskToEdit(task);
-                            }}
-                            className="p-2 w-fit h-fit"
-                          >
-                            <IoMdMore size={15} />
-                          </Button>
-                        </Card>
-                      </>
-                    ))}
-                  </div>
-                </div>
+                                    Editar tarea
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => {
+                                      setSelectedTaskToEdit(task);
+                                      setOpenCompleteModal(true);
+                                    }}
+                                  >
+                                    Completar tarea
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => {
+                                      setSelectedTaskToEdit(task);
+                                      setOpenDeleteTaskModal(true);
+                                    }}
+                                  >
+                                    Eliminar tarea
+                                  </DropdownMenuItem>
+                                </DropdownMenuGroup>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </Card>
+                        </>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
-            </>
-          ))}
+              {completedTasks.length > 0 && (
+                <>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <BiTask size={28} />
+                      <span className="text-base font-medium">Completadas</span>
+                    </div>
+                    <Separator className="my-4" />
+                    <div className="flex flex-col gap-5">
+                      {completedTasks?.map((task) => (
+                        <>
+                          <Card className="flex items-center justify-between px-4 py-4">
+                            <div className="flex flex-col w-full gap-3 pr-5">
+                              <h4 className="font-semibold">{task.title}</h4>
+                              <Separator className="" />
+                              <span className="text-sm">
+                                <b>Completado el:</b>{" "}
+                                {dayjs(task.completedDate).format(
+                                  "dddd D [de] MMMM "
+                                )}
+                              </span>
+                              <span className="text-sm">
+                                <b>Observaciones:</b> {task.observations}
+                              </span>
+                            </div>
+                            <Button
+                              variant="outline"
+                              onClick={() => {
+                                setOpenTaskDetailsModal(true);
+                                setSelectedTaskToEdit(task);
+                              }}
+                              className="p-2 w-fit h-fit"
+                            >
+                              <IoMdMore size={15} />
+                            </Button>
+                          </Card>
+                        </>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </>
+        )}
       </div>
 
       {/* delete lead modal */}
