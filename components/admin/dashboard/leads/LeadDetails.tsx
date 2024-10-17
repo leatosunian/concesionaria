@@ -425,8 +425,9 @@ const LeadDetails = () => {
             <div className="h-full max-w-full sm:max-w-[300px] ">
               <Card className="flex flex-col h-full shadow-lg">
                 <Image
-                  src={`/api/gallery/getimage/${intInVehicle?.imagePath}`}
+                  src={intInVehicle?.imagePath!}
                   alt=""
+                  unoptimized
                   width={500}
                   height={500}
                   className="object-cover h-full mb-4 overflow-hidden md:h-1/2 rounded-t-md "
