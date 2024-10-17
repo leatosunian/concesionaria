@@ -167,15 +167,16 @@ const CarList = ({ cars }: { cars: ICar[] }) => {
           {currentVehicles.length > 0 && (
             <>
               <div className="grid grid-cols-1 gap-10 sm:gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-                {currentVehicles?.map((car) => (
+                { currentVehicles?.map((car) => (
                   <div key={car.uuid} className="col-span-1 md:h-full h-fit">
                     <Card
                       key={car.uuid}
                       className="flex flex-col h-full shadow-lg"
                     >
                       <Image
-                        src={`/api/gallery/getimage/${car.imagePath}`}
+                        src={car.imagePath!}
                         alt=""
+                        unoptimized
                         width={500}
                         height={500}
                         className="object-cover h-full mb-4 overflow-hidden md:h-1/2 rounded-t-md "
