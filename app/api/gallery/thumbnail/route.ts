@@ -38,7 +38,17 @@ export async function POST(request: NextRequest) {
         await writeFile(imagePath, buffer);
         console.log("File written to:", imagePath);
 
-        const cloudinaryResponse = await cloudinary.uploader.upload(imagePath);
+        const cloudinaryResponse: any = await new Promise((resolve, reject) => {
+          cloudinary.uploader
+            .upload_stream({}, (error, result) => {
+              if (error) {
+                reject(error);
+              }
+              resolve(result);
+            })
+            .end(buffer);
+        });
+
         console.log(cloudinaryResponse);
         const updatedCar = await CarModel.findOneAndUpdate(
           { uuid: carID },
@@ -46,7 +56,6 @@ export async function POST(request: NextRequest) {
           { new: true }
         );
         console.log(updatedCar);
-         
       } catch (writeError) {
         console.error("Error writing file:", writeError);
         return NextResponse.json(

@@ -20,22 +20,20 @@ export async function POST(request: NextRequest) {
     if (files.length === 0) {
       return NextResponse.json({ msg: "NO_FILES_PROVIDED" }, { status: 400 });
     }
-    const dir = path.join(process.cwd(), "uploads/carGallery");
-    if (!fs.existsSync(dir)) {
-      await mkdir(dir, { recursive: true });
-      console.log("Carpeta creada:", dir);
-    }
+
 
     for (const file of files) {
       const buffer = new Uint8Array(await file.arrayBuffer());
-      const pathUuid = Math.random().toString().split(".")[1];
-      const imagePath = path.join(
-        process.cwd(),
-        `uploads/carGallery/${pathUuid}${file.name}`
-      );
-      await writeFile(imagePath, buffer);
-      console.log("File written to: ", imagePath);
-      const cloudinaryResponse = await cloudinary.uploader.upload(imagePath);
+      const cloudinaryResponse: any = await new Promise((resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream({}, (error, result) => {
+            if (error) {
+              reject(error);
+            }
+            resolve(result);
+          })
+          .end(buffer);
+      });
       console.log(cloudinaryResponse);
       await CarImageModel.create({
         carID,

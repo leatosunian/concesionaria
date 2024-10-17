@@ -145,6 +145,7 @@ const Page = () => {
                         width={500}
                         objectFit="cover"
                         height={500}
+                        unoptimized
                         className="object-cover w-full h-full rounded-lg"
                       />
                     </CarouselItem>
