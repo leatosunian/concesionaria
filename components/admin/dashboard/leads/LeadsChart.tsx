@@ -26,6 +26,7 @@ import { ILead } from "@/app/models/lead";
 import dayjs from "dayjs";
 import { BiTaskX } from "react-icons/bi";
 import { IoPeople } from "react-icons/io5";
+import Link from "next/link";
 
 const LeadsChart = () => {
   const [leads, setLeads] = useState<ILead[]>([]);
@@ -54,13 +55,11 @@ const LeadsChart = () => {
       {leads?.length === 0 && (
         <>
           <div className="flex flex-col items-center gap-1 justify-center w-full min-h-[300px] h-full">
-            <IoPeople  size={70} strokeWidth={0} />
+            <IoPeople size={70} strokeWidth={0} />
             <span>Tu lista de leads está vacía.</span>
             <span className="text-sm opacity-50">
               Creá un nuevo lead para comenzar a gestionar tu nuevo cliente.
             </span>
-
-
           </div>
         </>
       )}
@@ -99,9 +98,11 @@ const LeadsChart = () => {
 
                   <TableCell className="text-right">
                     {/* edit */}
-                    <Button variant="outline" className="p-2 w-fit h-fit">
-                      <IoMdMore size={20} className="w-fit h-fit" />
-                    </Button>
+                    <Link href={`/admin/dashboard/leads/${lead._id}`}>
+                      <Button variant="outline" className="p-2 w-fit h-fit">
+                        <IoMdMore size={20} className="w-fit h-fit" />
+                      </Button>
+                    </Link>
                     {/* edit */}
                   </TableCell>
                 </TableRow>
