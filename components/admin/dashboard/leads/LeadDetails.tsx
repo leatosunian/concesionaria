@@ -2,12 +2,7 @@
 import { MdLocalPhone, MdPendingActions } from "react-icons/md";
 import { useEffect, useRef, useState } from "react";
 import { Separator } from "@/components/ui/separator";
-import {
-  useParams,
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { es } from "date-fns/locale";
 import { ICar } from "@/app/models/car";
 import Image from "next/image";
@@ -23,7 +18,6 @@ import { Button } from "@/components/ui/button";
 import React from "react";
 import { FaRegCalendar } from "react-icons/fa";
 import { IoSpeedometerOutline } from "react-icons/io5";
-import { useDebouncedCallback } from "use-debounce";
 import { IoIosAddCircleOutline, IoMdAdd, IoMdMore } from "react-icons/io";
 import Link from "next/link";
 import { RiDeleteBin2Line } from "react-icons/ri";
@@ -53,7 +47,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { ILead } from "@/app/models/lead";
-import { ILeadVehicle } from "@/app/models/leadvehicles";
 import dayjs, { locale } from "dayjs";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -85,16 +78,21 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
+import { FiClock } from "react-icons/fi";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ILeadVehicle } from "@/app/models/leadvehicles";
+import LeadBudgetsList from "./LeadBudgetsList";
+import { IBudget } from "@/app/models/budget";
 dayjs.locale("es");
 
 const LeadDetails = () => {
@@ -140,6 +138,10 @@ const LeadDetails = () => {
   const [openCompleteModal, setOpenCompleteModal] = useState(false);
   const [openTaskDetailsModal, setOpenTaskDetailsModal] = useState(false);
   const [openDeleteTaskModal, setOpenDeleteTaskModal] = useState(false);
+  const [observations, setObservations] = useState<string>("");
+  const [leadVehicles, setLeadVehicles] = useState<ILeadVehicle>();
+  const [budgets, setBudgets] = useState<IBudget[]>([]);
+
   async function getLead() {
     try {
       const leadFetch = await fetch(`/api/leads/${id}`, {
@@ -147,6 +149,8 @@ const LeadDetails = () => {
         cache: "no-store",
       });
       const lead = await leadFetch.json();
+      setLeadVehicles(lead.leadVehicles);
+      setObservations(lead.lead.observations);
       setLead(lead.lead);
       setIntInVehicle(lead.intInVehicle);
     } catch (error) {
@@ -168,6 +172,21 @@ const LeadDetails = () => {
     }
   }
 
+  async function getBudgets() {
+    try {
+      const budgetsFetch = await fetch(`/api/budgets/lead/${id}`, {
+        method: "GET",
+        cache: "no-store",
+      });
+      const budgets = await budgetsFetch.json();
+      console.log(budgets);
+      
+      setBudgets(budgets);
+    } catch (error) {
+      return;
+    }
+  }
+
   // create task function
   async function onSubmit(values: any) {
     setOpenCreateModal(false);
@@ -176,11 +195,14 @@ const LeadDetails = () => {
     values.completedDate = new Date();
     values.observations = "empty";
     try {
-      await fetch("/api/tasks", {
+      const response = await fetch("/api/tasks", {
         method: "POST",
         body: JSON.stringify(values),
       }).then((response) => response.json());
       getTasks();
+      if (response.updatedLead.status === "En gestión") {
+        getLead();
+      }
       toast({ description: "¡Tarea creada!", variant: "default" });
     } catch (error) {
       // error alert
@@ -254,7 +276,6 @@ const LeadDetails = () => {
       }).then((response) => response.json());
       console.log("deletedLead:", deletedLead);
       if (deletedLead.msg === "LEAD_DELETED") {
-        console.log("lead deleted");
         toast({ description: "¡Lead eliminado!", variant: "default" });
       }
       router.push("/admin/dashboard/leads");
@@ -281,12 +302,54 @@ const LeadDetails = () => {
     }
   }
 
+  async function handleChangeLeadStatus(status: string) {
+    const body = { status };
+    try {
+      const updatedStatus = await fetch("/api/leads/" + lead?._id, {
+        method: "PUT",
+        body: JSON.stringify(body),
+      }).then((response) => response.json());
+      console.log(updatedStatus);
+      getLead();
+      getTasks();
+      toast({ description: "¡Estado actualizado!", variant: "default" });
+    } catch (error) {
+      // error alert
+      toast({
+        description: "Error al actualizar estado",
+        variant: "destructive",
+      });
+    }
+  }
+
+  async function handleSaveObservations() {
+    const body = {
+      observations: observations,
+    };
+    try {
+      const savedObs = await fetch("/api/leads/" + lead?._id, {
+        method: "PUT",
+        body: JSON.stringify(body),
+      }).then((response) => response.json());
+      console.log(savedObs);
+
+      toast({ description: "¡Observaciones guardadas!", variant: "default" });
+    } catch (error) {
+      // error alert
+      toast({
+        description: "Error al guardar observaciones",
+        variant: "destructive",
+      });
+    }
+  }
+
   useEffect(() => {
     getTasks();
   }, [lead]);
 
   useEffect(() => {
     getLead();
+    getBudgets();
   }, []);
 
   useEffect(() => {
@@ -298,63 +361,92 @@ const LeadDetails = () => {
     <>
       {/* <span className="text-xl font-semibold">Datos personales</span> */}
       <Card className="flex flex-col p-5">
-        <div className="flex flex-row items-center justify-between mb-5">
-          <div className="flex gap-5">
+        <div className="flex flex-col items-start justify-between mb-5 sm:items-center md:flex-row">
+          <div className="flex flex-wrap justify-between w-full gap-2 md:justify-start md:gap-5">
             <span className="text-xl font-semibold sm:text-2xl">
               {lead?.surname}, {lead?.name}
             </span>
-            {lead?.status === "Pendiente" && (
-              <span className="inline-flex items-center bg-yellow-100 text-yellow-700 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-800 dark:text-yellow-100">
-                <span className="w-2 h-2 me-1 bg-yellow-500 rounded-full"></span>
-                Pendiente
-              </span>
-            )}
-            {lead?.status === "En gestión" && (
-              <span className="inline-flex items-center bg-yellow-100 text-yellow-700 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-800 dark:text-yellow-100">
-                <span className="w-2 h-2 me-1 bg-yellow-500 rounded-full"></span>
-                En gestión
-              </span>
-            )}
-            {lead?.status === "Negociando" && (
-              <span className="inline-flex items-center bg-yellow-100 text-yellow-700 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-800 dark:text-yellow-100">
-                <span className="w-2 h-2 me-1 bg-yellow-500 rounded-full"></span>
-                Negociando
-              </span>
-            )}
-            {lead?.status === "Perdido" && (
-              <span className="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:bg-opacity-65 dark:text-red-200">
-                <span className="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
-                Perdido
-              </span>
-            )}
-            {lead?.status === "Venta concretada" && (
-              <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
-                <span className="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
-                Venta concretada
-              </span>
-            )}
+            <div className="block">
+              {lead?.status === "Pendiente" && (
+                <span className="inline-flex items-center bg-yellow-100 text-yellow-700 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-800 dark:text-yellow-100">
+                  <span className="w-2 h-2 bg-yellow-500 rounded-full me-1"></span>
+                  Pendiente
+                </span>
+              )}
+              {lead?.status === "En gestión" && (
+                <span className="inline-flex items-center bg-yellow-100 text-yellow-700 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-800 dark:text-yellow-100">
+                  <span className="w-2 h-2 bg-yellow-500 rounded-full me-1"></span>
+                  En gestión
+                </span>
+              )}
+              {lead?.status === "Negociando" && (
+                <span className="inline-flex items-center bg-yellow-100 text-yellow-700 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-800 dark:text-yellow-100">
+                  <span className="w-2 h-2 bg-yellow-500 rounded-full me-1"></span>
+                  Negociando
+                </span>
+              )}
+              {lead?.status === "Perdido" && (
+                <span className="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:bg-opacity-65 dark:text-red-200">
+                  <span className="w-2 h-2 bg-red-500 rounded-full me-1"></span>
+                  Perdido
+                </span>
+              )}
+              {lead?.status === "Venta concretada" && (
+                <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                  <span className="w-2 h-2 bg-green-500 rounded-full me-1"></span>
+                  Venta concretada
+                </span>
+              )}
+            </div>
           </div>
-          <div className="flex gap-2 sm:gap-5 ">
-            <Link href={"/admin/dashboard/leads/edit/n13jhblmkld"}>
-              <Button variant="outline" className="flex gap-2 p-2 w-fit h-fit">
-                <span className="hidden sm:block">Editar lead</span>
-                <FaRegEdit size={20} className="w-fit h-fit" />
-              </Button>
-            </Link>
-            <div>
-              <Button
-                onClick={() =>
-                  openDeleteModal({
-                    leadName: "Leandro Tosunian",
-                    uuid: "ausgyhbe123b4",
-                  })
-                }
-                variant={"destructive"}
-                className="flex gap-2 p-2 w-fit h-fit"
+          <div className="flex justify-between w-full gap-2 mt-5 md:mt-0 md:justify-end sm:gap-5 ">
+            <div className="">
+              <Select
+                onValueChange={(value) => {
+                  handleChangeLeadStatus(value);
+                }}
               >
-                <span className="hidden sm:block">Eliminar lead</span>
-                <RiDeleteBin2Line size={20} className="w-fit h-fit" />
-              </Button>
+                <SelectTrigger className="gap-3 w-fit">
+                  <SelectValue placeholder="Cambiar estado" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="Pendiente">Pendiente</SelectItem>
+                    <SelectItem value="En gestión">En gestión</SelectItem>
+                    <SelectItem value="Negociando">Negociando</SelectItem>
+                    <SelectItem value="Perdido">Perdido</SelectItem>
+                    <SelectItem value="Venta concretada">
+                      Venta concretada
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex gap-3 md:gap-5">
+              <Link href={"/admin/dashboard/leads/edit/n13jhblmkld"}>
+                <Button
+                  variant="outline"
+                  className="flex gap-2 p-2 w-fit h-fit"
+                >
+                  <span className="hidden lg:block">Editar lead</span>
+                  <FaRegEdit size={20} className="w-fit h-fit" />
+                </Button>
+              </Link>
+              <div>
+                <Button
+                  onClick={() =>
+                    openDeleteModal({
+                      leadName: "Leandro Tosunian",
+                      uuid: "ausgyhbe123b4",
+                    })
+                  }
+                  variant={"destructive"}
+                  className="flex gap-2 p-2 w-fit h-fit"
+                >
+                  <span className="hidden lg:block">Eliminar lead</span>
+                  <RiDeleteBin2Line size={20} className="w-fit h-fit" />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -390,11 +482,41 @@ const LeadDetails = () => {
                       <b>Vendedor:</b> 
                     </span>
                   </div> */}
-                  <div className="flex items-center gap-2 w-fit h-fit">
+                  {/* <div className="flex gap-2 md:hidden">
                     <span className="text-sm">
-                      <b>Estado:</b> {lead?.status}
+                      <b>Estado:</b>
                     </span>
-                  </div>
+                    {lead?.status === "Pendiente" && (
+                      <span className="inline-flex items-center bg-yellow-100 text-yellow-700 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-800 dark:text-yellow-100">
+                        <span className="w-2 h-2 bg-yellow-500 rounded-full me-1"></span>
+                        Pendiente
+                      </span>
+                    )}
+                    {lead?.status === "En gestión" && (
+                      <span className="inline-flex items-center bg-yellow-100 text-yellow-700 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-800 dark:text-yellow-100">
+                        <span className="w-2 h-2 bg-yellow-500 rounded-full me-1"></span>
+                        En gestión
+                      </span>
+                    )}
+                    {lead?.status === "Negociando" && (
+                      <span className="inline-flex items-center bg-yellow-100 text-yellow-700 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-800 dark:text-yellow-100">
+                        <span className="w-2 h-2 bg-yellow-500 rounded-full me-1"></span>
+                        Negociando
+                      </span>
+                    )}
+                    {lead?.status === "Perdido" && (
+                      <span className="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:bg-opacity-65 dark:text-red-200">
+                        <span className="w-2 h-2 bg-red-500 rounded-full me-1"></span>
+                        Perdido
+                      </span>
+                    )}
+                    {lead?.status === "Venta concretada" && (
+                      <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                        <span className="w-2 h-2 bg-green-500 rounded-full me-1"></span>
+                        Venta concretada
+                      </span>
+                    )}
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -406,9 +528,15 @@ const LeadDetails = () => {
                 <span className="font-semibold">Observaciones</span>
                 <Separator className="" />
               </div>
-              <textarea className="w-full h-full p-3 mt-2 text-sm border rounded-md">
-                Llamar luego de las 16hs por horario laboral
-              </textarea>
+              <div className="flex flex-col gap-4">
+                <textarea
+                  onChange={(e) => setObservations(e.target.value)}
+                  value={observations}
+                  placeholder="Añadí alguna nota sobre el lead"
+                  className="w-full min-h-[110px] p-3 mt-2 text-sm border rounded-md h-fit"
+                ></textarea>
+                <Button onClick={handleSaveObservations}>Guardar</Button>
+              </div>
             </div>
           </div>
         </div>
@@ -417,9 +545,9 @@ const LeadDetails = () => {
       {/* interested in section */}
       <Separator className="my-10" />
 
-      <div className="flex flex-col w-full gap-10 md:gap-0 md:flex-row h-fit">
+      <div className="flex flex-col justify-center w-full gap-10 md:gap-0 md:flex-row h-fit">
         {/* Vehiculo de interés */}
-        <div className="w-full md:w-1/2">
+        <div className="w-fit">
           <span className="text-xl font-semibold">Vehiculo de interés</span>
           <div className="flex flex-col items-center justify-center gap-5 mt-8 sm:items-start">
             <div className="h-full max-w-full sm:max-w-[300px] ">
@@ -457,7 +585,7 @@ const LeadDetails = () => {
                   <CardFooter className="w-full p-4">
                     <Link
                       className="w-full h-full"
-                      href={"/admin/dashboard/leads/" + lead?._id}
+                      href={"/admin/dashboard/leads/edit/" + lead?._id}
                     >
                       <Button
                         //onClick={() => setSelectedIntIn(car)}
@@ -474,22 +602,84 @@ const LeadDetails = () => {
           </div>
         </div>
 
+        <Separator
+          className="my-auto hidden md:block mx-28 h-[400px] "
+          orientation="vertical"
+        />
+        <Separator className="block my-3 md:hidden" orientation="horizontal" />
         {/* Vehiculo del lead */}
-        <div className="w-full h-full md:w-1/2">
+        <div className="w-full h-full md:w-fit ">
           <span className="text-xl font-semibold">
             Vehiculo del lead{" "}
             <span className="text-base font-normal text-gray-500">
               (opcional)
             </span>
           </span>
-          {}
-          <Link
-            href={"/admin/dashboard/leads/edit/723jkashbl"}
-            className=" opacity-50 flex flex-col items-center justify-center w-full min-h-[350px] h-full"
-          >
-            <IoIosAddCircleOutline size={50} strokeWidth={0} />
-            <span>Añadir vehículo</span>
-          </Link>
+          {leadVehicles?.leadName === "" && (
+            <Link
+              href={"/admin/dashboard/leads/edit/" + lead?._id}
+              className=" opacity-50 flex flex-col items-center justify-center w-full min-h-[350px] h-full"
+            >
+              <IoIosAddCircleOutline size={50} strokeWidth={0} />
+              <span>Añadir vehículo</span>
+            </Link>
+          )}
+          {leadVehicles?.leadName !== "" && (
+            <div>
+              <div className="flex flex-col items-center justify-center gap-5 mt-8 sm:items-start">
+                <div className="h-full max-w-full sm:max-w-[300px] ">
+                  <Card className="flex flex-col h-full shadow-lg">
+                    <Image
+                      src={leadVehicles?.leadVehicleImage!}
+                      alt=""
+                      unoptimized
+                      width={500}
+                      height={500}
+                      className="object-cover h-full mb-4 overflow-hidden md:h-1/2 rounded-t-md "
+                    />
+                    <div className="flex flex-col justify-between w-full h-fit md:h-1/2">
+                      <CardHeader style={{ padding: "0 16px 10px 16px" }}>
+                        <CardTitle className="text-base textCut">
+                          {/* {car.name} */}
+                          {leadVehicles?.leadName}
+                        </CardTitle>
+                        <CardDescription className="flex items-center justify-between w-full pt-1 pb-2 ">
+                          <div className="flex items-center gap-2">
+                            {/* <FaRegCalendar /> <span>{car.year}</span> */}
+                            <FaRegCalendar />{" "}
+                            <span> {leadVehicles?.leadYear}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <IoSpeedometerOutline size={20} />
+                            {/* <span> {car.kilometers} km</span> */}
+                            <span> {leadVehicles?.leadKilometers} km</span>
+                          </div>
+                        </CardDescription>
+                        <span className="text-lg font-semibold">
+                          {leadVehicles?.leadCurrency} $
+                          {leadVehicles?.leadPrice}
+                        </span>
+                      </CardHeader>
+                      <CardFooter className="w-full p-4">
+                        <Link
+                          className="w-full h-full"
+                          href={"/admin/dashboard/leads/edit/" + lead?._id}
+                        >
+                          <Button
+                            //onClick={() => setSelectedIntIn(car)}
+                            variant={"default"}
+                            className="w-full mt-2 md:mt-0"
+                          >
+                            Editar vehículo
+                          </Button>
+                        </Link>
+                      </CardFooter>
+                    </div>
+                  </Card>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -660,14 +850,23 @@ const LeadDetails = () => {
                         <>
                           <Card className="flex items-center justify-between px-4 py-4">
                             <div className="flex flex-col w-full gap-3 pr-5">
+                              <div className="w-fit h-fit">
+                                <span className="inline-flex items-center bg-yellow-100 text-yellow-700 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-800 dark:text-yellow-100">
+                                  <span className="w-2 h-2 bg-yellow-500 rounded-full me-1"></span>
+                                  Pendiente
+                                </span>
+                              </div>
                               <h4 className="font-semibold">{task.title}</h4>
-                              <Separator className="" />
-                              <span className="text-sm">
-                                <b>Día a realizar:</b>{" "}
-                                {dayjs(task.dateToDo).format(
-                                  "dddd D [de] MMMM "
-                                )}
-                              </span>
+                              <Separator className="mb-1" />
+                              <div className="flex items-center gap-2">
+                                <FiClock size={14} />
+                                <span className="text-xs sm:text-sm">
+                                  <b>Día a realizar:</b>{" "}
+                                  {dayjs(task.dateToDo).format(
+                                    "dddd D [de] MMMM "
+                                  )}
+                                </span>
+                              </div>
                             </div>
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
@@ -760,6 +959,10 @@ const LeadDetails = () => {
           </>
         )}
       </div>
+      <Separator className="my-10" />
+      {/* budgets history */}
+      <LeadBudgetsList budgets={budgets} />
+      {/* budgets history */}
 
       {/* delete lead modal */}
       <div className="px-10 rounded-md">

@@ -54,7 +54,7 @@ const NewProducts = ({ vehicles }: Props) => {
   const plugin = React.useRef(
     Autoplay({ delay: 3500, stopOnInteraction: false })
   );
-  
+
   return (
     <>
       <section className="flex flex-col justify-center w-full gap-10 py-20 align-middle">
@@ -90,7 +90,7 @@ const NewProducts = ({ vehicles }: Props) => {
             </h4>
           </div>
           <div className="flex justify-center mt-4 w-fit h-fit">
-            <Link href={'/vehicles'} className="w-fit h-fit">
+            <Link href={"/vehicles"} className="w-fit h-fit">
               <button className={`${stylesSearch.button}`}>
                 Ver todos los vehículos
               </button>{" "}
@@ -172,6 +172,17 @@ const NewProducts = ({ vehicles }: Props) => {
             <Button onClick={() => api?.scrollTo(current - 1)}>-</Button>
             <Button onClick={() => api?.scrollTo(current + 1)}>+</Button>
           </div> */}
+        </div>
+        {/* Custom Indicators */}
+        <div className="flex justify-center space-x-2 ">
+          {latestVehicles.map((dot, index) => (
+            <button
+              key={dot.uuid}
+              className={`w-2 h-2 rounded-full ${
+                index  === current ? "bg-black" : "bg-gray-300"
+              }`}
+            />
+          ))}
         </div>
         <div className="flex justify-center w-full mt-4 md:hidden h-fit">
           <Link className="w-fit h-fit" href={"/vehicles"}>

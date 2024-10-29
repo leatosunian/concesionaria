@@ -59,7 +59,7 @@ export default function Header() {
       style={{ zIndex: "1000000" }}
       className={`text-white fixed w-full transition-colors duration-300 ${navbarBg} ${styles.navCont}`}
     >
-      <div className="mx-auto max-w-7xl ">
+      <div className="mx-auto max-w-8xl ">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <motion.div
@@ -76,69 +76,122 @@ export default function Header() {
                   setOpenDropdown("");
                 }}
               >
-                <Image className="hidden md:block" style={{width:'170px'}} src={logo} alt="SacaTurno" />
-                <Image className="block w-36 md:hidden" src={logo} alt="SacaTurno" />
+                <Image
+                  className="hidden md:block"
+                  style={{ width: "170px" }}
+                  src={logo}
+                  alt="SacaTurno"
+                />
+                <Image
+                  className="block w-36 md:hidden"
+                  src={logo}
+                  alt="SacaTurno"
+                />
               </Link>
             </motion.div>
           </div>
-          <motion.div
-            style={{ zIndex: "9999999" }}
-            className="hidden md:block"
-            transition={{ duration: 0.5, ease: "circInOut" }}
-            initial={{ opacity: 0, y: -100 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <div className="flex items-baseline ml-10 space-x-5">
-              <Link
-                href="/vehicles"
-                onClick={() => {
-                  setOpenDropdown("");
-                }}
-                className="px-3 py-2 text-xs font-medium transition-colors duration-300 rounded-md "
-              >
-                Nuestros vehículos
-              </Link>
-              <Link
-                href="/aboutus"
-                className="px-3 py-2 text-xs font-medium transition-colors duration-300 rounded-md "
-                onClick={() => {
-                  setOpenDropdown("");
-                }}
-              >
-                Sobre nosotros
-              </Link>
-              <Link
-                href="/contactus"
-                className="px-3 py-2 text-xs font-medium transition-colors duration-300 rounded-md "
-                onClick={() => {
-                  setOpenDropdown("");
-                }}
-              >
-                Contactanos
-              </Link>
-            </div>
-          </motion.div>
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md "
+          <div className="flex items-center">
+            <motion.div
+              style={{ zIndex: "9999999" }}
+              className="items-center hidden md:gap-12 xl:gap-14 md:flex"
+              transition={{ duration: 0.5, ease: "circInOut" }}
+              initial={{ opacity: 0, y: -100 }}
+              animate={{ opacity: 1, y: 0 }}
             >
-              <span className="sr-only">Open main menu</span>
-              {isOpen ? (
-                <RxCross2
-                  size={28}
-                  style={{ zIndex: "99999999" }}
-                  color="white"
-                />
-              ) : (
-                <RxHamburgerMenu
-                  size={25}
-                  color="white"
-                  style={{ zIndex: "99999999" }}
-                  className="block w-6 h-6"
-                />
-              )}
-            </button>
+              <div className="flex items-baseline ml-10 space-x-5">
+                <Link
+                  href="/vehicles"
+                  style={{ fontSize: "11px" }}
+                  onClick={() => {
+                    setOpenDropdown("");
+                  }}
+                  className="px-3 py-2 text-xs font-semibold uppercase transition-colors duration-300 rounded-md "
+                >
+                  Nuestros vehículos
+                </Link>
+                <Link
+                  href="/aboutus"
+                  style={{ fontSize: "11px" }}
+                  className="px-3 py-2 text-xs font-semibold uppercase transition-colors duration-300 rounded-md "
+                  onClick={() => {
+                    setOpenDropdown("");
+                  }}
+                >
+                  Sobre nosotros
+                </Link>
+                <Link
+                  href="/contactus"
+                  style={{ fontSize: "11px" }}
+                  className="px-3 py-2 text-xs font-semibold uppercase transition-colors duration-300 rounded-md "
+                  onClick={() => {
+                    setOpenDropdown("");
+                  }}
+                >
+                  Contactanos
+                </Link>
+              </div>
+
+              <form className="max-w-lg mx-auto">
+                <div className="flex">
+                  <label className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
+                    Your Email
+                  </label>
+
+                  <div className="relative w-full">
+                    <input
+                      type="search"
+                      id="search-dropdown"
+                      className="z-20 block w-full px-2 py-1.5 text-xs text-gray-900 border border-gray-300 rounded-lg bg-gray-50 border-s-gray-50 border-s-2 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-red-500"
+                      placeholder="Buscar un vehículo "
+                      required
+                    />
+                    <button
+                      type="submit"
+                      className="absolute top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-red-700 rounded-e-lg border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+                    >
+                      <svg
+                        className="w-2.5 h-2.5"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                        />
+                      </svg>
+                      <span className="sr-only">Search</span>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </motion.div>
+            <div className="md:hidden">
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="inline-flex items-center justify-center p-2 rounded-md "
+              >
+                <span className="sr-only">Open main menu</span>
+                {isOpen ? (
+                  <RxCross2
+                    size={28}
+                    style={{ zIndex: "99999999" }}
+                    color="white"
+                  />
+                ) : (
+                  <RxHamburgerMenu
+                    size={25}
+                    color="white"
+                    style={{ zIndex: "99999999" }}
+                    className="block w-6 h-6"
+                  />
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -29,6 +29,7 @@ import styles from "@/app/css-modules/dashboard/leads/newleadform.module.css";
 import Image from "next/image";
 import {
   Card,
+  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -52,7 +53,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Camera, Check, ChevronsUpDown } from "lucide-react";
 import { carBrands } from "@/app/utils/carBrands";
 import { cn } from "@/lib/utils";
 import { IAdmin } from "@/app/models/admin";
@@ -62,10 +63,10 @@ import { ILead } from "@/app/models/lead";
 interface props {
   onChangeFormStep: () => void;
   createdLeadData: ILead | undefined;
-
 }
 
-const NewLeadForm = ({ onChangeFormStep, createdLeadData  }: props) => {
+const NewLeadForm = ({ onChangeFormStep, createdLeadData }: props) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -96,6 +97,7 @@ const NewLeadForm = ({ onChangeFormStep, createdLeadData  }: props) => {
   const searchFilter = searchParams.get("search");
   const [employees, setEmployees] = useState<IAdmin[]>([]);
   const [selectedIntIn, setSelectedIntIn] = useState<ICar>();
+  const [intInImage, setIntInImage] = useState<File>();
   const { toast } = useToast();
 
   async function getCars(searchParam: string) {
@@ -118,20 +120,45 @@ const NewLeadForm = ({ onChangeFormStep, createdLeadData  }: props) => {
 
   // create lead vehicles function
   async function onSubmit(values: any) {
-    setLoading(true)
-    console.log(values);
+    setLoading(true);
+    if (!selectedIntIn) {
+      setLoading(false);
+      toast({
+        description: "Selecciona un vehiculo de interés",
+        variant: "destructive",
+      });
+      return;
+    }
     values.leadPrefVehicleUUID = selectedIntIn?.uuid;
     values.leadID = createdLeadData?._id;
-    values.interestedIn = selectedIntIn?.name
+    values.interestedIn = selectedIntIn?.name;
+
+    let formData = new FormData();
+    formData.append("leadVehicleImage", intInImage!);
+    formData.append("leadName", values.leadName);
+    formData.append("leadYear", values.leadYear);
+    formData.append("leadKilometers", values.leadKilometers);
+    formData.append("leadMotor", values.leadMotor);
+    formData.append("leadType", values.leadType);
+    formData.append("leadCurrency", values.leadCurrency);
+    formData.append("leadPrice", values.leadPrice);
+    formData.append("interestedIn", selectedIntIn?.name!);
+    formData.append("leadID", createdLeadData?._id!);
+    formData.append("leadPrefVehicleUUID", selectedIntIn?.uuid!);
+    formData.append("leadObservations", values.leadObservations);
+
+    console.log("leadVehicleImage", intInImage);
+
     try {
       const vehicle = await fetch("/api/leads/vehicles", {
         method: "POST",
-        body: JSON.stringify(values),
+        body: formData,
       }).then((response) => response.json());
-      toast({ description: "Vehículos añadidos", variant: "default" });
+      console.log(vehicle);
 
+      toast({ description: "Vehículos añadidos", variant: "default" });
       onChangeFormStep();
-      setLoading(false)
+      setLoading(false);
 
       console.log(vehicle);
     } catch (error) {
@@ -139,7 +166,7 @@ const NewLeadForm = ({ onChangeFormStep, createdLeadData  }: props) => {
         description: "Error al añadir vehículos",
         variant: "destructive",
       });
-      setLoading(false)
+      setLoading(false);
       // error alert
     }
   }
@@ -165,6 +192,10 @@ const NewLeadForm = ({ onChangeFormStep, createdLeadData  }: props) => {
   useEffect(() => {
     console.log(vehicleList);
   }, [vehicleList]);
+
+  const handleFileInputRefClick = () => {
+    fileInputRef.current?.click();
+  };
 
   return (
     <>
@@ -223,8 +254,9 @@ const NewLeadForm = ({ onChangeFormStep, createdLeadData  }: props) => {
                         className="flex flex-col h-full shadow-lg"
                       >
                         <Image
-                          src={`/api/gallery/getimage/${car.imagePath}`}
+                          src={car.imagePath!}
                           alt=""
+                          unoptimized
                           width={500}
                           height={500}
                           className="object-cover h-full mb-4 overflow-hidden md:h-1/2 rounded-t-md "
@@ -270,7 +302,7 @@ const NewLeadForm = ({ onChangeFormStep, createdLeadData  }: props) => {
                   <div className="col-span-1 md:h-full h-fit">
                     <Card className="flex flex-col h-full shadow-lg">
                       <Image
-                        src={`/api/gallery/getimage/${selectedIntIn?.imagePath}`}
+                        src={selectedIntIn?.imagePath!}
                         alt=""
                         width={500}
                         height={500}
@@ -320,65 +352,218 @@ const NewLeadForm = ({ onChangeFormStep, createdLeadData  }: props) => {
               (opcional)
             </span>
           </span>
+
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <div className="">
-                <div className="grid grid-cols-1 gap-4 mt-6 md:gap-10 md:grid-cols-2">
-                  {/* product name */}
-                  <div className="flex flex-col gap-4 md:gap-8">
-                    <FormField
-                      control={form.control}
-                      name="leadName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Nombre del vehiculo</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Ej. Chevrolet Cruze LTZ 1.4T"
-                              type="text"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <div className="flex col-span-2 gap-2">
+            <form className="mt-5" onSubmit={form.handleSubmit(onSubmit)}>
+              <div className="flex flex-col w-full gap-0 xl:gap-10 h-fit xl:flex-row">
+                {/* thumbnail */}
+                <div
+                  className="mx-auto my-5 rounded-full max-w-[350px]  w-fit h-fit inputFileFormProfile"
+                  title="Cambiar miniatura"
+                >
+                  {intInImage === undefined && (
+                    <>
+                      <CardContent className="w-[300px] h-[300px] xl:w-[350px] xl:h-[350px]  p-0">
+                        <Button
+                          variant="outline"
+                          className="flex flex-col items-center justify-center w-full h-full border-2 border-dashed border-muted-foreground/25 hover:border-muted-foreground/50"
+                          onClick={handleFileInputRefClick}
+                          type="button"
+                        >
+                          <Camera className="w-12 h-12 mb-4 text-muted-foreground" />
+                          <span className="text-sm text-muted-foreground">
+                            Seleccionar miniatura
+                          </span>
+                        </Button>
+                        <Input
+                          type="file"
+                          className="w-0 h-0 overflow-hidden sr-only"
+                          ref={fileInputRef}
+                          name="image_file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files![0];
+                            console.log(file);
+                            setIntInImage(file);
+                            //uploadImage(file);
+                          }}
+                        />
+                      </CardContent>
+                    </>
+                  )}
+                  {intInImage && (
+                    <>
+                      <Image
+                        width={500}
+                        height={500}
+                        className="object-cover w-full overflow-hidden rounded-lg "
+                        src={URL.createObjectURL(intInImage)}
+                        alt=""
+                        onClick={handleFileInputRefClick}
+                        unoptimized
+                      />
+                      <Input
+                        type="file"
+                        className="w-0 h-0 overflow-hidden sr-only"
+                        ref={fileInputRef}
+                        name="image_file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files![0];
+                          console.log(file);
+                          setIntInImage(file);
+                          //uploadImage(file);
+                        }}
+                      />
+                    </>
+                  )}
+                </div>
+
+                <div className="">
+                  <div className="grid grid-cols-1 gap-4 mt-6 md:gap-10 md:grid-cols-2">
+                    {/* product name */}
+                    <div className="flex flex-col gap-4 md:gap-8">
                       <FormField
                         control={form.control}
-                        name="leadCurrency"
+                        name="leadName"
                         render={({ field }) => (
-                          <FormItem className="w-fit">
-                            <FormLabel>Precio</FormLabel>
+                          <FormItem>
+                            <FormLabel>Nombre del vehiculo</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Ej. Chevrolet Cruze LTZ 1.4T"
+                                type="text"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <div className="flex col-span-2 gap-2">
+                        <FormField
+                          control={form.control}
+                          name="leadCurrency"
+                          render={({ field }) => (
+                            <FormItem className="w-fit">
+                              <FormLabel>Precio</FormLabel>
+                              <Select
+                                defaultValue={field.value}
+                                onValueChange={field.onChange}
+                                {...field}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="ARS">ARS</SelectItem>
+                                  <SelectItem value="USD">USD</SelectItem>
+                                </SelectContent>
+                              </Select>
+
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="leadPrice"
+                          render={({ field }) => (
+                            <FormItem className="w-full">
+                              <FormLabel className="opacity-0">-</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="Ingresa un precio"
+                                  type="number"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+                    {/* year and brand */}
+                    <div className="grid grid-cols-1 gap-4 md:gap-8 md:grid-cols-2">
+                      <FormField
+                        control={form.control}
+                        name="leadType"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Tipo de vehículo</FormLabel>
                             <Select
-                              defaultValue={field.value}
                               onValueChange={field.onChange}
                               {...field}
+                              defaultValue={field.value}
                             >
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="" />
+                                  <SelectValue placeholder="Seleccionar" />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="ARS">ARS</SelectItem>
-                                <SelectItem value="USD">USD</SelectItem>
+                                <SelectItem value="CAR">Automóvil</SelectItem>
+                                <SelectItem value="BIKE">
+                                  Motocicleta
+                                </SelectItem>
+                                <SelectItem value="QUAD">
+                                  Cuatriciclo
+                                </SelectItem>
+                                <SelectItem value="UTV">UTV</SelectItem>
                               </SelectContent>
                             </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
+                      <FormField
+                        control={form.control}
+                        name="leadKilometers"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Kilómetros</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Ingresa un kilometraje"
+                                type="number"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="leadMotor"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Motor</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Ej. 2.0 TSI"
+                                type="text"
+                                {...field}
+                              />
+                            </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
                       <FormField
                         control={form.control}
-                        name="leadPrice"
+                        name="leadYear"
                         render={({ field }) => (
-                          <FormItem className="w-full">
-                            <FormLabel className="opacity-0">-</FormLabel>
+                          <FormItem>
+                            <FormLabel>Año</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Ingresa un precio"
+                                placeholder="Ingresa un año"
                                 type="number"
                                 {...field}
                               />
@@ -389,108 +574,39 @@ const NewLeadForm = ({ onChangeFormStep, createdLeadData  }: props) => {
                       />
                     </div>
                   </div>
-                  {/* year and brand */}
-                  <div className="grid grid-cols-1 gap-4 md:gap-8 md:grid-cols-2">
-                    <FormField
-                      control={form.control}
-                      name="leadType"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Tipo de vehículo</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            {...field}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Seleccionar" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="CAR">Automóvil</SelectItem>
-                              <SelectItem value="BIKE">Motocicleta</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="leadKilometers"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Kilómetros</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Ingresa un kilometraje"
-                              type="number"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="leadMotor"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Motor</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Ej. 2.0 TSI"
-                              type="text"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="leadYear"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Año</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Ingresa un año"
-                              type="number"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                  <FormField
+                    control={form.control}
+                    name="leadObservations"
+                    render={({ field }) => (
+                      <FormItem className="w-full pr-0 mt-4 md:mt-8 md:w-1/2 md:pr-5 ">
+                        <FormLabel>
+                          Observaciones <span className="">(opcional)</span>
+                        </FormLabel>
+                        <Textarea
+                          {...field}
+                          placeholder="Ingresa una descripción"
+                        />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
-                <FormField
-                  control={form.control}
-                  name="leadObservations"
-                  render={({ field }) => (
-                    <FormItem className="w-full pr-0 mt-4 md:mt-8 md:w-1/2 md:pr-5 ">
-                      <FormLabel>
-                        Observaciones <span className="">(opcional)</span>
-                      </FormLabel>
-                      <Textarea
-                        {...field}
-                        placeholder="Ingresa una descripción"
-                      />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
               </div>
-              <Button type="submit" className="w-full mt-12 mb-5 md:w-1/3">
-                Añadir vehículos al lead
-              </Button>
+
+              <div></div>
+
+              <div className="flex flex-col justify-center w-full gap-5 my-12 md:flex-row md:gap-8">
+                <Button
+                  type="button"
+                  variant={"outline"}
+                  className="w-full md:w-1/3"
+                >
+                  Añadir mas tarde
+                </Button>
+                <Button type="submit" className="w-full md:w-1/3">
+                  Finalizar
+                </Button>
+              </div>
             </form>
           </Form>
         </>

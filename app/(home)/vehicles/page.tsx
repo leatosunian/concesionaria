@@ -53,6 +53,8 @@ import { ICar } from "@/app/models/car";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import LoaderFullscreen from "@/components/page/LoaderFullscreen";
 import Link from "next/link";
+import { FaRegCalendar } from "react-icons/fa";
+import { IoSpeedometerOutline } from "react-icons/io5";
 
 const Page = () => {
   const [open, setOpen] = useState(false);
@@ -493,51 +495,60 @@ const Page = () => {
                 <div
                   className={`${styles.vehiclesCont} xl:gap-10 gap-14 2xl:gap-12 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 py-5 md:py-0 pl-0 lg:pl-10   `}
                 >
-                  {currentVehicles.length > 0 && currentVehicles.map((car) => (
-                    <>
-                      <div
-                        key={car.uuid}
-                        className="col-span-1 md:h-full h-fit"
-                      >
-                        <Card className="flex flex-col h-full shadow-lg">
-                          <Image
-                            src={car?.imagePath!}
-                            alt="auto"
-                            width={500}
-                            height={500}
-                            unoptimized
-                            className="object-cover h-full mb-4 overflow-hidden md:h-1/2 rounded-t-md"
-                          />
-                          <div className="flex flex-col justify-between w-full h-full md:h-1/2">
-                            <CardHeader style={{ padding: "0 16px 10px 16px" }}>
-                              <CardTitle className="text-base textCut">
-                                {car.name}
-                              </CardTitle>
-                              <CardDescription>
-                                {car.year} - {car.kilometers} km
-                              </CardDescription>
-                              <p className="text-lg font-semibold">
-                                {car.currency} ${car.price}
-                              </p>
-                            </CardHeader>
-                            <CardFooter className="px-4 pb-5 mt-2 md:mt-0">
-                              <Link
-                                onClick={() => {
-                                  setLoading(true);
-                                }}
-                                href={`/vehicles/${car.uuid}`}
-                                className="w-full h-fit"
+                  {currentVehicles.length > 0 &&
+                    currentVehicles.map((car) => (
+                      <>
+                        <div
+                          key={car.uuid}
+                          className="col-span-1 md:h-full h-fit"
+                        >
+                          <Card className="flex flex-col h-full shadow-lg">
+                            <Image
+                              src={car?.imagePath!}
+                              alt="auto"
+                              width={500}
+                              height={500}
+                              unoptimized
+                              className="object-cover h-full mb-4 overflow-hidden rounded-t-md md:h-1/2 "
+                            />
+                            <div className="flex flex-col justify-between w-full h-full md:h-1/2">
+                              <CardHeader
+                                style={{ padding: "0 16px 0px 16px" }}
                               >
-                                <Button variant={"default"} className="w-full">
-                                  Ver más
-                                </Button>
-                              </Link>
-                            </CardFooter>
-                          </div>
-                        </Card>
-                      </div>
-                    </>
-                  ))}
+                                <CardTitle className="text-lg textCut">
+                                  {car.name}
+                                </CardTitle>
+                                <CardDescription className="flex items-center justify-between w-full pt-1 pb-2 ">
+                                  <div className="flex items-center gap-2">
+                                    <FaRegCalendar /> <span>{car.year}</span>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <IoSpeedometerOutline size={20} />
+                                    <span> {car.kilometers} km</span>
+                                  </div>
+                                </CardDescription>
+                                <p className="text-lg font-semibold">
+                                  {car.currency} ${car.price}
+                                </p>
+                              </CardHeader>
+                              <CardFooter className="px-4 pb-5 mt-5 md:mt-0">
+                                <Link
+                                  href={`/vehicles/${car.uuid}`}
+                                  className="w-full h-fit"
+                                >
+                                  <Button
+                                    variant={"default"}
+                                    className="w-full"
+                                  >
+                                    Ver más
+                                  </Button>
+                                </Link>
+                              </CardFooter>
+                            </div>
+                          </Card>
+                        </div>
+                      </>
+                    ))}
                 </div>
                 {/* pagination */}
                 <div className="mt-10 md:mt-20">

@@ -63,12 +63,14 @@ export async function PUT(
   await connectDB();
   const { id } = params;
   const data: ILead = await request.json();
+  console.log(data);
+  
   try {
-    const user = await LeadModel.findOneAndUpdate({ _id: id }, data, {
+    const updatedLead = await LeadModel.findOneAndUpdate({ _id: id }, data, {
       new: true,
     });
-    return NextResponse.json(user);
+    return NextResponse.json(updatedLead);
   } catch (error) {
-    return NextResponse.json({ msg: "ERROR_EDIT_CAR" });
+    return NextResponse.json({ msg: "ERROR_EDIT_LEAD" });
   }
 }

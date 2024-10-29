@@ -1,8 +1,8 @@
 .navCont {
-  padding: 0 10%;
+  padding: 0 8%;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1224px) {
   .navCont {
     padding: 0 1rem;
   }

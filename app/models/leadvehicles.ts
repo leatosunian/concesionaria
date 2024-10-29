@@ -13,6 +13,7 @@ export interface ILeadVehicle extends Document {
   leadPrefVehicleUUID: string;
   leadID: string;
   _id?: string;
+  leadVehicleImage?: string;
 }
 
 const leadVehiclesSchema: Schema = new Schema<ILeadVehicle>(
@@ -62,6 +63,10 @@ const leadVehiclesSchema: Schema = new Schema<ILeadVehicle>(
       type: String,
       required: false,
     },
+    leadVehicleImage: {
+      type: String,
+      required: true,
+    }
   },
   {
     timestamps: true,

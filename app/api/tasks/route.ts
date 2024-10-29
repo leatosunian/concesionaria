@@ -1,3 +1,4 @@
+import LeadModel from "@/app/models/lead";
 import TaskModel from "@/app/models/task";
 import connectDB from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
@@ -5,16 +6,38 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(request: NextRequest) {
   await connectDB();
   const data = await request.json();
-  data.status = "Pendiente"
+  data.status = "Pendiente";
   console.log(data);
   try {
+    // chequear que el lead no tenga tareas anteriores para cambiar status de lead a "En gestión"
+    const existsTask = await TaskModel.find({ leadID: data.leadID });
+
     const newTask = await TaskModel.create(data);
-    return NextResponse.json({ msg: "TASK_CREATED", newTask });
+
+    if (existsTask.length === 0) {
+      const updatedLead = await LeadModel.findOneAndUpdate(
+        { _id: data.leadID },
+        { status: "En gestión", pendingTask: data.title },
+        {
+          new: true,
+        }
+      );
+      return NextResponse.json({ msg: "TASK_CREATED", newTask, updatedLead });
+    } else {
+      const updatedLead = await LeadModel.findOneAndUpdate(
+        { _id: data.leadID },
+        { pendingTask: data.title },
+        {
+          new: true,
+        }
+      );
+      return NextResponse.json({ msg: "TASK_CREATED", newTask, updatedLead });
+    }
+
   } catch (error) {
     return NextResponse.json({ msg: "TASK_CREATION_ERROR" });
   }
 }
-
 
 export async function PUT(request: NextRequest) {
   await connectDB();

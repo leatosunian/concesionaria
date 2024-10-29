@@ -69,11 +69,11 @@ const LeadsChart = () => {
           <TableCaption>Listado de leads.</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead className="md:w-[300px] w-fit">Nombre</TableHead>
-              <TableHead>Estado</TableHead>
-              <TableHead>Veh. de interés</TableHead>
-              <TableHead>Último contacto</TableHead>
-              <TableHead>Próxima tarea</TableHead>
+              <TableHead className="w-fit">Nombre</TableHead>
+              <TableHead className="w-fit">Estado</TableHead>
+              <TableHead className="w-fit">Veh. de interés</TableHead>
+              <TableHead className="w-fit">Último contacto</TableHead>
+              <TableHead className="w-fit">Próxima tarea</TableHead>
 
               <TableHead className="w-10"></TableHead>
             </TableRow>
@@ -85,7 +85,33 @@ const LeadsChart = () => {
                   <TableCell className="font-medium">
                     {lead.name} {lead.surname}
                   </TableCell>
-                  <TableCell className="font-medium">{lead.status}</TableCell>
+                  <TableCell className="font-medium">
+                    {lead?.status === "Pendiente" && (
+                      <span className="inline-flex items-center bg-yellow-100 text-yellow-700 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-800 dark:text-yellow-100">
+                        Pendiente
+                      </span>
+                    )}
+                    {lead?.status === "En gestión" && (
+                      <span className="inline-flex items-center bg-yellow-100 text-yellow-700 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-800 dark:text-yellow-100">
+                        En gestión
+                      </span>
+                    )}
+                    {lead?.status === "Negociando" && (
+                      <span className="inline-flex items-center bg-yellow-100 text-yellow-700 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-800 dark:text-yellow-100">
+                        Negociando
+                      </span>
+                    )}
+                    {lead?.status === "Perdido" && (
+                      <span className="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:bg-opacity-65 dark:text-red-200">
+                        Perdido
+                      </span>
+                    )}
+                    {lead?.status === "Venta concretada" && (
+                      <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                        Venta concretada
+                      </span>
+                    )}
+                  </TableCell>
                   <TableCell className="font-medium">
                     {lead.interestedIn}
                   </TableCell>

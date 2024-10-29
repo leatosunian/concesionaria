@@ -23,6 +23,8 @@ import EmblaCarousel, { EmblaPluginType } from "embla-carousel";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { FaRegCalendar } from "react-icons/fa";
+import { IoSpeedometerOutline } from "react-icons/io5";
 
 interface Props {
   vehicles: ICar[];
@@ -108,22 +110,27 @@ const RelatedVehicles = ({ vehicles }: Props) => {
                           width={500}
                           height={500}
                           unoptimized
-                          className="object-cover h-full mb-4 overflow-hidden rounded-t-md md:h-1/2"
+                          className="object-cover h-full mb-4 overflow-hidden rounded-t-md md:h-1/2 "
                         />
                         <div className="flex flex-col justify-between w-full h-full md:h-1/2">
                           <CardHeader style={{ padding: "0 16px 0px 16px" }}>
-                            <CardTitle className="text-lg">
+                            <CardTitle className="text-lg textCut">
                               {car.name}
                             </CardTitle>
-                            <CardDescription>
-                              {car.year} - {car.kilometers} km
+                            <CardDescription className="flex items-center justify-between w-full pt-1 pb-2 ">
+                              <div className="flex items-center gap-2">
+                                <FaRegCalendar /> <span>{car.year}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <IoSpeedometerOutline size={20} />
+                                <span> {car.kilometers} km</span>
+                              </div>
                             </CardDescription>
                             <p className="text-lg font-semibold">
                               {car.currency} ${car.price}
                             </p>
                           </CardHeader>
                           <CardFooter className="px-4 pb-5 mt-5 md:mt-0">
-                            {/* mt-auto para mantener el botón abajo */}
                             <Link
                               href={`/vehicles/${car.uuid}`}
                               className="w-full h-fit"
@@ -145,6 +152,17 @@ const RelatedVehicles = ({ vehicles }: Props) => {
             <Button onClick={() => api?.scrollTo(current - 1)}>-</Button>
             <Button onClick={() => api?.scrollTo(current + 1)}>+</Button>
           </div> */}
+          {/* Custom Indicators */}
+          <div className="flex justify-center mt-6 space-x-2 md:mt-10">
+            {latestVehicles.map((dot, index) => (
+              <button
+                key={dot.uuid}
+                className={`w-2 h-2 rounded-full ${
+                  index === current ? "bg-black" : "bg-gray-300"
+                }`}
+              />
+            ))}
+          </div>
         </div>
         <div className="flex justify-center w-full mt-4 h-fit">
           <button
