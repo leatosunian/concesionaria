@@ -131,7 +131,7 @@ const Budget = ({
 
   return (
     <>
-      <div ref={budgetRef} className={`${styles.page}  sr-only px-8 text-black`}>
+      <div ref={budgetRef} className={`${styles.page} sr-only px-8 text-black`}>
         {/* header */}
         <div className="flex items-center justify-between text-black h-28">
           <div className="h-fit w-fit">
@@ -627,10 +627,10 @@ const Budget = ({
           {/* resumen de presupuesto */}
         </div>
 
-        <div className="flex flex-col gap-4">
-          <span className="text-xs font-normal text-gray-500">-Este presupuesto es una estimación y está sujeto a cambios sin previo
+        {/* <div className="flex flex-col gap-4">
+          <span className="text-xs font-normal text-black">-Este presupuesto es una estimación y está sujeto a cambios sin previo
           aviso.</span>
-        </div>
+        </div> */}
       </div>
       <Button onClick={generatePDF} className="w-full gap-2 md:w-fit">
         <FiDownload size={20} />

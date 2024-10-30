@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
   await connectDB();
 
   try {
-    const leads = await LeadModel.find();
+    const leads = await LeadModel.find().sort({updatedAt: -1});
     return NextResponse.json({ msg: "LEAD_GET", leads });
   } catch (error) {
     return NextResponse.json({ msg: "GET_LEAD_ERROR" });

@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import LeadVehiclesModel from "@/app/models/leadvehicles";
 import CarModel from "@/app/models/car";
 import TaskModel from "@/app/models/task";
+import AdminModel from "@/app/models/admin";
 
 // GET CAR BY UUID
 export async function GET(
@@ -17,11 +18,13 @@ export async function GET(
     const intInVehicle = await CarModel.findOne({
       uuid: leadVehicles.leadPrefVehicleUUID,
     });
+    const seller = await AdminModel.findOne({_id: lead.employeeID})
     return NextResponse.json({
       msg: "LEAD_GET",
       lead,
       leadVehicles,
       intInVehicle,
+      seller
     });
   } catch (error) {
     return NextResponse.json({ msg: "ERROR_GET_LEAD" });

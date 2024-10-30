@@ -7,17 +7,19 @@ import { Separator } from "@/components/ui/separator";
 import dayjs from "dayjs";
 import React, { useState } from "react";
 import { BiTaskX } from "react-icons/bi";
-import { IoMdMore } from "react-icons/io";
+import { IoMdAdd, IoMdMore } from "react-icons/io";
 import { MdOutlineFileDownload } from "react-icons/md";
 import CreateBudgetDownload from "./CreateBudgetDownload";
+import Link from "next/link";
 
 interface props {
   budgets: IBudget[];
+  leadID: string | undefined;
 }
 
-const LeadBudgetsList = ({ budgets }: props) => {
-  const [budget, setBudget] = useState<IBudget>()
-  const [budgetBonifs, setBudgetBonifs] = useState<IBonif[]>([])
+const LeadBudgetsList = ({ budgets, leadID }: props) => {
+  const [budget, setBudget] = useState<IBudget>();
+  const [budgetBonifs, setBudgetBonifs] = useState<IBonif[]>([]);
 
   async function onDownload(budget: IBudget) {
     console.log(budget);
@@ -26,14 +28,20 @@ const LeadBudgetsList = ({ budgets }: props) => {
       cache: "no-cache",
     }).then((response) => response.json());
     console.log(budgetFetch);
-    setBudget(budgetFetch.budget)
-    setBudgetBonifs(budgetFetch.budgetBonifs)
+    setBudget(budgetFetch.budget);
+    setBudgetBonifs(budgetFetch.budgetBonifs);
   }
   return (
     <>
       <div className="w-full h-full ">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-medium ">Presupuestos</h2>
+          <h2 className="text-xl font-medium md:text-2xl ">Presupuestos</h2>
+          <Link href={`/admin/dashboard/budgets/create/${leadID}`}>
+            <Button variant="outline" className="p-2 w-fit h-fit">
+              <IoMdAdd size={20} className="w-fit h-fit" />
+              <span className="ml-1 ">Presupuestar</span>
+            </Button>
+          </Link>
         </div>
 
         {/* no tasks message */}
@@ -70,18 +78,29 @@ const LeadBudgetsList = ({ budgets }: props) => {
                       Presupuesto N°{budget.budgetNumber}
                     </h4>
                     <Separator className="" />
-                    <span className="text-sm">
-                      <b>Interesado en:</b> {budget.vehicleName}
-                    </span>
-                    {budget.clientVehicleName !== "" && (
-                      <span className="text-sm">
-                        <b>Usado:</b> {budget.clientVehicleName}
-                      </span>
-                    )}
+                    <div className="flex flex-col w-full gap-4 h-fit">
+                      <div className="flex flex-col gap-1 ">
+                        <span className="text-sm font-semibold">
+                          Interesado en
+                        </span>
+                        <span className="text-xs font-medium text-gray-500">
+                          {budget.vehicleName}
+                        </span>
+                      </div>
+                      {budget.clientVehicleName !== "" && (
+                        <div className="flex flex-col gap-1">
+                          <span className="text-sm font-semibold">Usado</span>
+                          <span className="text-xs font-medium text-gray-500">
+                            {budget.clientVehicleName}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                     <Separator className="" />
                     <span className="text-xs">
                       <b>Creado el:</b>{" "}
-                      {dayjs(budget.createdAt).format("dddd D [de] MMMM ")}
+                      {dayjs(budget.createdAt).format("dddd D [de] MMMM ")} por{" "}
+                      {budget.sellerName}
                     </span>
                   </div>
 
@@ -92,7 +111,8 @@ const LeadBudgetsList = ({ budgets }: props) => {
                     }}
                     className="flex gap-2 p-2.5 w-fit h-fit"
                   >
-                    <MdOutlineFileDownload size={20} /> <span className="hidden md:block">Descargar PDF</span>
+                    <MdOutlineFileDownload size={20} />{" "}
+                    <span className="hidden md:block">Descargar PDF</span>
                   </Button>
                 </Card>
               </>
