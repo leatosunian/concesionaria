@@ -18,6 +18,7 @@ import { ILead } from "@/app/models/lead";
 import { useSession } from "next-auth/react";
 import { FiDownload } from "react-icons/fi";
 import dayjs from "dayjs";
+import { useToast } from "@/hooks/use-toast";
 
 interface props {
   intInVehicle: ICar | undefined;
@@ -43,10 +44,11 @@ const Budget = ({
   const budgetRef = useRef<HTMLDivElement>(null);
   const [budgetNumber, setBudgetNumber] = useState<number>(0);
   const [leadData, setLeadData] = useState<ILead>();
-
+  const [loading, setLoading] = useState<boolean>(false);
   const { data: session }: any = useSession();
   console.log(session);
-
+  const { toast } = useToast();
+  
   function createRandomFiveDigits() {
     return Math.floor(10000 + Math.random() * 90000);
   }
@@ -56,7 +58,7 @@ const Budget = ({
 
   async function generatePDF() {
     const data = budgetRef.current;
-
+    setLoading(true);
     try {
       if (data) {
         const canvas = await html2canvas(data, {
@@ -118,11 +120,22 @@ const Budget = ({
             body: JSON.stringify(dataToSave),
           }).then((response) => response.json());
           console.log(savedBudget);
+          toast({ description: "¡Presupuesto creado!", variant: "default" });
+          setLoading(false);
         } catch (error) {
           console.log("error save budget");
+          toast({
+            description: "Error al guardar presupusto",
+            variant: "destructive",
+          });
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      toast({
+        description: "Error al crear presupuesto",
+        variant: "destructive",
+      });
+    }
   }
 
   useEffect(() => {
@@ -131,7 +144,10 @@ const Budget = ({
 
   return (
     <>
-      <div ref={budgetRef} className={`${styles.page} sr-only px-8 text-black`}>
+      <div
+        ref={budgetRef}
+        className={`${styles.page} sr-only overflow-hidden px-8 text-black`}
+      >
         {/* header */}
         <div className="flex items-center justify-between text-black h-28">
           <div className="h-fit w-fit">
@@ -632,10 +648,24 @@ const Budget = ({
           aviso.</span>
         </div> */}
       </div>
-      <Button onClick={generatePDF} className="w-full gap-2 md:w-fit">
-        <FiDownload size={20} />
-        Guardar como PDF
-      </Button>
+      {loading && (
+        <>
+          <div
+            className="flex items-center justify-center w-full my-5 overflow-y-hidden bg-white dark:bg-background"
+            style={{ zIndex: "99999999", height: "40px" }}
+          >
+            <div className=" loaderSmall"></div>
+          </div>
+        </>
+      )}
+      {!loading && (
+        <>
+          <Button onClick={generatePDF} className="w-full gap-2 my-5 md:w-fit">
+            <FiDownload size={20} />
+            Guardar como PDF
+          </Button>
+        </>
+      )}
       {/* <Button onClick={generatePDF}>Guardar</Button> */}
     </>
   );

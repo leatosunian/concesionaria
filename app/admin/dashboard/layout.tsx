@@ -107,7 +107,7 @@ export default function DashboardLayout({
         ></div>
         <div
           id="main-content"
-          className="relative w-full h-full overflow-x-hidden overflow-y-auto bg-white border-l border-gray-200 dark:bg-background dark:border-border lg:ml-64"
+          className="relative w-full h-full overflow-x-hidden overflow-y-hidden bg-white border-l border-gray-200 dark:bg-background dark:border-border lg:ml-64"
         >
           <main>
             <div className="px-4 pt-6">

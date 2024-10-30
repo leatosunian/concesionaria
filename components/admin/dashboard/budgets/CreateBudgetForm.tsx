@@ -380,8 +380,8 @@ const CreateBudgetForm = () => {
             </span>
             {/* title */}
             {/* informacion del cliente */}
-            <Card className="flex p-5 mt-4 ">
-              <div className="w-1/2">
+            <Card className="flex flex-col gap-0 p-5 mt-4 md:gap-10 md:flex-row ">
+              <div className="w-full md:w-1/2 ">
                 <div className="flex flex-col items-start justify-between mb-5 sm:items-center md:flex-row">
                   <div className="flex flex-wrap justify-between w-full gap-2 md:justify-start md:gap-5">
                     <span className="text-xl font-semibold sm:text-xl lg:text-2xl">
@@ -391,7 +391,7 @@ const CreateBudgetForm = () => {
                 </div>
 
                 <div className="flex flex-col w-full gap-10 md:flex-row h-fit">
-                  <div className="flex flex-col justify-between w-full gap-3 md:w-1/2 sm:gap-0 md:gap-5 h-fit">
+                  <div className="flex flex-col justify-between w-full gap-3 sm:gap-0 md:gap-5 h-fit">
                     <div className="flex flex-col w-full gap-3">
                       <span className="text-sm font-semibold">
                         Información de contacto
@@ -418,62 +418,10 @@ const CreateBudgetForm = () => {
                   </div>
                 </div>
               </div>
-
-              <div className="w-1/2">
-                <div className="flex flex-col justify-between w-full gap-2 py-3 mt-5 md:mt-0 md:justify-end sm:gap-5">
-                  {/* <Popover open={open} onOpenChange={setOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-expanded={open}
-                    className="w-[200px] justify-start gap-2"
-                  >
-                    {!selectedLead?.name && <MdPersonSearch size={20} />}
-                    {selectedLead
-                      ? leads?.find((lead) => lead._id === selectedLead._id)
-                          ?.name! +
-                        " " +
-                        leads?.find((lead) => lead._id === selectedLead._id)
-                          ?.surname!
-                      : "Seleccionar cliente"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0">
-                  <Command>
-                    <CommandInput
-                      placeholder="Buscar cliente"
-                      className="h-9"
-                    />
-                    <CommandList>
-                      <CommandEmpty>No framework found.</CommandEmpty>
-                      <CommandGroup>
-                        {leads?.map((lead) => (
-                          <CommandItem
-                            key={lead.name}
-                            value={lead._id}
-                            onSelect={(currentValue) => {
-                              setSelectedLead(lead);
-                              setOpen(false);
-                            }}
-                          >
-                            {lead.name} {lead.surname}
-                            <CheckIcon
-                              className={cn(
-                                "ml-auto h-4 w-4",
-                                selectedLead?.name === lead.name
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover> */}
-                  <div className="grid w-full  max-w-sm items-center gap-1.5">
+              <Separator className="block my-7 md:hidden" orientation="horizontal" />
+              <div className="w-full md:w-1/2">
+                <div className="flex flex-col justify-between w-full py-0 mt-0 gap-7 md:py-3 md:mt-0 md:justify-end sm:gap-8">
+                  <div className="grid w-full max-w-full md:max-w-sm items-center gap-1.5">
                     <Label htmlFor="email">Moneda</Label>
                     <span className="text-xs font-light text-gray-400">
                       Selecciona la divisa en la que querés realizar el
@@ -504,10 +452,10 @@ const CreateBudgetForm = () => {
                   </div>
 
                   {currency === "ARS" && (
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
+                    <div className="grid mb-3 md:mb-0 w-full max-w-sm items-center gap-1.5">
                       <Label htmlFor="email">Cotización del dolar</Label>
                       <span className="text-xs font-light text-gray-400">
-                        Ingresa la cotización del dolar para convertir el precio
+                        Ingresa la cotización del dolar para convertir los montos del presupuesto a peso argentino
                       </span>
                       <Separator
                         className="mt-1 mb-2 "
@@ -531,21 +479,6 @@ const CreateBudgetForm = () => {
               </div>
             </Card>
             {/* informacion del cliente */}
-
-            {/* gastos de transferencia */}
-            <div className="flex flex-col justify-between w-full gap-1 mt-5 md:hidden md:mt-0 md:justify-end sm:gap-5 ">
-              <div className="grid mt-10 w-full max-w-sm items-center gap-1.5">
-                <Label htmlFor="email">Gastos de transferencia</Label>
-                <Separator className="mt-1 mb-4 " orientation="horizontal" />
-                <Input
-                  type="number"
-                  id="transferPrice"
-                  placeholder="Ingresá una cifra"
-                  step="0.01"
-                />
-              </div>
-            </div>
-            {/* gastos de transferencia */}
           </Card>
 
           {/* seccion 2 */}
@@ -1004,7 +937,7 @@ const CreateBudgetForm = () => {
               {/* total a pagar */}
             </Card>
 
-            <div className="flex flex-wrap justify-center w-full gap-5 overflow-hidden">
+            <div className="flex flex-wrap justify-center w-full gap-5 overflow-y-hidden">
               <Budget
                 intInVehicle={intInVehicle}
                 intInVehicleBonifs={intInVehicleBonifs}
