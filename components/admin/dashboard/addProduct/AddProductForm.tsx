@@ -52,6 +52,8 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { ICar } from "@/app/models/car";
 import React from "react";
+import { IBranch } from "@/app/models/branch";
+import { useToast } from "@/hooks/use-toast";
 
 const AddProductForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -70,49 +72,77 @@ const AddProductForm = () => {
       doors: "",
       gas: "",
       description: "",
+      branchID: "",
     },
   });
   const router = useRouter();
-
+  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [createdVehicle, setCreatedVehicle] = useState<ICar>();
   const modalButtonRef = useRef<HTMLButtonElement>(null);
+  const [branches, setBranches] = useState<IBranch[]>();
   const handleClick = () => {
     modalButtonRef.current?.click();
   };
+  const { toast } = useToast();
 
   function handleGalleryRedirect() {
     if (createdVehicle) {
       //router.push(
       //  `/admin/dashboard/stock/${createdVehicle.uuid}?scrollToDiv=galleryCont`
       //);
-      router.push(
-        `/admin/dashboard/stock/${createdVehicle.uuid}`
-      );
+      router.push(`/admin/dashboard/stock/${createdVehicle.uuid}`);
     }
   }
 
   // ADD NEW PRODUCT FUNCTION
   async function onSubmit(values: any) {
+    setLoading(true);
     try {
       const vehicle = await fetch("/api/cars", {
         method: "POST",
         body: JSON.stringify(values),
       }).then((response) => response.json());
-      console.log(vehicle);
-
       if (vehicle) {
         setCreatedVehicle(vehicle);
-
+        setLoading(false);
         handleClick();
       }
     } catch (error) {
-      // error alert
+      setLoading(false);
+      toast({
+        description: "Error al crear vehículo",
+        variant: "destructive",
+      });
     }
   }
 
+  async function getBranches() {
+    try {
+      const branchesFetch = await fetch("/api/branches", {
+        method: "GET",
+        cache: "no-cache",
+      }).then((response) => response.json());
+      setBranches(branchesFetch.branches);
+    } catch (error) {}
+  }
+
+  useEffect(() => {
+    getBranches();
+  }, []);
+
   return (
     <>
+      {loading && (
+        <>
+          <div
+            className="flex items-center justify-center w-full overflow-y-hidden bg-white dark:bg-background"
+            style={{ zIndex: "99999999", height: "67vh" }}
+          >
+            <div className=" loader"></div>
+          </div>
+        </>
+      )}
       <Form {...form}>
         <span className="text-xl font-semibold">Información general</span>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -175,6 +205,54 @@ const AddProductForm = () => {
                           {...field}
                         />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* modelname and kilometers */}
+              <div className="grid grid-cols-1 gap-4 md:gap-8 md:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="kilometers"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Kilómetros</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Ingresa un kilometraje"
+                          type="number"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="doors"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Cantidad de puertas</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Seleccionar" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="2P">2 puertas</SelectItem>
+                          <SelectItem value="3P">3 puertas</SelectItem>
+                          <SelectItem value="4P">4 puertas</SelectItem>
+                          <SelectItem value="5P">5 puertas</SelectItem>
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -263,6 +341,7 @@ const AddProductForm = () => {
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
+                      {...field}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -273,7 +352,16 @@ const AddProductForm = () => {
                         <SelectItem value="CAR">Automóvil</SelectItem>
                         <SelectItem value="BIKE">Motocicleta</SelectItem>
                         <SelectItem value="QUAD">Cuatriciclo</SelectItem>
-                        <SelectItem value="UTV">UTV</SelectItem>
+                        <SelectItem value="PICKUP">Pickup</SelectItem>
+                        <SelectItem value="UTILITARY">Utilitario</SelectItem>
+                        <SelectItem value="SUV">SUV</SelectItem>
+                        <SelectItem value="VAN">Van</SelectItem>
+                        <SelectItem value="CONVERTIBLE">Convertible</SelectItem>
+                        <SelectItem value="COUPE">Coupe</SelectItem>
+                        <SelectItem value="HATCHBACK">Hatchback</SelectItem>
+                        <SelectItem value="MOTORHOME">Motorhome</SelectItem>
+                        <SelectItem value="ATV">ATV</SelectItem>
+                        <SelectItem value="SCOOTER">Scooter</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -293,37 +381,17 @@ const AddProductForm = () => {
                   </FormItem>
                 )}
               />
-            </div>
-
-            {/* modelname and kilometers */}
-            <div className="grid grid-cols-1 gap-4 md:gap-8 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="kilometers"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Kilómetros</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Ingresa un kilometraje"
-                        type="number"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
               <FormField
                 control={form.control}
-                name="doors"
+                name="branchID"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Cantidad de puertas</FormLabel>
+                  <FormItem className="w-full">
+                    <FormLabel>Sucursal</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
+                      {...field}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -331,12 +399,14 @@ const AddProductForm = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="2P">2 puertas</SelectItem>
-                        <SelectItem value="3P">3 puertas</SelectItem>
-                        <SelectItem value="4P">4 puertas</SelectItem>
-                        <SelectItem value="5P">5 puertas</SelectItem>
+                        {branches?.map((branch) => (
+                          <SelectItem key={branch._id} value={branch._id!}>
+                            {branch.address}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
+
                     <FormMessage />
                   </FormItem>
                 )}

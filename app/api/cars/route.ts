@@ -24,6 +24,8 @@ export async function GET(request: NextRequest, context: any) {
 export async function POST(request: NextRequest) {
   await connectDB();
   const data = await request.json();
+  console.log(data);
+  
   try {
     const user = await CarModel.create(data);
     return NextResponse.json(user);

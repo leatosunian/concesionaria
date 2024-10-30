@@ -6,7 +6,7 @@ export interface IBranch extends Document {
   city: string;
   state: string;
   address: string;
-  _id?: string;
+  _id?: string | undefined;
 }
 
 const branchSchema: Schema = new Schema<IBranch>(

@@ -2,59 +2,38 @@ import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 import fs from "fs";
 import CarImageModel from "@/app/models/carimage";
+import connectDB from "@/lib/db";
 
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { pathName: string } }
 ) {
-  console.log(params.pathName); // 126799876127980.png
-  const imagePath = path.join(
-    process.cwd(),
-    "public",
-    "carGallery",
-    params.pathName
-  ); // Ruta completa del archivo
+  await connectDB()
+  console.log(params);
+  
   try {
+    console.log(params.pathName)
     const deleteOnDB = await CarImageModel.findOneAndDelete({
-      path: params.pathName,
+      uuid: params.pathName,
     });
-
-    if (!deleteOnDB) {
-      return NextResponse.json(
-        { message: "Image not found in DB" },
-        { status: 404 }
-      );
-    }
-
-    // Luego, elimina el archivo del sistema de archivos
-    if (fs.existsSync(imagePath)) {
-      fs.unlinkSync(imagePath);
-      console.log(`Archivo eliminado: ${imagePath}`);
-    } else {
-      console.log(`El archivo no existe: ${imagePath}`);
-      return NextResponse.json(
-        { message: "File not found on server" },
-        { status: 404 }
-      );
-    }
+    return NextResponse.json({ msg: "IMAGE_DELETED", deleteOnDB });
   } catch (error) {
-    return NextResponse.json({ message: "Image not found" }, { status: 404 });
+    return NextResponse.json(
+      { message: "ERROR_DELETING_IMAGE" },
+      { status: 404 }
+    );
   }
-
-  return NextResponse.json({ msg: "DELETED" });
 }
 
 export async function GET(
   req: NextRequest,
   { params }: { params: { pathName: string } }
 ) {
+  await connectDB()
   try {
     const { pathName } = params;
     // Verificar la ruta completa donde se suben los archivos
-    const filePath = path.join(
-      process.cwd(),
-      `uploads/carGallery/${pathName}`
-    );
+    const filePath = path.join(process.cwd(), `uploads/carGallery/${pathName}`);
     console.log("Buscando el archivo en:", filePath);
 
     // Verificar si el archivo existe

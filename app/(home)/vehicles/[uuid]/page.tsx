@@ -8,7 +8,7 @@ import styles from "@/app/css-modules/vehicles/vehicle/vehicle.module.css";
 import { IoSpeedometerOutline } from "react-icons/io5";
 import { MdOutlineCalendarMonth } from "react-icons/md";
 import { GiGearStickPattern } from "react-icons/gi";
-import { PiGasPump } from "react-icons/pi";
+import { PiEngineBold, PiGasPump } from "react-icons/pi";
 import Footer from "@/components/page/home/Footer";
 import NewProducts from "@/components/page/home/NewProducts";
 import {
@@ -124,7 +124,7 @@ const Page = () => {
               {/* Carousel */}
               <Carousel
                 setApi={setApi}
-                className="relative w-full overflow-hidden rounded-lg aspect-square "
+                className="relative w-full h-full overflow-hidden rounded-lg aspect-square "
                 onMouseEnter={plugin.current.stop}
                 plugins={[plugin.current as any]}
                 opts={{
@@ -133,7 +133,7 @@ const Page = () => {
                 }}
                 onMouseLeave={plugin.current.reset}
               >
-                <CarouselContent>
+                <CarouselContent className="h-full">
                   {gallery.map((image) => (
                     <CarouselItem
                       key={image.uuid}
@@ -146,7 +146,7 @@ const Page = () => {
                         objectFit="cover"
                         height={500}
                         unoptimized
-                        className="object-cover w-full h-full rounded-lg"
+                        className="object-cover w-full h-full my-auto rounded-lg"
                       />
                     </CarouselItem>
                   ))}
@@ -175,7 +175,7 @@ const Page = () => {
               </h4>
 
               {/* vehicle data */}
-              <div className="flex flex-wrap gap-5 mt-2 md:mt-0">
+              <div className="flex flex-wrap mt-2 gap-y-4 gap-x-8 md:mt-0">
                 <div className="flex items-center gap-2 w-fit h-fit">
                   <IoSpeedometerOutline size={25} />
                   <span className="text-sm font-medium">
@@ -210,8 +210,14 @@ const Page = () => {
                     <span className="text-sm font-medium">Diésel</span>
                   )}
                 </div>
+                <div className="flex items-center gap-2 w-fit h-fit">
+                  <PiEngineBold size={25} />
+                  <span className="text-sm font-medium">
+                    {vehicleData?.motor}
+                  </span>
+                </div>
               </div>
-              <div className="w-full h-fit">
+              <div className="w-full mt-4 h-fit">
                 <pre
                   style={{ font: "inherit", textWrap: "wrap" }}
                   className="w-full mt-3 mb-2 text-xs text-gray-500 md:mt-0"

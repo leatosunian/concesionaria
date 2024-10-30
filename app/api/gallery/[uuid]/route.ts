@@ -9,7 +9,7 @@ export async function GET(
   console.log(params.uuid);
 
   try {
-    const images = await CarImageModel.find({ carID: params.uuid });
+    const images = await CarImageModel.find({ carID: params.uuid }).sort({createdAt: -1});
 
     return NextResponse.json(images);
   } catch (error) {

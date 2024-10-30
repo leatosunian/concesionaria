@@ -1,5 +1,9 @@
 import CarList from "@/components/admin/dashboard/stock/CarList";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import Link from "next/link";
 import React from "react";
+import { IoMdAdd } from "react-icons/io";
 
 const carList = [
   {
@@ -78,9 +82,17 @@ const StockList = async () => {
   const cars = await getCars();
   return (
     <>
-      <h3 className="mb-4 text-2xl font-medium md:mb-6 xl:mb-8 ">Mis autos</h3>
+      <div className="flex items-center justify-between ">
+        <h2 className="text-xl font-medium md:text-2xl ">Mis vehículos</h2>
+        <Link href={"/admin/dashboard/stock/add"}>
+          <Button variant="outline" className="flex gap-2 p-2 w-fit h-fit">
+            <IoMdAdd size={20} className="w-fit h-fit" />
+            <span>Crear vehículo</span>
+          </Button>
+        </Link>
+      </div>
+      <Separator className="mt-4 mb-5 md:mt-7 md:mb-8"></Separator>
       <CarList cars={cars} />
-      
     </>
   );
 };

@@ -6,7 +6,24 @@ export interface ICar extends Document {
   year: number;
   kilometers: number;
   motor: string;
-  type: "BIKE" | "CAR" | "QUAD" | "UTV";
+  type:
+    | "BIKE"
+    | "CAR"
+    | "QUAD"
+    | "UTV"
+    | "TRUCK"
+    | "PICKUP"
+    | "UTILITARY"
+    | "SUV"
+    | "VAN"
+    | "MINIVAN"
+    | "CONVERTIBLE"
+    | "COUPE"
+    | "HATCHBACK"
+    | "SEDAN"
+    | "MOTORHOME"
+    | "ATV"
+    | "SCOOTER";
   price: number;
   currency: "ARS" | "USD";
   brand:
@@ -31,13 +48,35 @@ export interface ICar extends Document {
     | "Toyota"
     | "Suzuki"
     | "Chrysler"
-    | "Harley davidson"
+    | "Harley Davidson"
     | "Opel"
     | "Hyundai"
     | "Kia"
-    | "Ktm"
+    | "KTM"
     | "Benelli"
-    | "Yamaha";
+    | "Yamaha"
+    | "Alfa Romeo"
+    | "Aston Martin"
+    | "Bentley"
+    | "Cadillac"
+    | "Ferrari"
+    | "GMC"
+    | "Hummer"
+    | "Jaguar"
+    | "Lamborghini"
+    | "Lancia"
+    | "Lexus"
+    | "Lincoln"
+    | "Lotus"
+    | "Maserati"
+    | "Mazda"
+    | "Mitsubishi"
+    | "RAM"
+    | "Rover"
+    | "Seat"
+    | "Subaru"
+    | "Tesla"
+    | "Volvo";
   modelName: string;
   status: "RESERVED" | "SOLD" | "AVAILABLE";
   gearbox: "AUTOMATIC" | "MANUAL";
@@ -47,7 +86,7 @@ export interface ICar extends Document {
   description: string;
   uuid: string;
   imagePath?: string;
-
+  branchID?: string;
   createdAt?: Date | undefined;
 }
 
@@ -127,6 +166,10 @@ const carSchema: Schema = new Schema<ICar>(
       type: Boolean,
       required: false,
       default: true,
+    },
+    branchID: {
+      type: String,
+      required: true,
     },
   },
   {

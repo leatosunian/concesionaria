@@ -49,7 +49,7 @@ export default function DashboardLayout({
                       className="flex items-center p-2 text-base font-normal text-black capitalize rounded-lg hover:text-white dark:text-white dark:hover:text-black hover:bg-black dark:hover:bg-gray-100 dark:bg-background group"
                     >
                       <IoCarSportOutline />
-                      <span className="ml-3 ">Mi stock</span>
+                      <span className="ml-3 ">Mis vehículos</span>
                     </Link>
                   </li>
                   <li>
@@ -58,7 +58,7 @@ export default function DashboardLayout({
                       className="flex items-center p-2 text-base font-normal text-black capitalize rounded-lg hover:text-white dark:text-white dark:hover:text-black hover:bg-black dark:hover:bg-gray-100 dark:bg-background group"
                     >
                       <IoMdAdd />
-                      <span className="ml-3 ">Agregar producto</span>
+                      <span className="ml-3 ">Agregar vehículo</span>
                     </Link>
                   </li>
                   {session?.user?.role && session?.user?.role === 'ADMIN' && (

@@ -7,16 +7,31 @@ import { RxCross2, RxHamburgerMenu } from "react-icons/rx";
 import logo from "@/public/dalogo.png";
 import { motion } from "framer-motion";
 import styles from "@/app/css-modules/home.header.module.css";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState("");
   const [navbarBg, setNavbarBg] = useState("bg-transparent");
   const pathname = usePathname();
+  const [searchValue, setSearchValue] = useState<string>("");
+  const searchParams = useSearchParams();
+  const { push } = useRouter();
 
   const toggleDropdown = (dropdown: string) => {
     setOpenDropdown(openDropdown === dropdown ? "" : dropdown);
+  };
+
+  const handleSearch = () => {
+    console.log(searchValue);
+    const params = new URLSearchParams(searchParams);
+    if (searchValue !== "") {
+      params.set("search", searchValue);
+    } else {
+      params.delete("search");
+    }
+    push(`/vehicles/?${params.toString()}`);
+    console.log(params.toString());
   };
 
   useEffect(() => {
@@ -53,6 +68,10 @@ export default function Header() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  useEffect(() => {
+    console.log(searchValue);
+  }, [searchValue]);
 
   return (
     <nav
@@ -131,7 +150,13 @@ export default function Header() {
                 </Link>
               </div>
 
-              <form className="max-w-lg mx-auto">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSearch();
+                }}
+                className="max-w-lg mx-auto"
+              >
                 <div className="flex">
                   <label className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
                     Your Email
@@ -139,14 +164,15 @@ export default function Header() {
 
                   <div className="relative w-full">
                     <input
-                      type="search"
+                      type="text"
+                      onChange={(e) => setSearchValue(e.target.value)}
                       id="search-dropdown"
                       className="z-20 block w-full px-2 py-1.5 text-xs text-gray-900 border border-gray-300 rounded-lg bg-gray-50 border-s-gray-50 border-s-2 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-red-500"
                       placeholder="Buscar un vehículo "
-                      required
                     />
                     <button
                       type="submit"
+                      onClick={handleSearch}
                       className="absolute top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-red-700 rounded-e-lg border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
                     >
                       <svg
@@ -164,7 +190,6 @@ export default function Header() {
                           d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
                         />
                       </svg>
-                      <span className="sr-only">Search</span>
                     </button>
                   </div>
                 </div>

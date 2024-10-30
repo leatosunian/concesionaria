@@ -66,7 +66,7 @@ interface props {
 const EmployeesChart = ({ onCreated, employeesFetch }: props) => {
   const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
   const [employeeToEdit, setEmployeeToEdit] = useState<IAdmin>();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [employees, setEmployees] = useState<IAdmin[]>([]);
   const { data: session }: any = useSession();
   const modalButtonRef = useRef<HTMLButtonElement>(null);
@@ -92,8 +92,6 @@ const EmployeesChart = ({ onCreated, employeesFetch }: props) => {
     setOpenEditDialog(false);
     values._id = employeeToEdit?._id;
     if (values.password === "") delete values.password;
-    console.log(values);
-
     try {
       const edited = await fetch("/api/employees", {
         method: "PUT",
@@ -106,6 +104,7 @@ const EmployeesChart = ({ onCreated, employeesFetch }: props) => {
       toast({ description: "¡Empleado editado!", variant: "default" });
     } catch (error) {
       setOpenEditDialog(false);
+      setLoading(false);
       toast({
         description: "Error al editar empleado",
         variant: "destructive",
@@ -115,6 +114,7 @@ const EmployeesChart = ({ onCreated, employeesFetch }: props) => {
 
   useEffect(() => {
     setEmployees(employeesFetch);
+    setLoading(false);
   }, [employeesFetch]);
 
   async function onDelete() {

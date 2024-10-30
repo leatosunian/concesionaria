@@ -112,6 +112,8 @@ const ImageGallery = () => {
   }, []);
 
   async function handleDeleteImage() {
+    console.log(imageToDelete);
+    
     if (imageToDelete) {
       try {
         const deleteResponse = await fetch(
@@ -121,7 +123,7 @@ const ImageGallery = () => {
           }
         ).then((response) => response.json());
         console.log(deleteResponse);
-        if (deleteResponse.msg === "DELETED") {
+        if (deleteResponse.msg === "IMAGE_DELETED") {
           toast({
             description: "Imagen eliminada",
             variant: "default",
@@ -131,7 +133,7 @@ const ImageGallery = () => {
       } catch (error) {
         // error alert
         toast({
-          description: "Error al añadir imágenes",
+          description: "Error al eliminar imágen",
           variant: "destructive",
         });
       }
@@ -158,7 +160,9 @@ const ImageGallery = () => {
                           className="m-auto rounded-md"
                           alt="Imagen del vehículo"
                           onClick={() => {
-                            setImageToDelete(image.path);
+                            console.log(image);
+                            
+                            setImageToDelete(image.uuid);
                             handleImageClick();
                           }}
                           src={image.path}
