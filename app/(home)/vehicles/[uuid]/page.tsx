@@ -23,6 +23,7 @@ import { type CarouselApi } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import RelatedVehicles from "@/components/page/home/vehicles/vehicle/RelatedVehicles";
 import LoaderFullscreen from "@/components/page/LoaderFullscreen";
+import { FaLocationDot } from "react-icons/fa6";
 
 const Page = () => {
   const [api, setApi] = React.useState<CarouselApi>();
@@ -61,7 +62,6 @@ const Page = () => {
     if (cars.length !== 0) {
       setLatestVehicles(cars);
       console.log(cars);
-      
     }
     return latestVehicles;
   }
@@ -225,9 +225,18 @@ const Page = () => {
                   {vehicleData?.description}
                 </pre>
               </div>
-              <span className="mb-3 text-2xl font-semibold md:mb-2">
-                {vehicleData?.currency} ${vehicleData?.price}{" "}
-              </span>
+              <div className="flex flex-col gap-5">
+                <div className="flex gap-2 ">
+                  <FaLocationDot style={{ color: "#a1a1aa" }}  size={15} />
+                  <span style={{ color: "#a1a1aa" }} className="text-xs leading-4">
+                    Ubicado en sucursal {vehicleData?.branchAddress}
+                  </span>
+                </div>
+
+                <span className="mb-3 text-2xl font-semibold md:mb-2">
+                  {vehicleData?.currency} ${vehicleData?.price}{" "}
+                </span>
+              </div>
               <button className={styles.button}>
                 Consultar por el vehículo
               </button>
