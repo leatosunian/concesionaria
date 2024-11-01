@@ -55,27 +55,25 @@ import LoaderFullscreen from "@/components/page/LoaderFullscreen";
 import Link from "next/link";
 import { FaRegCalendar } from "react-icons/fa";
 import { IoSpeedometerOutline } from "react-icons/io5";
+import { Badge } from "@/components/ui/badge";
 
 const Page = () => {
   const [open, setOpen] = useState(false);
   const [brandFilter, setBrandFilter] = useState("");
   const [vehicleFetch, setVehicleFetch] = useState<ICar[]>([]);
-
   const [vehicleList, setVehicleList] = useState<ICar[]>([]);
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
-
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const searchFilter = searchParams.get("search");
-
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [currentVehicles, setCurrentVehicles] = useState<ICar[]>([]);
-
   const [vehiclesPerPage, setVehiclesPerPage] = useState<number>(12);
   const lastVehicleIndex = currentPage * vehiclesPerPage;
   const firstVehicleIndex = lastVehicleIndex - vehiclesPerPage;
   const [numberOfPages, setNumberOfPages] = useState<number[]>([0]);
+
   async function getCars() {
     try {
       const url =
@@ -168,7 +166,6 @@ const Page = () => {
   }
 
   function refresh() {
-    console.log(searchParams);
     router.replace("/vehicles");
     setTimeout(() => {
       if (pathname === "/vehicles" && searchFilter !== "") {
@@ -503,6 +500,22 @@ const Page = () => {
                           className="col-span-1 md:h-full h-fit"
                         >
                           <Card className="flex flex-col h-full shadow-lg">
+                            {car.status === "RESERVED" && (
+                              <Badge
+                                className="absolute bg-orange-500 border-none shadow-lg mt-2 md:py-1 md:px-3 py-1.5 px-3.5 ml-2 text-white font-normal md:text-xs text-sm "
+                                variant="outline"
+                              >
+                                Reservado
+                              </Badge>
+                            )}
+                              {car.status === "SOLD" && (
+                              <Badge
+                                className="absolute bg-red-500 border-none shadow-lg mt-2 md:py-1 md:px-3 py-1.5 px-3.5 ml-2 text-white font-normal md:text-xs text-sm "
+                                variant="outline"
+                              >
+                                Vendido
+                              </Badge>
+                            )}
                             <Image
                               src={car?.imagePath!}
                               alt="auto"
@@ -515,7 +528,7 @@ const Page = () => {
                               <CardHeader
                                 style={{ padding: "0 16px 0px 16px" }}
                               >
-                                <CardTitle className="text-lg textCut">
+                                <CardTitle className="text-lg md:text-base textCut">
                                   {car.name}
                                 </CardTitle>
                                 <CardDescription className="flex items-center justify-between w-full pt-1 pb-2 ">
@@ -531,7 +544,7 @@ const Page = () => {
                                   {car.currency} ${car.price}
                                 </p>
                               </CardHeader>
-                              <CardFooter className="px-4 pb-5 mt-5 md:mt-0">
+                              <CardFooter className="px-4 pb-5 mt-5 md:mt-3">
                                 <Link
                                   href={`/vehicles/${car.uuid}`}
                                   className="w-full h-fit"

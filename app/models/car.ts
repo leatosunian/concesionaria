@@ -87,6 +87,7 @@ export interface ICar extends Document {
   uuid: string;
   imagePath?: string;
   branchID?: string;
+  branchAddress?: string;
   createdAt?: Date | undefined;
 }
 
@@ -168,6 +169,10 @@ const carSchema: Schema = new Schema<ICar>(
       default: true,
     },
     branchID: {
+      type: String,
+      required: true,
+    },
+    branchAddress: {
       type: String,
       required: true,
     },

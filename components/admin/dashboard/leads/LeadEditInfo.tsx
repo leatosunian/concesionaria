@@ -45,28 +45,14 @@ import React from "react";
 import { FaRegCalendar } from "react-icons/fa";
 import { IoSpeedometerOutline } from "react-icons/io5";
 import { useDebouncedCallback } from "use-debounce";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Camera, Check, ChevronsUpDown } from "lucide-react";
-import { carBrands } from "@/app/utils/carBrands";
-import { cn } from "@/lib/utils";
+import { Camera } from "lucide-react";
 import { formSchema as editLeadVehiclesForm } from "@/app/schemas/newLeadVehiclesForm";
 import { IAdmin } from "@/app/models/admin";
 import { IBranch } from "@/app/models/branch";
 import { ILead } from "@/app/models/lead";
 import { ILeadVehicle } from "@/app/models/leadvehicles";
 import { useToast } from "@/hooks/use-toast";
+import { useSession } from "next-auth/react";
 
 const LeadEditForm = () => {
   const params = useParams();
@@ -117,6 +103,7 @@ const LeadEditForm = () => {
   const [leadVehicles, setLeadVehicles] = useState<ILeadVehicle>();
   const [existentIntInImage, setExistentIntInImage] = useState<string>("");
   const { toast } = useToast();
+  const { data: session }: any = useSession();
 
   async function getLead() {
     try {
@@ -125,7 +112,6 @@ const LeadEditForm = () => {
         cache: "no-store",
       });
       const lead = await leadFetch.json();
-      console.log(lead);
       setLoading(false);
       setLead(lead.lead);
       setLeadVehicles(lead.leadVehicles);
@@ -134,11 +120,6 @@ const LeadEditForm = () => {
       return;
     }
   }
-
-  useEffect(() => {
-    console.log(leadVehicles);
-    console.log(selectedIntIn);
-  }, [selectedIntIn, leadVehicles]);
 
   async function getCars(searchParam: string) {
     try {
@@ -160,14 +141,12 @@ const LeadEditForm = () => {
 
   // EDIT LEAD FUNCTION
   async function onSubmitLeadInfo(values: any) {
-    console.log(values);
     setLoading(true);
     try {
       const editedLead = await fetch("/api/leads/" + params.uuid, {
         method: "PUT",
         body: JSON.stringify(values),
       }).then((response) => response.json());
-      console.log(editedLead);
       toast({
         description: "¡Cambios guardados correctamente!",
         variant: "default",
@@ -191,7 +170,6 @@ const LeadEditForm = () => {
         method: "PUT",
         body: formData,
       }).then((response) => response.json());
-      console.log(editedLead);
       toast({
         description: "¡Cambios guardados correctamente!",
         variant: "default",
@@ -221,20 +199,16 @@ const LeadEditForm = () => {
     values.leadPrefVehicleUUID = selectedIntIn?.uuid;
     values.leadID = lead?._id;
     values.interestedIn = selectedIntIn?.name;
-    console.log(values);
-
     try {
-      const editedLead = await fetch("/api/leads/" + params.uuid, {
+      await fetch("/api/leads/" + params.uuid, {
         method: "PUT",
         body: JSON.stringify(values),
       }).then((response) => response.json());
-      console.log(editedLead);
 
-      const editedVehicleLead = await fetch("/api/leads/vehicles", {
+      await fetch("/api/leads/vehicles", {
         method: "PUT",
         body: JSON.stringify(values),
       }).then((response) => response.json());
-      console.log(editedVehicleLead);
 
       toast({
         description: "¡Cambios guardados correctamente!",
@@ -267,7 +241,6 @@ const LeadEditForm = () => {
         method: "GET",
         cache: "no-store",
       }).then((response) => response.json());
-      console.log(employeesFetch);
       setEmployees(employeesFetch.employees);
     } catch (error) {}
   }
@@ -293,10 +266,6 @@ const LeadEditForm = () => {
     }
     if (searchQuery) getCars(searchQuery);
   }, [searchParams]);
-
-  useEffect(() => {
-    console.log(vehicleList);
-  }, [vehicleList]);
 
   useEffect(() => {
     getLead();
@@ -622,38 +591,44 @@ const LeadEditForm = () => {
                           </FormItem>
                         )}
                       />
-                      <FormField
-                        control={editLeadForm.control}
-                        name="employeeID"
-                        render={({ field }) => (
-                          <FormItem className="col-span-2 md:col-span-1">
-                            <FormLabel>Vendedor</FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                              {...field}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Seleccionar" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {employees &&
-                                  employees.map((employee) => (
-                                    <SelectItem
-                                      key={employee._id}
-                                      value={employee._id!}
-                                    >
-                                      {employee.name} {employee.surname}
-                                    </SelectItem>
-                                  ))}
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
+
+                      {session?.user?.role &&
+                        session?.user?.role === "ADMIN" && (
+                          <>
+                            <FormField
+                              control={editLeadForm.control}
+                              name="employeeID"
+                              render={({ field }) => (
+                                <FormItem className="col-span-2 md:col-span-1">
+                                  <FormLabel>Vendedor</FormLabel>
+                                  <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                    {...field}
+                                  >
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Seleccionar" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      {employees &&
+                                        employees.map((employee) => (
+                                          <SelectItem
+                                            key={employee._id}
+                                            value={employee._id!}
+                                          >
+                                            {employee.name} {employee.surname}
+                                          </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </>
                         )}
-                      />
                     </div>
                   </div>
                 </div>
@@ -666,7 +641,7 @@ const LeadEditForm = () => {
           </Card>
           <Separator className="my-10" />
 
-          {/* interested in section */}
+          {/* vehicles section */}
           <Card className="p-5">
             <div className="flex flex-col ">
               <span className="mb-8 text-xl font-semibold">

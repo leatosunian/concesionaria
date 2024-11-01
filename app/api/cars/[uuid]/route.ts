@@ -1,6 +1,7 @@
 import connectDB from "@/lib/db";
 import CarModel, { ICar } from "@/app/models/car";
 import { NextRequest, NextResponse } from "next/server";
+import BranchModel from "@/app/models/branch";
 
 // GET CAR BY UUID
 export async function GET(
@@ -43,11 +44,13 @@ export async function PUT(request: NextRequest, { params }: { params: { uuid: st
   await connectDB();
   const { uuid } = params;  
   const data: ICar = await request.json();
+  const branchAddress = await BranchModel.findOne({ _id: data.branchID });
+  data.branchAddress = branchAddress.address;
   try {
-    const user = await CarModel.findOneAndUpdate({ uuid }, data, {
+    const car = await CarModel.findOneAndUpdate({ uuid }, data, {
       new: true,
     });
-    return NextResponse.json(user);
+    return NextResponse.json(car);
   } catch (error) {
     return NextResponse.json({ msg: "ERROR_EDIT_CAR" });
   }

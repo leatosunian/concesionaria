@@ -152,7 +152,6 @@ const LeadDetails = () => {
         cache: "no-store",
       });
       const lead = await leadFetch.json();
-      console.log(lead);
       setLeadVehicles(lead.leadVehicles);
       setObservations(lead.lead.observations);
       setLead(lead.lead);
@@ -185,8 +184,6 @@ const LeadDetails = () => {
         cache: "no-store",
       });
       const budgets = await budgetsFetch.json();
-      console.log(budgets);
-
       setBudgets(budgets);
     } catch (error) {
       return;
@@ -218,6 +215,8 @@ const LeadDetails = () => {
 
   // edit task function
   async function onEdit(values: any) {
+    console.log(values);
+
     setOpenEditModal(false);
     values.leadID = lead?._id;
     try {
@@ -251,8 +250,6 @@ const LeadDetails = () => {
           body: JSON.stringify(values),
         }
       ).then((response) => response.json());
-      console.log(completedTask);
-
       getTasks();
       toast({ description: "¡Tarea completada!", variant: "default" });
     } catch (error) {
@@ -280,7 +277,6 @@ const LeadDetails = () => {
       const deletedLead = await fetch("/api/leads/" + lead?._id, {
         method: "DELETE",
       }).then((response) => response.json());
-      console.log("deletedLead:", deletedLead);
       if (deletedLead.msg === "LEAD_DELETED") {
         toast({ description: "¡Lead eliminado!", variant: "default" });
       }
@@ -311,7 +307,7 @@ const LeadDetails = () => {
   async function handleChangeLeadStatus(status: string) {
     const body = { status };
     try {
-      const updatedStatus = await fetch("/api/leads/" + lead?._id, {
+      await fetch("/api/leads/" + lead?._id, {
         method: "PUT",
         body: JSON.stringify(body),
       }).then((response) => response.json());
@@ -332,7 +328,7 @@ const LeadDetails = () => {
       observations: observations,
     };
     try {
-      const savedObs = await fetch("/api/leads/" + lead?._id, {
+      await fetch("/api/leads/" + lead?._id, {
         method: "PUT",
         body: JSON.stringify(body),
       }).then((response) => response.json());
@@ -357,8 +353,16 @@ const LeadDetails = () => {
 
   useEffect(() => {
     editForm.setValue("title", selectedTaskToEdit?.title!);
+    console.log(selectedTaskToEdit?.dateToDo);
+
     editForm.setValue("dateToDo", selectedTaskToEdit?.dateToDo!);
+    console.log(editForm.getValues());
   }, [selectedTaskToEdit]);
+
+  useEffect(() => {
+    const as = editForm.getValues();
+    editForm.setValue("dateToDo", dayjs(selectedTaskToEdit?.dateToDo).toDate());
+  }, [openEditModal]);
 
   return (
     <>
@@ -406,10 +410,10 @@ const LeadDetails = () => {
                       Perdido
                     </span>
                   )}
-                  {lead?.status === "Venta concretada" && (
+                  {lead?.status === "Vendido" && (
                     <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
                       <span className="w-2 h-2 bg-green-500 rounded-full me-1"></span>
-                      Venta concretada
+                      Vendido
                     </span>
                   )}
                 </div>
@@ -427,12 +431,10 @@ const LeadDetails = () => {
                     <SelectContent>
                       <SelectGroup>
                         <SelectItem value="Pendiente">Pendiente</SelectItem>
-                        <SelectItem value="En gestión">En gestión</SelectItem>
+                        <SelectItem value="Gestionando">Gestionando</SelectItem>
                         <SelectItem value="Negociando">Negociando</SelectItem>
                         <SelectItem value="Perdido">Perdido</SelectItem>
-                        <SelectItem value="Venta concretada">
-                          Venta concretada
-                        </SelectItem>
+                        <SelectItem value="Vendido">Vendido</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -911,6 +913,8 @@ const LeadDetails = () => {
                                     <DropdownMenuGroup>
                                       <DropdownMenuItem
                                         onClick={() => {
+                                          console.log(task);
+
                                           setSelectedTaskToEdit(task);
                                           setOpenEditModal(true);
                                         }}
@@ -1109,7 +1113,6 @@ const LeadDetails = () => {
                                       !field.value && "text-muted-foreground"
                                     )}
                                   >
-                                    {" "}
                                     {field.value ? (
                                       format(field.value, "PPP", { locale: es })
                                     ) : (
@@ -1127,6 +1130,7 @@ const LeadDetails = () => {
                                   mode="single"
                                   selected={field.value}
                                   onSelect={field.onChange}
+                                  {...field}
                                   initialFocus
                                   disabled={(date) =>
                                     date <= dayjs().subtract(1, "day").toDate()
@@ -1145,15 +1149,7 @@ const LeadDetails = () => {
                   </div>
 
                   <DialogFooter className="gap-5 md:gap-2">
-                    <Button
-                      onClick={() => {
-                        setOpenCompleteModal(true);
-                      }}
-                      type="button"
-                    >
-                      Completar tarea
-                    </Button>
-                    <Button type="submit" variant={"outline"}>
+                    <Button type="submit" variant={"default"}>
                       Guardar cambios
                     </Button>
                   </DialogFooter>

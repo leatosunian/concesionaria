@@ -34,6 +34,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useParams } from "next/navigation";
 import { ICarImage } from "@/app/models/carimage";
 import { useRouter } from "next/navigation";
+
 const ImageGallery = () => {
   const router = useRouter();
   const { toast } = useToast();
@@ -50,7 +51,9 @@ const ImageGallery = () => {
   const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
   const [galleryImages, setGalleryImages] = useState<ICarImage[]>([]);
   const [imageToDelete, setImageToDelete] = useState<string>("");
-  
+  const [loading, setLoading] = useState<boolean>(false);
+  const [fetchLoading, setFetchLoading] = useState(true);
+
   const handleFileInput = async (files: FileList) => {
     console.log("handlefileinput files ", files);
     const validFiles = Array.from(files).filter((file) =>
@@ -61,7 +64,7 @@ const ImageGallery = () => {
 
   async function uploadGalleryImage() {
     if (filesToUpload.length === 0) return;
-
+    setLoading(true);
     try {
       let formData = new FormData();
       filesToUpload.forEach((file) => {
@@ -78,9 +81,11 @@ const ImageGallery = () => {
         toast({ description: "¡Imágenes añadidas!", variant: "default" });
         setFilesToUpload([]);
         getGallery();
+        setLoading(false);
       }
     } catch (error) {
       // error alert
+      setLoading(false);
       toast({
         description: "Error al añadir imágenes",
         variant: "destructive",
@@ -89,6 +94,7 @@ const ImageGallery = () => {
   }
 
   async function getGallery() {
+    setFetchLoading(true)
     try {
       const galleryResponse = await fetch("/api/gallery/" + params.id, {
         method: "GET",
@@ -97,6 +103,7 @@ const ImageGallery = () => {
       console.log(galleryResponse);
       if (galleryResponse) {
         setGalleryImages(galleryResponse);
+        setFetchLoading(false)
       }
     } catch (error) {
       // error alert
@@ -113,7 +120,7 @@ const ImageGallery = () => {
 
   async function handleDeleteImage() {
     console.log(imageToDelete);
-    
+    setFetchLoading(true)
     if (imageToDelete) {
       try {
         const deleteResponse = await fetch(
@@ -132,6 +139,7 @@ const ImageGallery = () => {
         }
       } catch (error) {
         // error alert
+        setFetchLoading(false)
         toast({
           description: "Error al eliminar imágen",
           variant: "destructive",
@@ -149,37 +157,48 @@ const ImageGallery = () => {
         {/* above carousel prev cont <div className="grid grid-cols-1 gap-8 px-12 md:grid-cols-2 md:gap-14 "> */}
 
         <div className="flex flex-col items-center gap-8 pt-6 md:pt-10 md:items-start h-fit md:flex-col md:grid-cols-2 md:gap-14 ">
-          {galleryImages.length > 0 && (
+          {fetchLoading && (
             <>
-              <div className="px-12 md:px-0">
-                <Carousel className="w-full mx-auto md:w-4/5 h-fit">
-                  <CarouselContent>
-                    {galleryImages.map((image) => (
-                      <CarouselItem key={image.uuid}>
-                        <Image
-                          className="m-auto rounded-md"
-                          alt="Imagen del vehículo"
-                          onClick={() => {
-                            console.log(image);
-                            
-                            setImageToDelete(image.uuid);
-                            handleImageClick();
-                          }}
-                          src={image.path}
-                          width={500}
-                          height={500}
-                          unoptimized
-                        />
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <CarouselPrevious />
-                  <CarouselNext />
-                </Carousel>
+              <div
+                className="flex items-center justify-center w-full my-5 overflow-y-hidden bg-white dark:bg-background"
+                style={{ zIndex: "99999999", height: "300px" }}
+              >
+                <div className=" loaderSmall"></div>
               </div>
             </>
           )}
-
+          {!fetchLoading && (
+            <>
+              {galleryImages.length > 0 && (
+                <>
+                  <div className="px-12 md:px-0">
+                    <Carousel className="w-full mx-auto md:w-4/5 h-fit">
+                      <CarouselContent>
+                        {galleryImages.map((image) => (
+                          <CarouselItem key={image.uuid}>
+                            <Image
+                              className="m-auto w-full rounded-md"
+                              alt="Imagen del vehículo"
+                              onClick={() => {
+                                setImageToDelete(image.uuid);
+                                handleImageClick();
+                              }}
+                              src={image.path}
+                              width={500}
+                              height={500}
+                              unoptimized
+                            />
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious />
+                      <CarouselNext />
+                    </Carousel>
+                  </div>
+                </>
+              )}
+            </>
+          )}
           {/* {galleryImages.length === 0 && (
             <>
               <div className="w-full ">
@@ -245,25 +264,39 @@ const ImageGallery = () => {
                   </div>
                 </>
               )}
-              <div className="flex justify-center w-full gap-5 h-fit">
-                {filesToUpload.length > 0 && (
-                  <Button
-                    variant={"destructive"}
-                    className="w-full mt-10 md:w-1/2 "
-                    onClick={() => setFilesToUpload([])}
-                    type="button"
+              {loading && (
+                <>
+                  <div
+                    className="flex items-center justify-center w-full mt-7 mb-5 overflow-y-hidden bg-white dark:bg-background"
+                    style={{ zIndex: "99999999", height: "40px" }}
                   >
-                    Cancelar
-                  </Button>
-                )}
-                <Button
-                  className="mt-10 w-fit md:w-1/2"
-                  onClick={uploadGalleryImage}
-                  type="button"
-                >
-                  Agregar imágenes
-                </Button>
-              </div>
+                    <div className=" loaderSmall"></div>
+                  </div>
+                </>
+              )}
+              {!loading && (
+                <>
+                  <div className="flex justify-center w-full gap-5 h-fit">
+                    {filesToUpload.length > 0 && (
+                      <Button
+                        variant={"destructive"}
+                        className="w-full mt-10 md:w-1/2 "
+                        onClick={() => setFilesToUpload([])}
+                        type="button"
+                      >
+                        Cancelar
+                      </Button>
+                    )}
+                    <Button
+                      className="mt-10 w-fit md:w-1/2"
+                      onClick={uploadGalleryImage}
+                      type="button"
+                    >
+                      Agregar imágenes
+                    </Button>
+                  </div>
+                </>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -323,25 +356,39 @@ const ImageGallery = () => {
                 </div>
               </>
             )}
-            <div className="flex justify-center w-full gap-5 h-fit">
-              {filesToUpload.length > 0 && (
-                <Button
-                  variant={"destructive"}
-                  className="w-full mt-10 "
-                  onClick={() => setFilesToUpload([])}
-                  type="button"
+            {loading && (
+              <>
+                <div
+                  className="flex md:hidden items-center justify-center w-full mt-7 mb-5 overflow-y-hidden bg-white dark:bg-background"
+                  style={{ zIndex: "99999999", height: "40px" }}
                 >
-                  Cancelar
-                </Button>
-              )}
-              <Button
-                className="w-full mt-10 "
-                onClick={uploadGalleryImage}
-                type="button"
-              >
-                Agregar imágenes
-              </Button>
-            </div>
+                  <div className=" loaderSmall"></div>
+                </div>
+              </>
+            )}
+            {!loading && (
+              <>
+                <div className="flex justify-center w-full gap-5 h-fit">
+                  {filesToUpload.length > 0 && (
+                    <Button
+                      variant={"destructive"}
+                      className="w-full mt-10 "
+                      onClick={() => setFilesToUpload([])}
+                      type="button"
+                    >
+                      Cancelar
+                    </Button>
+                  )}
+                  <Button
+                    className="w-full mt-10 "
+                    onClick={uploadGalleryImage}
+                    type="button"
+                  >
+                    Agregar imágenes
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

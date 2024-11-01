@@ -49,6 +49,7 @@ import Image from "next/image";
 import ImageGallery from "./ImageGallery";
 import { CardContent } from "@/components/ui/card";
 import React from "react";
+import { IBranch } from "@/app/models/branch";
 
 const EditProductForm = ({ uuid }: { uuid: string }) => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -70,6 +71,7 @@ const EditProductForm = ({ uuid }: { uuid: string }) => {
       description: "",
       show: true,
       imagePath: "",
+      branchID: "",
     },
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -81,6 +83,8 @@ const EditProductForm = ({ uuid }: { uuid: string }) => {
   const scrollToDiv = searchParams.get("scrollToDiv");
   const [fileToUpload, setFileToUpload] = useState<File>();
   const [loading, setLoading] = useState(true);
+  const [branches, setBranches] = useState<IBranch[]>();
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   async function getVehicleData() {
     try {
@@ -95,8 +99,20 @@ const EditProductForm = ({ uuid }: { uuid: string }) => {
       }
     } catch (error) {}
   }
+
+  async function getBranches() {
+    try {
+      const branchesFetch = await fetch("/api/branches", {
+        method: "GET",
+        cache: "no-cache",
+      }).then((response) => response.json());
+      setBranches(branchesFetch.branches);
+    } catch (error) {}
+  }
+
   useEffect(() => {
     getVehicleData();
+    getBranches();
   }, []);
 
   useEffect(() => {
@@ -109,6 +125,7 @@ const EditProductForm = ({ uuid }: { uuid: string }) => {
   }, [scrollToDiv]);
 
   async function handleEdit() {
+    setButtonLoading(true)
     try {
       const vehicle = await fetch("/api/cars/" + uuid, {
         method: "PUT",
@@ -120,10 +137,11 @@ const EditProductForm = ({ uuid }: { uuid: string }) => {
       if (vehicle) {
         setVehicleData(vehicle);
         toast({ description: "¡Vehículo editado!", variant: "default" });
-
+        setButtonLoading(false)
         router.refresh();
       }
     } catch (error) {
+      setButtonLoading(false)
       toast({
         description: "Error al editar vehículo",
         variant: "destructive",
@@ -149,6 +167,7 @@ const EditProductForm = ({ uuid }: { uuid: string }) => {
       form.setValue("description", vehicleData!.description);
       form.setValue("doors", vehicleData!.doors);
       form.setValue("imagePath", vehicleData!.imagePath);
+      form.setValue("branchID", vehicleData!.branchID!);
     }
     console.log(form.getValues());
   }, [vehicleData]);
@@ -681,12 +700,12 @@ const EditProductForm = ({ uuid }: { uuid: string }) => {
                 )}
               />
             </div>
-            <div className="grid grid-cols-1 gap-4 mt-4 md:gap-8 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 mt-4 md:gap-8 md:grid-cols-4">
               <FormField
                 control={form.control}
                 name="status"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="col-span-1">
                     <FormLabel>Estado</FormLabel>
                     <Select
                       onValueChange={field.onChange}
@@ -709,14 +728,53 @@ const EditProductForm = ({ uuid }: { uuid: string }) => {
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="branchID"
+                render={({ field }) => (
+                  <FormItem className="col-span-1">
+                    <FormLabel>Cambiar sucursal</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      {...field}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Seleccionar" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {branches?.map((branch) => (
+                          <SelectItem key={branch._id} value={branch._id!}>
+                            {branch.address}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
-            <Button
-              type="submit"
-              className="w-full mt-10 md:w-1/3"
-            >
-              Guardar cambios
-            </Button>
+            {buttonLoading && (
+              <>
+                <div
+                  className="flex items-center justify-center w-full mt-10 md:w-1/4 overflow-y-hidden bg-white dark:bg-background"
+                  style={{ zIndex: "99999999", height: "40px" }}
+                >
+                  <div className=" loaderSmall"></div>
+                </div>
+              </>
+            )}
+
+            {!buttonLoading && (
+              <Button type="submit" className="w-full mt-10 md:w-1/4">
+                Guardar cambios
+              </Button>
+            )}
           </form>
         </Form>
       )}

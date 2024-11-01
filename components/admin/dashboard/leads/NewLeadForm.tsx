@@ -42,6 +42,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { ILead } from "@/app/models/lead";
+import { useSession } from "next-auth/react";
 
 interface props {
   onChangeFormStep: () => void;
@@ -71,6 +72,7 @@ const NewLeadForm = ({
     },
   });
 
+  const { data: session }: any = useSession();
   const [vehicleList, setVehicleList] = useState<ICar[]>([]);
   const [employees, setEmployees] = useState<IAdmin[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -80,6 +82,7 @@ const NewLeadForm = ({
   const handleClick = () => {
     modalButtonRef.current?.click();
   };
+  console.log(session.user);
 
   async function getEmployees() {
     try {
@@ -89,6 +92,9 @@ const NewLeadForm = ({
       }).then((response) => response.json());
       console.log(employeesFetch);
       setEmployees(employeesFetch.employees);
+      if (session?.user?.role && session?.user?.role !== "ADMIN") {
+        form.setValue("branchID", session?.user?._id);
+      }
     } catch (error) {}
   }
 
@@ -378,7 +384,20 @@ const NewLeadForm = ({
 
               <div>
                 <Separator className="my-10" />
-                <span className="text-xl font-semibold">Asignar vendedor</span>
+                {session?.user?.role && session?.user?.role === "ADMIN" && (
+                  <>
+                    <span className="text-xl font-semibold">
+                      Asignar vendedor
+                    </span>
+                  </>
+                )}
+                {session?.user?.role && session?.user?.role !== "ADMIN" && (
+                  <>
+                    <span className="text-xl font-semibold">
+                      Seleccionar sucursal
+                    </span>
+                  </>
+                )}
                 {/* asign seller */}
                 <div className="grid grid-cols-1 gap-4 mt-6 md:gap-10 md:grid-cols-2">
                   <div className="grid grid-cols-1 gap-4 h-fit md:gap-8 md:grid-cols-2">
@@ -413,37 +432,41 @@ const NewLeadForm = ({
                         </FormItem>
                       )}
                     />
-                    <FormField
-                      control={form.control}
-                      name="employeeID"
-                      render={({ field }) => (
-                        <FormItem className="col-span-2 md:col-span-1">
-                          <FormLabel>Vendedor</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Seleccionar" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {employees &&
-                                employees.map((employee) => (
-                                  <SelectItem
-                                    key={employee._id}
-                                    value={employee._id!}
-                                  >
-                                    {employee.name} {employee.surname}
-                                  </SelectItem>
-                                ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    {session?.user?.role && session?.user?.role === "ADMIN" && (
+                      <>
+                        <FormField
+                          control={form.control}
+                          name="employeeID"
+                          render={({ field }) => (
+                            <FormItem className="col-span-2 md:col-span-1">
+                              <FormLabel>Vendedor</FormLabel>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Seleccionar" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {employees &&
+                                    employees.map((employee) => (
+                                      <SelectItem
+                                        key={employee._id}
+                                        value={employee._id!}
+                                      >
+                                        {employee.name} {employee.surname}
+                                      </SelectItem>
+                                    ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </>
+                    )}
                   </div>
                 </div>
               </div>

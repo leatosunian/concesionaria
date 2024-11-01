@@ -19,8 +19,7 @@ const EditProduct = ({ params }: { params: { id: string } }) => {
           <div className="block md:hidden">
             <Separator className="my-10 " />
 
-            {/* CAROUSEL CONTAINTER */}
-            {/* pass gallery images as props */}
+            {/* GALLERY CAROUSEL */}
             <ImageGallery />
           </div>
         </div>

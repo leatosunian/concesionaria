@@ -39,7 +39,6 @@ const LeadsChart = () => {
         cache: "no-store",
       });
       const leads = await leadsFetch.json();
-      console.log(leads.leads);
       setLoading(false);
       setLeads(leads.leads);
     } catch (error) {
@@ -106,9 +105,9 @@ const LeadsChart = () => {
                             Pendiente
                           </span>
                         )}
-                        {lead?.status === "En gestión" && (
+                        {lead?.status === "Gestionando" && (
                           <span className="inline-flex items-center bg-yellow-100 text-yellow-700 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-800 dark:text-yellow-100">
-                            En gestión
+                            Gestionando
                           </span>
                         )}
                         {lead?.status === "Negociando" && (
@@ -121,9 +120,9 @@ const LeadsChart = () => {
                             Perdido
                           </span>
                         )}
-                        {lead?.status === "Venta concretada" && (
+                        {lead?.status === "Vendido" && (
                           <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
-                            Venta concretada
+                            Vendido
                           </span>
                         )}
                       </TableCell>

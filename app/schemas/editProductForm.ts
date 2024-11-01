@@ -47,4 +47,7 @@ export const formSchema = z.object({
     description: z.string().optional().or(z.literal("")),
     imagePath: z.string().optional(),
     show: z.boolean(),
+    branchID: z.string().min(1, {
+      message: "Selecciona una sucursal.",
+    }),
   });

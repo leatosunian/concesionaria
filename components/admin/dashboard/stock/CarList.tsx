@@ -1,5 +1,6 @@
 "use client";
 
+import { FaLocationDot } from "react-icons/fa6";
 import { ICar } from "@/app/models/car";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -38,7 +39,6 @@ import {
 } from "@/components/ui/pagination";
 import { FaRegCalendar } from "react-icons/fa";
 import { IoSpeedometerOutline } from "react-icons/io5";
-import LoaderFullscreen from "../../LoaderFullscreen";
 
 const CarList = ({ cars }: { cars: ICar[] }) => {
   const [loading, setLoading] = useState(true);
@@ -137,7 +137,6 @@ const CarList = ({ cars }: { cars: ICar[] }) => {
     router.refresh();
   }, []);
 
-
   return (
     <>
       {loading && (
@@ -167,7 +166,7 @@ const CarList = ({ cars }: { cars: ICar[] }) => {
           {currentVehicles.length > 0 && (
             <>
               <div className="grid grid-cols-1 gap-10 sm:gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-                { currentVehicles?.map((car) => (
+                {currentVehicles?.map((car) => (
                   <div key={car.uuid} className="col-span-1 md:h-full h-fit">
                     <Card
                       key={car.uuid}
@@ -195,9 +194,18 @@ const CarList = ({ cars }: { cars: ICar[] }) => {
                               <span> {car.kilometers} km</span>
                             </div>
                           </CardDescription>
-                          <p className="text-lg font-semibold">
-                            {car.currency} ${car.price}
-                          </p>
+                          <div className="flex flex-col gap-5">
+                            <p
+                              style={{ color: "#a1a1aa" }}
+                              className="text-xs  flex gap-2 items-end "
+                            >
+                              <FaLocationDot size={15}/>
+                              {car.branchAddress}
+                            </p>
+                            <p className="text-lg font-semibold">
+                              {car.currency} ${car.price}
+                            </p>
+                          </div>
                         </CardHeader>
                         <CardFooter className="grid grid-cols-2 gap-3 px-4 pb-5 mt-2 md:mt-0">
                           <Button
