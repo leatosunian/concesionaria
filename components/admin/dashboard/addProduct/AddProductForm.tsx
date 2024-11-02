@@ -81,9 +81,7 @@ const AddProductForm = () => {
   const [createdVehicle, setCreatedVehicle] = useState<ICar>();
   const modalButtonRef = useRef<HTMLButtonElement>(null);
   const [branches, setBranches] = useState<IBranch[]>();
-  const handleClick = () => {
-    modalButtonRef.current?.click();
-  };
+  const [openCreated, setOpenCreated] = useState(false);
   const { toast } = useToast();
 
   function handleGalleryRedirect() {
@@ -103,11 +101,9 @@ const AddProductForm = () => {
         method: "POST",
         body: JSON.stringify(values),
       }).then((response) => response.json());
-      if (vehicle) {
-        setCreatedVehicle(vehicle);
-        setLoading(false);
-        handleClick();
-      }
+      setOpenCreated(true);
+      setCreatedVehicle(vehicle);
+      setLoading(false);
     } catch (error) {
       setLoading(false);
       toast({
@@ -533,16 +529,7 @@ const AddProductForm = () => {
               </Button>
 
               <div className="px-10 rounded-md">
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button
-                      className="sr-only"
-                      ref={modalButtonRef}
-                      variant="outline"
-                    >
-                      Show Dialog
-                    </Button>
-                  </AlertDialogTrigger>
+                <AlertDialog open={openCreated}>
                   <AlertDialogContent>
                     <AlertDialogHeader>
                       <AlertDialogTitle>¡Vehículo creado!</AlertDialogTitle>

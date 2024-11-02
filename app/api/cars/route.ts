@@ -28,8 +28,8 @@ export async function POST(request: NextRequest) {
   const branchAddress = await BranchModel.findOne({ _id: data.branchID });
   data.branchAddress = branchAddress.address;
   try {
-    const user = await CarModel.create(data);
-    return NextResponse.json(user);
+    const vehicle = await CarModel.create(data);
+    return NextResponse.json(vehicle);
   } catch (error) {
     return NextResponse.json({ msg: "ERROR_CREATE_CAR" });
   }
