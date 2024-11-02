@@ -86,6 +86,7 @@ export interface ICar extends Document {
   description: string;
   uuid: string;
   imagePath?: string;
+  imagePublicID?: string;
   branchID?: string;
   branchAddress?: string;
   createdAt?: Date | undefined;
@@ -104,6 +105,12 @@ const carSchema: Schema = new Schema<ICar>(
       required: true,
     },
     imagePath: {
+      type: String,
+      required: false,
+      default: "",
+      value: "",
+    },
+    imagePublicID: {
       type: String,
       required: false,
       default: "",

@@ -7,7 +7,6 @@ export async function POST(request: NextRequest) {
   await connectDB();
   const data = await request.json();
   data.status = "Pendiente";
-  console.log(data);
   try {
     // chequear que el lead no tenga tareas anteriores para cambiar status de lead a "En gestión"
     const existsTask = await TaskModel.find({ leadID: data.leadID });
@@ -16,7 +15,7 @@ export async function POST(request: NextRequest) {
 
     if (existsTask.length === 0) {
       const updatedLead = await LeadModel.findOneAndUpdate(
-        { _id: data.leadID },
+        data.leadID,
         { status: "En gestión", pendingTask: data.title },
         {
           new: true,
@@ -24,16 +23,30 @@ export async function POST(request: NextRequest) {
       );
       return NextResponse.json({ msg: "TASK_CREATED", newTask, updatedLead });
     } else {
-      const updatedLead = await LeadModel.findOneAndUpdate(
-        { _id: data.leadID },
-        { pendingTask: data.title },
-        {
-          new: true,
-        }
-      );
-      return NextResponse.json({ msg: "TASK_CREATED", newTask, updatedLead });
-    }
+      // consultar tareas pendientes:
+      const pendingTasks = await TaskModel.find({
+        $and: [{ leadID: data.leadID }, { status: "Pendiente" }],
+      }).sort({ createdAt: 1 });
+      console.log("pendingTasks", pendingTasks);
 
+      // - si no hay, actualizar pendingTask en Lead a " - "
+      if (pendingTasks.length === 0) {
+        console.log("no hay tareas");
+
+        await LeadModel.findByIdAndUpdate(data.leadID, {
+          pendingTask: "-",
+        });
+      }
+      // - si hay, actualizar pendingTask en Lead a la primer tarea pendiente
+      if (pendingTasks.length > 0) {
+        console.log("hay tareas");
+        console.log(pendingTasks[0].title);
+        await LeadModel.findByIdAndUpdate(data.leadID, {
+          pendingTask: pendingTasks[0].title,
+        });
+      }
+      return NextResponse.json({ msg: "TASK_CREATED", newTask });
+    }
   } catch (error) {
     return NextResponse.json({ msg: "TASK_CREATION_ERROR" });
   }

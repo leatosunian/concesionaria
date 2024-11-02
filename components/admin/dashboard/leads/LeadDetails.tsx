@@ -144,6 +144,7 @@ const LeadDetails = () => {
   const [budgets, setBudgets] = useState<IBudget[]>([]);
   const [loading, setLoading] = useState(true);
   const [seller, setSeller] = useState<IAdmin>();
+  const [loadingPendingTasks, setLoadingPendingTasks] = useState<boolean>(true);
 
   async function getLead() {
     try {
@@ -172,6 +173,8 @@ const LeadDetails = () => {
       const tasks = await tasksFetch.json();
       setPendingTasks(tasks.pendingTasks);
       setCompletedTasks(tasks.completedTasks);
+      setLoadingPendingTasks(false)
+
     } catch (error) {
       return;
     }
@@ -192,7 +195,9 @@ const LeadDetails = () => {
 
   // create task function
   async function onSubmit(values: any) {
+    setLoadingPendingTasks(true);
     setOpenCreateModal(false);
+
     values.leadID = lead?._id;
     values.status = "Pendiente";
     values.completedDate = new Date();
@@ -202,12 +207,16 @@ const LeadDetails = () => {
         method: "POST",
         body: JSON.stringify(values),
       }).then((response) => response.json());
-      getTasks();
-      if (response.updatedLead.status === "En gestión") {
+      console.log(response);
+      if(response.msg = 'TASK_CREATED'){
+        toast({ description: "¡Tarea creada!", variant: "default" });
+        getTasks();
         getLead();
+        return
       }
-      toast({ description: "¡Tarea creada!", variant: "default" });
+    
     } catch (error) {
+      setLoadingPendingTasks(false);
       // error alert
       toast({ description: "Error al crear tarea", variant: "destructive" });
     }
@@ -215,8 +224,7 @@ const LeadDetails = () => {
 
   // edit task function
   async function onEdit(values: any) {
-    console.log(values);
-
+    setLoadingPendingTasks(true);
     setOpenEditModal(false);
     values.leadID = lead?._id;
     try {
@@ -228,8 +236,10 @@ const LeadDetails = () => {
         }
       ).then((response) => response.json());
       getTasks();
+
       toast({ description: "¡Tarea editada!", variant: "default" });
     } catch (error) {
+      setLoadingPendingTasks(false);
       // error alert
       toast({ description: "Error al editar tarea", variant: "destructive" });
     }
@@ -237,6 +247,7 @@ const LeadDetails = () => {
 
   // complete task function
   async function onComplete(values: any) {
+    setLoadingPendingTasks(true);
     values.leadID = lead?._id;
     values.status = "Completada";
     values.completedDate = new Date();
@@ -254,6 +265,7 @@ const LeadDetails = () => {
       toast({ description: "¡Tarea completada!", variant: "default" });
     } catch (error) {
       // error alert
+      setLoadingPendingTasks(false);
       toast({
         description: "Error al completar tarea",
         variant: "destructive",
@@ -289,6 +301,8 @@ const LeadDetails = () => {
 
   async function handleDeleteTask(id: string) {
     setOpenDeleteTaskModal(false);
+    setLoadingPendingTasks(true);
+
     try {
       const deletedTask = await fetch(
         "/api/tasks/task/" + selectedTaskToEdit?._id,
@@ -300,6 +314,7 @@ const LeadDetails = () => {
       toast({ description: "¡Tarea eliminada!", variant: "default" });
     } catch (error) {
       // error alert
+      setLoadingPendingTasks(false);
       toast({ description: "Error al eliminar tarea", variant: "destructive" });
     }
   }
@@ -378,7 +393,7 @@ const LeadDetails = () => {
       )}
       {!loading && (
         <>
-          {/* <span className="text-xl font-semibold">Datos personales</span> */}
+          {/* Datos personales */}
           <Card className="flex flex-col p-5">
             <div className="flex flex-col items-start justify-between mb-5 sm:items-center md:flex-row">
               <div className="flex flex-wrap justify-between w-full gap-2 md:justify-start md:gap-5">
@@ -392,10 +407,10 @@ const LeadDetails = () => {
                       Pendiente
                     </span>
                   )}
-                  {lead?.status === "En gestión" && (
+                  {lead?.status === "Gestionando" && (
                     <span className="inline-flex items-center bg-yellow-100 text-yellow-700 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-800 dark:text-yellow-100">
                       <span className="w-2 h-2 bg-yellow-500 rounded-full me-1"></span>
-                      En gestión
+                      Gestionando
                     </span>
                   )}
                   {lead?.status === "Negociando" && (
@@ -855,95 +870,110 @@ const LeadDetails = () => {
                       <span className="text-base font-medium"> Pendientes</span>
                     </div>
                     <Separator className="my-4" />
-                    {pendingTasks?.length === 0 && (
+                    {loadingPendingTasks && (
                       <>
-                        <div className="flex flex-col items-center gap-1 justify-center w-full min-h-[200px] h-full">
-                          <BiTaskX size={50} strokeWidth={0} />
-                          <span>No tenés tareas pendientes</span>
-                          <span className="text-sm opacity-50">
-                            Creá una tarea para comenzar la gestión de tu lead.
-                          </span>
-                          <Button
-                            type="submit"
-                            onClick={() => setOpenCreateModal(true)}
-                            className="w-full mt-5 md:w-1/4"
-                          >
-                            Crear tarea
-                          </Button>
+                        <div
+                          className="flex items-center justify-center w-full overflow-y-hidden bg-white dark:bg-background"
+                          style={{ zIndex: "99999999", height: "20vh" }}
+                        >
+                          <div className=" loaderSmall"></div>
                         </div>
                       </>
                     )}
-                    {pendingTasks?.length > 0 && (
+                    {!loadingPendingTasks && (
                       <>
-                        <div className="flex flex-col gap-5">
-                          {pendingTasks?.map((task) => (
-                            <>
-                              <Card className="flex items-center justify-between px-4 py-4">
-                                <div className="flex flex-col w-full gap-3 pr-5">
-                                  <div className="w-fit h-fit">
-                                    <span className="inline-flex items-center bg-yellow-100 text-yellow-700 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-800 dark:text-yellow-100">
-                                      <span className="w-2 h-2 bg-yellow-500 rounded-full me-1"></span>
-                                      Pendiente
-                                    </span>
-                                  </div>
-                                  <h4 className="font-semibold">
-                                    {task.title}
-                                  </h4>
-                                  <Separator className="mb-1" />
-                                  <div className="flex items-center gap-2">
-                                    <FiClock size={14} />
-                                    <span className="text-xs sm:text-sm">
-                                      <b>Día a realizar:</b>{" "}
-                                      {dayjs(task.dateToDo).format(
-                                        "dddd D [de] MMMM "
-                                      )}
-                                    </span>
-                                  </div>
-                                </div>
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <Button
-                                      variant="outline"
-                                      className="p-2 w-fit h-fit"
-                                    >
-                                      <IoMdMore size={15} />
-                                    </Button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent className="w-56">
-                                    <DropdownMenuGroup>
-                                      <DropdownMenuItem
-                                        onClick={() => {
-                                          console.log(task);
+                        {pendingTasks?.length === 0 && (
+                          <>
+                            <div className="flex flex-col items-center gap-1 justify-center w-full min-h-[200px] h-full">
+                              <BiTaskX size={50} strokeWidth={0} />
+                              <span>No tenés tareas pendientes</span>
+                              <span className="text-sm opacity-50">
+                                Creá una tarea para comenzar la gestión de tu
+                                lead.
+                              </span>
+                              <Button
+                                type="submit"
+                                onClick={() => setOpenCreateModal(true)}
+                                className="w-full mt-5 md:w-1/4"
+                              >
+                                Crear tarea
+                              </Button>
+                            </div>
+                          </>
+                        )}
+                        {pendingTasks?.length > 0 && (
+                          <>
+                            <div className="flex flex-col gap-5">
+                              {pendingTasks?.map((task) => (
+                                <>
+                                  <Card className="flex items-center justify-between px-4 py-4">
+                                    <div className="flex flex-col w-full gap-3 pr-5">
+                                      <div className="w-fit h-fit">
+                                        <span className="inline-flex items-center bg-yellow-100 text-yellow-700 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-800 dark:text-yellow-100">
+                                          <span className="w-2 h-2 bg-yellow-500 rounded-full me-1"></span>
+                                          Pendiente
+                                        </span>
+                                      </div>
+                                      <h4 className="font-semibold">
+                                        {task.title}
+                                      </h4>
+                                      <Separator className="mb-1" />
+                                      <div className="flex items-center gap-2">
+                                        <FiClock size={14} />
+                                        <span className="text-xs sm:text-sm">
+                                          <b>Día a realizar:</b>{" "}
+                                          {dayjs(task.dateToDo).format(
+                                            "dddd D [de] MMMM "
+                                          )}
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <DropdownMenu>
+                                      <DropdownMenuTrigger asChild>
+                                        <Button
+                                          variant="outline"
+                                          className="p-2 w-fit h-fit"
+                                        >
+                                          <IoMdMore size={15} />
+                                        </Button>
+                                      </DropdownMenuTrigger>
+                                      <DropdownMenuContent className="w-56">
+                                        <DropdownMenuGroup>
+                                          <DropdownMenuItem
+                                            onClick={() => {
+                                              console.log(task);
 
-                                          setSelectedTaskToEdit(task);
-                                          setOpenEditModal(true);
-                                        }}
-                                      >
-                                        Editar tarea
-                                      </DropdownMenuItem>
-                                      <DropdownMenuItem
-                                        onClick={() => {
-                                          setSelectedTaskToEdit(task);
-                                          setOpenCompleteModal(true);
-                                        }}
-                                      >
-                                        Completar tarea
-                                      </DropdownMenuItem>
-                                      <DropdownMenuItem
-                                        onClick={() => {
-                                          setSelectedTaskToEdit(task);
-                                          setOpenDeleteTaskModal(true);
-                                        }}
-                                      >
-                                        Eliminar tarea
-                                      </DropdownMenuItem>
-                                    </DropdownMenuGroup>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              </Card>
-                            </>
-                          ))}
-                        </div>
+                                              setSelectedTaskToEdit(task);
+                                              setOpenEditModal(true);
+                                            }}
+                                          >
+                                            Editar tarea
+                                          </DropdownMenuItem>
+                                          <DropdownMenuItem
+                                            onClick={() => {
+                                              setSelectedTaskToEdit(task);
+                                              setOpenCompleteModal(true);
+                                            }}
+                                          >
+                                            Completar tarea
+                                          </DropdownMenuItem>
+                                          <DropdownMenuItem
+                                            onClick={() => {
+                                              setSelectedTaskToEdit(task);
+                                              setOpenDeleteTaskModal(true);
+                                            }}
+                                          >
+                                            Eliminar tarea
+                                          </DropdownMenuItem>
+                                        </DropdownMenuGroup>
+                                      </DropdownMenuContent>
+                                    </DropdownMenu>
+                                  </Card>
+                                </>
+                              ))}
+                            </div>
+                          </>
+                        )}
                       </>
                     )}
                   </div>
@@ -1266,9 +1296,3 @@ const LeadDetails = () => {
 };
 
 export default LeadDetails;
-
-// eliminar lead
-// editar lead
-// agregar foto a vehiculo de lead
-// mostrar vehiculo del lead en gestionar lead
-// agregar loading en gestionar lead

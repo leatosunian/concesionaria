@@ -100,7 +100,6 @@ const ImageGallery = () => {
         method: "GET",
         cache: "no-store",
       }).then((response) => response.json());
-      console.log(galleryResponse);
       if (galleryResponse) {
         setGalleryImages(galleryResponse);
         setFetchLoading(false)
@@ -156,7 +155,7 @@ const ImageGallery = () => {
         </span>
         {/* above carousel prev cont <div className="grid grid-cols-1 gap-8 px-12 md:grid-cols-2 md:gap-14 "> */}
 
-        <div className="flex flex-col items-center gap-8 pt-6 md:pt-10 md:items-start h-fit md:flex-col md:grid-cols-2 md:gap-14 ">
+        <div className="flex flex-col items-center gap-8 pt-6 md:pt-10 md:items-start h-fit md:flex-col md:grid-cols-2 md:gap-0 ">
           {fetchLoading && (
             <>
               <div
@@ -177,7 +176,7 @@ const ImageGallery = () => {
                         {galleryImages.map((image) => (
                           <CarouselItem key={image.uuid}>
                             <Image
-                              className="m-auto w-full rounded-md"
+                              className="w-full m-auto rounded-md"
                               alt="Imagen del vehículo"
                               onClick={() => {
                                 setImageToDelete(image.uuid);
@@ -267,7 +266,7 @@ const ImageGallery = () => {
               {loading && (
                 <>
                   <div
-                    className="flex items-center justify-center w-full mt-7 mb-5 overflow-y-hidden bg-white dark:bg-background"
+                    className="flex items-center justify-center w-full mb-5 overflow-y-hidden bg-white mt-7 dark:bg-background"
                     style={{ zIndex: "99999999", height: "40px" }}
                   >
                     <div className=" loaderSmall"></div>
@@ -359,7 +358,7 @@ const ImageGallery = () => {
             {loading && (
               <>
                 <div
-                  className="flex md:hidden items-center justify-center w-full mt-7 mb-5 overflow-y-hidden bg-white dark:bg-background"
+                  className="flex items-center justify-center w-full mb-5 overflow-y-hidden bg-white md:hidden mt-7 dark:bg-background"
                   style={{ zIndex: "99999999", height: "40px" }}
                 >
                   <div className=" loaderSmall"></div>

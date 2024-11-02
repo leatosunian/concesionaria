@@ -5,6 +5,7 @@ export interface ICarImage extends Document {
   carID: string;
   path: string;
   uuid: string;
+  public_id: string;
 }
 
 const carImageSchema: Schema = new Schema<ICarImage>(
@@ -18,6 +19,10 @@ const carImageSchema: Schema = new Schema<ICarImage>(
       required: true,
     },
     uuid: {
+      type: String,
+      required: true,
+    },
+    public_id: {
       type: String,
       required: true,
     },

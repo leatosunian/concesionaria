@@ -305,13 +305,37 @@ const NewLeadForm = ({
                       </FormItem>
                     )}
                   />
+
+                  {/* email */}
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem className="">
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="juanperez@gmail.com"
+                            type="email"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   {/* address */}
                   <FormField
                     control={form.control}
                     name="address"
                     render={({ field }) => (
                       <FormItem className="">
-                        <FormLabel>Domicilio</FormLabel>
+                        <FormLabel>
+                          Domicilio{" "}
+                          <span className="text-xs text-gray-500">
+                            (opcional)
+                          </span>
+                        </FormLabel>
                         <FormControl>
                           <Input
                             placeholder="Juan B. Justo 4050"
@@ -329,7 +353,10 @@ const NewLeadForm = ({
                     name="city"
                     render={({ field }) => (
                       <FormItem className="">
-                        <FormLabel>Ciudad</FormLabel>
+                        <FormLabel>Ciudad{" "}
+                          <span className="text-xs text-gray-500">
+                            (opcional)
+                          </span></FormLabel>
                         <FormControl>
                           <Input
                             placeholder="Mar del Plata"
@@ -348,30 +375,14 @@ const NewLeadForm = ({
                     name="state"
                     render={({ field }) => (
                       <FormItem className="">
-                        <FormLabel>Provincia</FormLabel>
+                        <FormLabel>Provincia{" "}
+                          <span className="text-xs text-gray-500">
+                            (opcional)
+                          </span></FormLabel>
                         <FormControl>
                           <Input
                             placeholder="Buenos Aires"
                             type="text"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* email */}
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem className="">
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="juanperez@gmail.com"
-                            type="email"
                             {...field}
                           />
                         </FormControl>

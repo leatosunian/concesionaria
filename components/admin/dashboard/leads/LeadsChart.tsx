@@ -27,6 +27,7 @@ import dayjs from "dayjs";
 import { BiTaskX } from "react-icons/bi";
 import { IoPeople } from "react-icons/io5";
 import Link from "next/link";
+import { LuArrowUpDown } from "react-icons/lu";
 
 const LeadsChart = () => {
   const [leads, setLeads] = useState<ILead[]>([]);
@@ -83,10 +84,10 @@ const LeadsChart = () => {
               <TableCaption>Listado de leads.</TableCaption>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-fit">Nombre</TableHead>
+                  <TableHead className="w-fit">Nombre </TableHead>
                   <TableHead className="w-fit">Estado</TableHead>
                   <TableHead className="w-fit">Veh. de interés</TableHead>
-                  <TableHead className="w-fit">Último contacto</TableHead>
+                  <TableHead className="flex items-center gap-1 w-fit">Último contacto <LuArrowUpDown /></TableHead>
                   <TableHead className="w-fit">Próxima tarea</TableHead>
 
                   <TableHead className="w-10"></TableHead>
@@ -96,7 +97,7 @@ const LeadsChart = () => {
                 {leads?.map((lead) => (
                   <>
                     <TableRow>
-                      <TableCell className="font-medium">
+                      <TableCell className="text-xs font-medium">
                         {lead.name} {lead.surname}
                       </TableCell>
                       <TableCell className="font-medium">
@@ -126,13 +127,13 @@ const LeadsChart = () => {
                           </span>
                         )}
                       </TableCell>
-                      <TableCell className="font-medium">
+                      <TableCell className="text-xs font-medium w-fit">
                         {lead.interestedIn}
                       </TableCell>
-                      <TableCell className="font-medium">
+                      <TableCell className="text-xs font-medium w-fit">
                         {dayjs(lead.createdAt).format("DD-MM-YYYY")}
                       </TableCell>
-                      <TableCell className="font-medium">
+                      <TableCell className="text-xs font-medium w-fit">
                         {lead.pendingTask}
                       </TableCell>
 

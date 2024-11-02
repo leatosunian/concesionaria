@@ -478,6 +478,8 @@ const EditProductForm = ({ uuid }: { uuid: string }) => {
                             <SelectItem value="UTILITARY">
                               Utilitario
                             </SelectItem>
+                            <SelectItem value="UTV">UTV</SelectItem>
+                            <SelectItem value="ATV">ATV</SelectItem>
                             <SelectItem value="SUV">SUV</SelectItem>
                             <SelectItem value="VAN">Van</SelectItem>
                             <SelectItem value="CONVERTIBLE">
@@ -486,7 +488,6 @@ const EditProductForm = ({ uuid }: { uuid: string }) => {
                             <SelectItem value="COUPE">Coupe</SelectItem>
                             <SelectItem value="HATCHBACK">Hatchback</SelectItem>
                             <SelectItem value="MOTORHOME">Motorhome</SelectItem>
-                            <SelectItem value="ATV">ATV</SelectItem>
                             <SelectItem value="SCOOTER">Scooter</SelectItem>
                           </SelectContent>
                         </Select>

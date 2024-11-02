@@ -341,8 +341,20 @@ const Page = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectItem value="CAR">Automóvil </SelectItem>
+                      <SelectItem value="CAR">Automóvil</SelectItem>
                       <SelectItem value="BIKE">Motocicleta</SelectItem>
+                      <SelectItem value="QUAD">Cuatriciclo</SelectItem>
+                      <SelectItem value="PICKUP">Pickup</SelectItem>
+                      <SelectItem value="UTILITARY">Utilitario</SelectItem>
+                      <SelectItem value="SUV">SUV</SelectItem>
+                      <SelectItem value="VAN">Van</SelectItem>
+                      <SelectItem value="CONVERTIBLE">Convertible</SelectItem>
+                      <SelectItem value="COUPE">Coupe</SelectItem>
+                      <SelectItem value="HATCHBACK">Hatchback</SelectItem>
+                      <SelectItem value="UTV">UTV</SelectItem>
+                      <SelectItem value="ATV">ATV</SelectItem>
+                      <SelectItem value="MOTORHOME">Motorhome</SelectItem>
+                      <SelectItem value="SCOOTER">Scooter</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -508,7 +520,7 @@ const Page = () => {
                                 Reservado
                               </Badge>
                             )}
-                              {car.status === "SOLD" && (
+                            {car.status === "SOLD" && (
                               <Badge
                                 className="absolute bg-red-500 border-none shadow-lg mt-2 md:py-1 md:px-3 py-1.5 px-3.5 ml-2 text-white font-normal md:text-xs text-sm "
                                 variant="outline"

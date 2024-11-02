@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
         carID,
         path: cloudinaryResponse.secure_url,
         uuid: uuidv4(),
+        public_id: cloudinaryResponse.public_id
       });
     }
 

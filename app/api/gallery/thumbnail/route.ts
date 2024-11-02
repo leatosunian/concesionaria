@@ -40,10 +40,10 @@ export async function POST(request: NextRequest) {
         console.log(cloudinaryResponse);
         const updatedCar = await CarModel.findOneAndUpdate(
           { uuid: carID },
-          { imagePath: cloudinaryResponse.secure_url },
-          { new: true }
+          { imagePath: cloudinaryResponse.secure_url, imagePublicID: cloudinaryResponse.public_id },
         );
         console.log(updatedCar);
+        await cloudinary.uploader.destroy(updatedCar.imagePublicID)
       } catch (writeError) {
         console.error("Error writing file:", writeError);
         return NextResponse.json(

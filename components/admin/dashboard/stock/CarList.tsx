@@ -39,6 +39,16 @@ import {
 } from "@/components/ui/pagination";
 import { FaRegCalendar } from "react-icons/fa";
 import { IoSpeedometerOutline } from "react-icons/io5";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/selectxs";
+import { IBranch } from "@/app/models/branch";
 
 const CarList = ({ cars }: { cars: ICar[] }) => {
   const [loading, setLoading] = useState(true);
@@ -54,7 +64,7 @@ const CarList = ({ cars }: { cars: ICar[] }) => {
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [currentVehicles, setCurrentVehicles] = useState<ICar[]>([]);
-
+  const [branches, setBranches] = useState<IBranch[]>([]);
   const [vehiclesPerPage, setVehiclesPerPage] = useState<number>(12);
   const lastVehicleIndex = currentPage * vehiclesPerPage;
   const firstVehicleIndex = lastVehicleIndex - vehiclesPerPage;
@@ -68,25 +78,25 @@ const CarList = ({ cars }: { cars: ICar[] }) => {
   }, [cars]);
 
   const { data: session, status } = useSession();
-  console.log(session, status);
 
   async function handleEdit(uuid: string) {
     router.push("/admin/dashboard/stock/" + uuid);
   }
 
   async function handleDelete(uuid: string) {
+    setLoading(true)
     try {
       const vehicle = await fetch("/api/cars/" + uuid, {
         method: "DELETE",
       }).then((response) => response.json());
       console.log("vehicle:", vehicle);
       if (vehicle.msg === "CAR_DELETED") {
-        console.log("car deleted");
         setCarList((prevCars) => {
           const updatedCars = prevCars?.filter((car) => car.uuid !== uuid);
           console.log("updatedCars:", updatedCars);
           return updatedCars;
         });
+        setLoading(false)
       }
       router.refresh();
     } catch (error) {
@@ -133,8 +143,19 @@ const CarList = ({ cars }: { cars: ICar[] }) => {
     setLoading(false);
   }, [carList, currentPage]);
 
+  async function getBranches() {
+    try {
+      const branchesFetch = await fetch("/api/branches", {
+        method: "GET",
+        cache: "no-store",
+      }).then((response) => response.json());
+      setBranches(branchesFetch.branches);
+    } catch (error) {}
+  }
+
   useEffect(() => {
     router.refresh();
+    getBranches();
   }, []);
 
   return (
@@ -151,6 +172,7 @@ const CarList = ({ cars }: { cars: ICar[] }) => {
       )}
       {!loading && (
         <>
+          {/* no vehicles  */}
           {currentVehicles.length === 0 && (
             <>
               <div className="flex flex-col items-center justify-center w-full gap-5 py-36 h-fit">
@@ -163,8 +185,103 @@ const CarList = ({ cars }: { cars: ICar[] }) => {
               </div>
             </>
           )}
+          {/* vehicles */}
           {currentVehicles.length > 0 && (
             <>
+              {/* search and filter bar */}
+              <div className="flex justify-between mb-7">
+                {/* search bar */}
+                <div className="text-sm text-black bg-white groupSearch dark:bg-background dark:text-white ">
+                  <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    className="iconSearch"
+                  >
+                    <g>
+                      <path d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"></path>
+                    </g>
+                  </svg>
+                  <input
+                    className="text-black inputSearch dark:text-white"
+                    type="search"
+                    placeholder="Buscar vehículo"
+                  />
+                </div>
+
+                {/* filters */}
+                <div className="flex gap-4">
+                  <Select>
+                    <SelectTrigger className="w-fit">
+                      <SelectValue placeholder="Sucursal" className="mr-2" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {branches &&
+                          branches.map((branch) => (
+                            <SelectItem
+                              key={branch.branchName}
+                              value={branch._id!}
+                            >
+                              {branch.address}
+                            </SelectItem>
+                          ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+
+                  <Select>
+                    <SelectTrigger className="w-fit">
+                      <SelectValue placeholder="Estado" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="apple">Disponible</SelectItem>
+                        <SelectItem value="banana">Reservado</SelectItem>
+                        <SelectItem value="blueberry">Vendido</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+
+                  <Select>
+                    <SelectTrigger className="w-fit">
+                      <SelectValue
+                        className="text-xs"
+                        placeholder="Uso del vehiculo"
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="apple">Usado</SelectItem>
+                        <SelectItem value="banana">0km</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+
+                  <Select>
+                    <SelectTrigger className="w-fit">
+                      <SelectValue placeholder="Ordenar por..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="price-desc">
+                          Mayor a menor precio
+                        </SelectItem>
+                        <SelectItem value="price-asc">
+                          Menor a mayor precio
+                        </SelectItem>
+                        <SelectItem value="date-desc">
+                          Mas recientes a mas antiguos
+                        </SelectItem>
+                        <SelectItem value="date-asc">
+                          Mas antiguos a mas recientes
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* vehicle list */}
               <div className="grid grid-cols-1 gap-10 sm:gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
                 {currentVehicles?.map((car) => (
                   <div key={car.uuid} className="col-span-1 md:h-full h-fit">
@@ -197,9 +314,9 @@ const CarList = ({ cars }: { cars: ICar[] }) => {
                           <div className="flex flex-col gap-5">
                             <p
                               style={{ color: "#a1a1aa" }}
-                              className="text-xs  flex gap-2 items-end "
+                              className="flex items-end gap-2 text-xs "
                             >
-                              <FaLocationDot size={15}/>
+                              <FaLocationDot size={15} />
                               {car.branchAddress}
                             </p>
                             <p className="text-lg font-semibold">
@@ -215,7 +332,6 @@ const CarList = ({ cars }: { cars: ICar[] }) => {
                             Editar
                           </Button>
                           <Button
-                            //onClick={() => handleDelete(car.uuid)}
                             onClick={() =>
                               openDeleteModal({
                                 carName: car.name,
@@ -232,6 +348,8 @@ const CarList = ({ cars }: { cars: ICar[] }) => {
                   </div>
                 ))}
               </div>
+
+              {/* delete vehicle modal */}
               <div className="px-10 rounded-md">
                 <AlertDialog>
                   <AlertDialogTrigger asChild>

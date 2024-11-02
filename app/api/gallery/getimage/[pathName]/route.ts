@@ -3,19 +3,28 @@ import path from "path";
 import fs from "fs";
 import CarImageModel from "@/app/models/carimage";
 import connectDB from "@/lib/db";
+import { v2 as cloudinary } from "cloudinary";
 
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { pathName: string } }
 ) {
-  await connectDB()
+  await connectDB();
   console.log(params);
-  
   try {
-    console.log(params.pathName)
+    cloudinary.config({
+      cloud_name: "duiw7lwlb",
+      api_key: "435529513686272",
+      api_secret: process.env.CLOUDINARY_SECRET,
+    });
+    const imageData = await CarImageModel.findOne({ uuid: params.pathName });
+    console.log(imageData.public_id);
+
     const deleteOnDB = await CarImageModel.findOneAndDelete({
       uuid: params.pathName,
     });
+    const result = await cloudinary.uploader.destroy(imageData.public_id);
+    console.log(result);
     return NextResponse.json({ msg: "IMAGE_DELETED", deleteOnDB });
   } catch (error) {
     return NextResponse.json(
@@ -29,7 +38,7 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { pathName: string } }
 ) {
-  await connectDB()
+  await connectDB();
   try {
     const { pathName } = params;
     // Verificar la ruta completa donde se suben los archivos
