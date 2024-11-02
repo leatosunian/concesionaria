@@ -90,6 +90,7 @@ const AddProductForm = () => {
       //  `/admin/dashboard/stock/${createdVehicle.uuid}?scrollToDiv=galleryCont`
       //);
       router.push(`/admin/dashboard/stock/${createdVehicle.uuid}`);
+      router.refresh()
     }
   }
 

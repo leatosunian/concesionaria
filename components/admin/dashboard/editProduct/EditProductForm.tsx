@@ -207,10 +207,14 @@ const EditProductForm = ({ uuid }: { uuid: string }) => {
       let formData = new FormData();
       formData.append("gallery_images", file);
       formData.append("carID", uuid as string);
+      console.log('uuid', uuid);
+      
       const uploadResponse = await fetch("/api/gallery/thumbnail", {
         method: "POST",
         body: formData,
       }).then((response) => response.json());
+      console.log(uploadResponse);
+      
       if (uploadResponse.msg === "THUMBNAIL_UPLOADED") {
         toast({ description: "¡Imagen cambiada!", variant: "default" });
         getVehicleData();
@@ -763,7 +767,7 @@ const EditProductForm = ({ uuid }: { uuid: string }) => {
             {buttonLoading && (
               <>
                 <div
-                  className="flex items-center justify-center w-full mt-10 md:w-1/4 overflow-y-hidden bg-white dark:bg-background"
+                  className="flex items-center justify-center w-full mt-10 overflow-y-hidden bg-white md:w-1/4 dark:bg-background"
                   style={{ zIndex: "99999999", height: "40px" }}
                 >
                   <div className=" loaderSmall"></div>

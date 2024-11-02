@@ -11,6 +11,9 @@ export async function POST(request: NextRequest) {
     const data = await request.formData();
     const carID = data.get("carID") as string;
     const files = data.getAll("gallery_images") as File[];
+    console.log("data", data);
+    console.log("files", files);
+    console.log("carID", carID);
 
     cloudinary.config({
       cloud_name: "duiw7lwlb",
@@ -23,8 +26,8 @@ export async function POST(request: NextRequest) {
     }
 
     for (const file of files) {
-      const bytes = await file.arrayBuffer()
-      const buffer = Buffer.from(bytes)
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
       try {
         const cloudinaryResponse: any = await new Promise((resolve, reject) => {
           cloudinary.uploader
@@ -40,10 +43,14 @@ export async function POST(request: NextRequest) {
         console.log(cloudinaryResponse);
         const updatedCar = await CarModel.findOneAndUpdate(
           { uuid: carID },
-          { imagePath: cloudinaryResponse.secure_url, imagePublicID: cloudinaryResponse.public_id },
+          {
+            imagePath: cloudinaryResponse.secure_url,
+            imagePublicID: cloudinaryResponse.public_id,
+          }
         );
-        console.log(updatedCar);
-        await cloudinary.uploader.destroy(updatedCar.imagePublicID)
+        if (updatedCar.imagePublicID !== "") {
+          await cloudinary.uploader.destroy(updatedCar.imagePublicID);
+        }
       } catch (writeError) {
         console.error("Error writing file:", writeError);
         return NextResponse.json(
