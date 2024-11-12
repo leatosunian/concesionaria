@@ -11,9 +11,6 @@ export async function POST(request: NextRequest) {
     const data = await request.formData();
     const carID = data.get("carID") as string;
     const files = data.getAll("gallery_images") as File[];
-    console.log("data", data);
-    console.log("files", files);
-    console.log("carID", carID);
 
     cloudinary.config({
       cloud_name: "duiw7lwlb",
@@ -39,8 +36,6 @@ export async function POST(request: NextRequest) {
             })
             .end(buffer);
         });
-
-        console.log(cloudinaryResponse);
         const updatedCar = await CarModel.findOneAndUpdate(
           { uuid: carID },
           {

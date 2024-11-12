@@ -11,6 +11,8 @@ import { ICar } from "../models/car";
 import Section3 from "@/components/page/home/Section3";
 import Search from "@/components/page/home/Search";
 import LoaderFullscreen from "@/components/page/LoaderFullscreen";
+import ContactForm from "@/components/page/home/ContactForm";
+
 
 const Home = () => {
   const [latestVehicles, setLatestVehicles] = useState<ICar[]>([]);
@@ -55,8 +57,10 @@ const Home = () => {
           <NewProducts vehicles={latestVehicles} />
           {/* <div className="w-full h-20" ></div> */}
           <Section2 />
+{/* 
+          <div className="w-full h-20"></div> */}
 
-          <div className="w-full h-20"></div>
+          <ContactForm/>
 
           <Footer />
         </div>

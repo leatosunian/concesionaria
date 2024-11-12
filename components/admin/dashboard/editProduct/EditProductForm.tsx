@@ -100,6 +100,10 @@ const EditProductForm = ({ uuid }: { uuid: string }) => {
     } catch (error) {}
   }
 
+
+
+  
+
   async function getBranches() {
     try {
       const branchesFetch = await fetch("/api/branches", {
@@ -120,12 +124,14 @@ const EditProductForm = ({ uuid }: { uuid: string }) => {
       const element = document.getElementById(scrollToDiv);
       if (element) {
         element.scrollIntoView({ behavior: "smooth" });
+      }else {
+        
       }
     }
   }, [scrollToDiv]);
 
   async function handleEdit() {
-    setButtonLoading(true)
+    setButtonLoading(true);
     try {
       const vehicle = await fetch("/api/cars/" + uuid, {
         method: "PUT",
@@ -137,11 +143,11 @@ const EditProductForm = ({ uuid }: { uuid: string }) => {
       if (vehicle) {
         setVehicleData(vehicle);
         toast({ description: "¡Vehículo editado!", variant: "default" });
-        setButtonLoading(false)
+        setButtonLoading(false);
         router.refresh();
       }
     } catch (error) {
-      setButtonLoading(false)
+      setButtonLoading(false);
       toast({
         description: "Error al editar vehículo",
         variant: "destructive",
@@ -207,14 +213,11 @@ const EditProductForm = ({ uuid }: { uuid: string }) => {
       let formData = new FormData();
       formData.append("gallery_images", file);
       formData.append("carID", uuid as string);
-      console.log('uuid', uuid);
-      
+
       const uploadResponse = await fetch("/api/gallery/thumbnail", {
         method: "POST",
         body: formData,
       }).then((response) => response.json());
-      console.log(uploadResponse);
-      
       if (uploadResponse.msg === "THUMBNAIL_UPLOADED") {
         toast({ description: "¡Imagen cambiada!", variant: "default" });
         getVehicleData();

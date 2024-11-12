@@ -57,13 +57,13 @@ const NewProducts = ({ vehicles }: Props) => {
 
   return (
     <>
-      <section className="flex flex-col justify-center w-full gap-10 py-20 align-middle">
+      <section className="flex flex-col justify-center w-full gap-8 py-24 align-middle h-fit xl:h-screen md:gap-14 md:py-32">
         <motion.header
           initial={{ opacity: 0, y: -70 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ amount: "some", once: true }}
           transition={{ duration: 0.7, ease: "easeInOut" }}
-          className="flex flex-col items-start justify-center px-6 overflow-hidden md:hidden"
+          className="flex flex-col items-start justify-center px-6 overflow-visible md:overflow-hidden md:hidden"
         >
           <div className="flex flex-col ">
             <span className="text-base font-bold text-red-500 upper ">

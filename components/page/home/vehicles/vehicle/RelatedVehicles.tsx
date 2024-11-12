@@ -60,7 +60,7 @@ const RelatedVehicles = ({ vehicles }: Props) => {
 
   return (
     <>
-      <section className="flex flex-col justify-center w-full gap-5 py-20 align-middle md:gap-8">
+      <section className="flex flex-col justify-center w-full gap-5 py-20 md:py-44 align-middle md:gap-8">
         <motion.header
           initial={{ opacity: 0, y: -70 }}
           whileInView={{ opacity: 1, y: 0 }}

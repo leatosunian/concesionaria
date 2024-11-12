@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import styles from "@/app/css-modules/home.search.module.css";
 import { motion } from "framer-motion";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
-
+import searchimg from "@/public/search6.png";
+import Image from "next/image";
 const Search = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const searchParams = useSearchParams();
@@ -29,26 +30,36 @@ const Search = () => {
   return (
     <>
       <div
-        className={`${styles.cont} z-0 flex flex-col items-center justify-center w-full gap-3 px-5 py-24 sm:py-28 md:py-36 sm:px-0 h-fit`}
+        className={`${styles.cont} z-0 flex flex-col items-center justify-center w-full gap-0 px-5 py-36 sm:py-28 md:py-48 sm:px-0 h-fit`}
       >
-        <motion.div
-          initial={{ opacity: 0, y: -70 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ amount: "some", once: true }}
-          transition={{ duration: 0.7, ease: "easeInOut", delay: 0.3 }}
-          className="z-50 flex flex-col gap-2 px-2 overflow-hidden w-fit h-hit"
-        >
-          <span className="text-base font-semibold text-red-500 ">
-            Buscar unidad
-          </span>
-          <h4 className="mb-2 text-2xl font-bold leading-6 lg:text-3xl ">
-            Encontrá el vehículo que estás buscando
-          </h4>
-          <span className="text-xs text-left text-gray-500 sm:text-sm md:text-base">
-            Tenemos unidades usadas y 0km para todos los gustos y necesidades
-          </span>
-        </motion.div>
-
+        <div className="flex gap-5 lg:gap-6">
+          <motion.div
+            initial={{ opacity: 0, scale: .8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ amount: "some", once: true }}
+            transition={{ duration: 0.7, ease: "easeInOut", delay: 0.3 }}
+            className="z-50 flex flex-col gap-2 px-2 my-auto overflow-hidden w-fit h-hit"
+          >
+            <Image src={searchimg} alt="" className="hidden sm:block" />
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: -70 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ amount: "some", once: true }}
+            transition={{ duration: 0.7, ease: "easeInOut", delay: 0.3 }}
+            className="z-50 flex flex-col gap-2 px-2 my-auto overflow-hidden w-fit h-hit"
+          >
+            <span className="text-base font-semibold text-red-500 ">
+              Buscar unidad
+            </span>
+            <h4 className="mb-2 text-2xl font-bold leading-6 lg:text-4xl ">
+              Encontrá el vehículo que estás buscando
+            </h4>
+            <span className="text-xs text-left text-gray-500 sm:text-sm md:text-lg">
+              Tenemos unidades usadas y 0km para todos los gustos y necesidades
+            </span>
+          </motion.div>
+        </div>
         <div className="flex flex-col items-center justify-center w-full">
           <motion.div
             initial={{ opacity: 0, scale: 0.7 }}

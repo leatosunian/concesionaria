@@ -71,6 +71,14 @@
   }
 }
 
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
+}
+
 .loader {
   width: 50px;
   aspect-ratio: 1;
@@ -230,8 +238,8 @@
 .inputSearch:focus,
 input:hover {
   outline: none;
-  background-color: #1b1b1b;
-  box-shadow: 0 0 0 1px rgb(139 139 139 / 73%);
+  /* background-color: #1b1b1b;
+  box-shadow: 0 0 0 1px rgb(139 139 139 / 73%); */
 }
 
 .iconSearch {
