@@ -32,7 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TbUserEdit } from "react-icons/tb";
+import { TbMailQuestion, TbUserEdit } from "react-icons/tb";
 import { BsShop } from "react-icons/bs";
 import { FaUsers } from "react-icons/fa";
 
@@ -332,6 +332,16 @@ export default function Navbar() {
               <FaUsers />
               <span className="ml-3 ">Leads</span>
             </Link>
+
+            <Link
+              href="/admin/dashboard/questions"
+              className="flex items-center gap-1 px-3 py-3 text-sm font-medium transition-colors duration-300 rounded-md backgroundOrangHover"
+              onClick={() => setIsOpen(false)}
+            >
+              <TbMailQuestion />
+              <span className="ml-3 ">Consultas</span>
+            </Link>
+
             <div
               className="flex items-center gap-1 px-3 py-3 text-sm font-medium transition-colors duration-300 rounded-md backgroundOrangHover"
               onClick={() => {
