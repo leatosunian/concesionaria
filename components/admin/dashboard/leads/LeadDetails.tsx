@@ -148,11 +148,15 @@ const LeadDetails = () => {
 
   async function getLead() {
     try {
+      console.log(id);
       const leadFetch = await fetch(`/api/leads/${id}`, {
         method: "GET",
         cache: "no-store",
       });
       const lead = await leadFetch.json();
+
+      console.log(lead);
+
       setLeadVehicles(lead.leadVehicles);
       setObservations(lead.lead.observations);
       setLead(lead.lead);
@@ -173,8 +177,7 @@ const LeadDetails = () => {
       const tasks = await tasksFetch.json();
       setPendingTasks(tasks.pendingTasks);
       setCompletedTasks(tasks.completedTasks);
-      setLoadingPendingTasks(false)
-
+      setLoadingPendingTasks(false);
     } catch (error) {
       return;
     }
@@ -208,13 +211,12 @@ const LeadDetails = () => {
         body: JSON.stringify(values),
       }).then((response) => response.json());
       console.log(response);
-      if(response.msg = 'TASK_CREATED'){
+      if ((response.msg = "TASK_CREATED")) {
         toast({ description: "¡Tarea creada!", variant: "default" });
         getTasks();
         getLead();
-        return
+        return;
       }
-    
     } catch (error) {
       setLoadingPendingTasks(false);
       // error alert
@@ -368,10 +370,7 @@ const LeadDetails = () => {
 
   useEffect(() => {
     editForm.setValue("title", selectedTaskToEdit?.title!);
-    console.log(selectedTaskToEdit?.dateToDo);
-
     editForm.setValue("dateToDo", selectedTaskToEdit?.dateToDo!);
-    console.log(editForm.getValues());
   }, [selectedTaskToEdit]);
 
   useEffect(() => {
@@ -394,7 +393,7 @@ const LeadDetails = () => {
       {!loading && (
         <>
           {/* Datos personales */}
-          <Card className="flex flex-col p-5">
+          <div className="flex flex-col py-5">
             <div className="flex flex-col items-start justify-between mb-5 sm:items-center md:flex-row">
               <div className="flex flex-wrap justify-between w-full gap-2 md:justify-start md:gap-5">
                 <span className="text-xl font-semibold sm:text-2xl">
@@ -576,66 +575,79 @@ const LeadDetails = () => {
                 </div>
               </div>
             </div>
-          </Card>
+          </div>
 
           {/* interested in section */}
           <Separator className="my-10" />
 
           <div className="flex flex-col justify-center w-full gap-10 md:gap-0 md:flex-row h-fit">
             {/* Vehiculo de interés */}
-            <div className="w-fit">
+            <div className="w-full h-full md:w-fit ">
               <span className="text-xl font-semibold">Vehiculo de interés</span>
-              <div className="flex flex-col items-center justify-center gap-5 mt-8 sm:items-start">
-                <div className="h-full max-w-full sm:max-w-[300px] ">
-                  <Card className="flex flex-col h-full shadow-lg">
-                    <Image
-                      src={intInVehicle?.imagePath!}
-                      alt=""
-                      unoptimized
-                      width={500}
-                      height={500}
-                      className="object-cover h-full mb-4 overflow-hidden md:h-1/2 rounded-t-md "
-                    />
-                    <div className="flex flex-col justify-between w-full h-fit md:h-1/2">
-                      <CardHeader style={{ padding: "0 16px 10px 16px" }}>
-                        <CardTitle className="text-base textCut">
-                          {/* {car.name} */}
-                          {intInVehicle?.name}
-                        </CardTitle>
-                        <CardDescription className="flex items-center justify-between w-full pt-1 pb-2 ">
-                          <div className="flex items-center gap-2">
-                            {/* <FaRegCalendar /> <span>{car.year}</span> */}
-                            <FaRegCalendar /> <span> {intInVehicle?.year}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <IoSpeedometerOutline size={20} />
-                            {/* <span> {car.kilometers} km</span> */}
-                            <span> {intInVehicle?.kilometers} km</span>
-                          </div>
-                        </CardDescription>
-                        <span className="text-lg font-semibold">
-                          {/* {car.currency} ${car.price} */}
-                          {intInVehicle?.currency} ${intInVehicle?.price}
-                        </span>
-                      </CardHeader>
-                      <CardFooter className="w-full p-4">
-                        <Link
-                          className="w-full h-full"
-                          href={"/admin/dashboard/leads/edit/" + lead?._id}
-                        >
-                          <Button
-                            //onClick={() => setSelectedIntIn(car)}
-                            variant={"default"}
-                            className="w-full mt-2 md:mt-0"
+              
+              {intInVehicle === null && (
+                <Link
+                  href={"/admin/dashboard/leads/edit/" + lead?._id}
+                  className=" opacity-50 flex flex-col items-center justify-center w-full min-h-[350px] h-full"
+                >
+                  <IoIosAddCircleOutline size={50} strokeWidth={0} />
+                  <span>Añadir vehículo</span>
+                </Link>
+              )}
+              {intInVehicle !== null && (
+                <div className="flex flex-col items-center justify-center gap-5 mt-5 sm:items-start">
+                  <div className="h-full max-w-full sm:max-w-[300px] ">
+                    <Card className="flex flex-col h-full shadow-lg">
+                      <Image
+                        src={intInVehicle?.imagePath!}
+                        alt=""
+                        unoptimized
+                        width={500}
+                        height={500}
+                        className="object-cover h-full mb-4 overflow-hidden md:h-1/2 rounded-t-md "
+                      />
+                      <div className="flex flex-col justify-between w-full h-fit md:h-1/2">
+                        <CardHeader style={{ padding: "0 16px 10px 16px" }}>
+                          <CardTitle className="text-base textCut">
+                            {/* {car.name} */}
+                            {intInVehicle?.name}
+                          </CardTitle>
+                          <CardDescription className="flex items-center justify-between w-full pt-1 pb-2 ">
+                            <div className="flex items-center gap-2">
+                              {/* <FaRegCalendar /> <span>{car.year}</span> */}
+                              <FaRegCalendar />{" "}
+                              <span> {intInVehicle?.year}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <IoSpeedometerOutline size={20} />
+                              {/* <span> {car.kilometers} km</span> */}
+                              <span> {intInVehicle?.kilometers} km</span>
+                            </div>
+                          </CardDescription>
+                          <span className="text-lg font-semibold">
+                            {/* {car.currency} ${car.price} */}
+                            {intInVehicle?.currency} ${intInVehicle?.price}
+                          </span>
+                        </CardHeader>
+                        <CardFooter className="w-full p-4">
+                          <Link
+                            className="w-full h-full"
+                            href={"/admin/dashboard/leads/edit/" + lead?._id}
                           >
-                            Cambiar vehículo
-                          </Button>
-                        </Link>
-                      </CardFooter>
-                    </div>
-                  </Card>
+                            <Button
+                              //onClick={() => setSelectedIntIn(car)}
+                              variant={"default"}
+                              className="w-full mt-2 md:mt-0"
+                            >
+                              Cambiar vehículo
+                            </Button>
+                          </Link>
+                        </CardFooter>
+                      </div>
+                    </Card>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             <Separator

@@ -18,13 +18,14 @@ export async function GET(
     const intInVehicle = await CarModel.findOne({
       uuid: leadVehicles.leadPrefVehicleUUID,
     });
-    const seller = await AdminModel.findOne({_id: lead.employeeID})
+    const seller = await AdminModel.findOne({ _id: lead.employeeID });
+
     return NextResponse.json({
       msg: "LEAD_GET",
       lead,
       leadVehicles,
       intInVehicle,
-      seller
+      seller,
     });
   } catch (error) {
     return NextResponse.json({ msg: "ERROR_GET_LEAD" });
@@ -67,7 +68,7 @@ export async function PUT(
   const { id } = params;
   const data: ILead = await request.json();
   console.log(data);
-  
+
   try {
     const updatedLead = await LeadModel.findOneAndUpdate({ _id: id }, data, {
       new: true,

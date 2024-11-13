@@ -65,7 +65,7 @@ const leadVehiclesSchema: Schema = new Schema<ILeadVehicle>(
     },
     leadVehicleImage: {
       type: String,
-      required: true,
+      required: false,
     }
   },
   {
