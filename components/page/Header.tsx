@@ -129,7 +129,7 @@ export default function Header() {
                   Nuestros vehículos
                 </Link>
                 <Link
-                  href="/aboutus"
+                  href="/contactus"
                   style={{ fontSize: "11px" }}
                   className="px-3 py-2 text-xs font-semibold uppercase transition-colors duration-300 rounded-md "
                   onClick={() => {
@@ -247,7 +247,7 @@ export default function Header() {
               Nuestros vehículos
             </Link>
             <Link
-              href="/aboutus"
+              href="/contactus"
               className="flex items-center gap-2 px-3 py-3 text-sm font-medium transition-colors duration-300 rounded-md backgroundOrangHover"
               onClick={() => setIsOpen(false)}
             >
