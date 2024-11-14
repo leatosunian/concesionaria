@@ -57,7 +57,7 @@ const NewProducts = ({ vehicles }: Props) => {
 
   return (
     <>
-      <section className="flex flex-col justify-center w-full gap-8 py-24 align-middle h-fit xl:h-screen md:gap-14 md:py-32">
+      <section className="flex flex-col justify-center w-full gap-8 my-16 align-middle h-fit xl:h-screen md:gap-8 2xl:gap-12 md:my-14 2xl:my-0">
         <motion.header
           initial={{ opacity: 0, y: -70 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -66,10 +66,10 @@ const NewProducts = ({ vehicles }: Props) => {
           className="flex flex-col items-start justify-center px-6 overflow-visible md:overflow-hidden md:hidden"
         >
           <div className="flex flex-col ">
-            <span className="text-base font-bold text-red-500 upper ">
+            <span className="text-base font-bold text-red-500  ">
               Últimos ingresos
             </span>
-            <h4 className="text-2xl font-bold ">
+            <h4 className="text-2xl font-bold md:text-lg 2xl:text-2xl ">
               Estas son nuestras unidades mas recientes
             </h4>
           </div>
@@ -85,7 +85,7 @@ const NewProducts = ({ vehicles }: Props) => {
             <span className="text-sm font-bold text-red-500 upper sm:text-base">
               Últimos ingresos
             </span>
-            <h4 className="text-xl font-bold sm:text-3xl">
+            <h4 className="text-2xl font-bold md:text-2xl 2xl:text-2xl ">
               Estas son nuestras unidades mas recientes
             </h4>
           </div>
@@ -123,7 +123,7 @@ const NewProducts = ({ vehicles }: Props) => {
                     className="px-5 xs:basis-1/2 sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
                   >
                     <div className="p-1 md:h-full h-fit">
-                      <Card className="flex flex-col h-full shadow-lg">
+                      <Card className="flex unselectable flex-col md:max-h-[400px] max-h-full 2xl:max-h-full  h-full shadow-lg">
                         <Image
                           src={car?.imagePath!}
                           alt="auto"
@@ -134,7 +134,7 @@ const NewProducts = ({ vehicles }: Props) => {
                         />
                         <div className="flex flex-col justify-between w-full h-full md:h-1/2">
                           <CardHeader style={{ padding: "0 16px 0px 16px" }}>
-                            <CardTitle className="text-lg textCut">
+                            <CardTitle className="text-lg md:text-base 2xl:text-lg textCut ">
                               {car.name}
                             </CardTitle>
                             <CardDescription className="flex items-center justify-between w-full pt-1 pb-2 ">
@@ -146,7 +146,7 @@ const NewProducts = ({ vehicles }: Props) => {
                                 <span> {car.kilometers} km</span>
                               </div>
                             </CardDescription>
-                            <p className="text-lg font-semibold">
+                            <p className="text-lg md:text-base 2xl:text-lg font-semibold">
                               {car.currency} ${car.price}
                             </p>
                           </CardHeader>
@@ -155,7 +155,10 @@ const NewProducts = ({ vehicles }: Props) => {
                               href={`/vehicles/${car.uuid}`}
                               className="w-full h-fit"
                             >
-                              <Button variant={"default"} className="w-full">
+                              <Button
+                                variant={"default"}
+                                className="w-full text-lg md:text-xs 2xl:text-lg"
+                              >
                                 Ver más
                               </Button>
                             </Link>
@@ -179,7 +182,7 @@ const NewProducts = ({ vehicles }: Props) => {
             <button
               key={dot.uuid}
               className={`w-2 h-2 rounded-full ${
-                index  === current ? "bg-black" : "bg-gray-300"
+                index === current ? "bg-black" : "bg-gray-300"
               }`}
             />
           ))}

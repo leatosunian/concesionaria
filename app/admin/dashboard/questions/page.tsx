@@ -5,6 +5,12 @@ import { IoMdAdd, IoMdMore } from "react-icons/io";
 import LeadsChart from "@/components/admin/dashboard/leads/LeadsChart";
 import Link from "next/link";
 import QuestionsChart from "@/components/admin/dashboard/questions/QuestionsChart";
+import { Metadata } from "next";
+export const metadata: Metadata = {
+  title: "Consultas | Panel de administración",
+  description:
+    "Distrito Automotor, concesionaria de vehículos ubicada en Mar del Plata, Buenos Aires",
+};
 
 const LeadsPage = () => {
   return (

@@ -1,8 +1,8 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@radix-ui/react-select";
-import React, { useEffect, useState } from "react";
-import { IoMdAdd, IoMdMore } from "react-icons/io";
+import React, { useState } from "react";
+import { IoMdAdd } from "react-icons/io";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +10,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import BranchesChart from "@/components/admin/dashboard/branches/BranchesChart";
@@ -26,7 +25,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { formSchema } from "@/app/schemas/createBranchForm";
-import { IBranch } from "@/app/models/branch";
 import { useToast } from "@/hooks/use-toast";
 
 const BranchesPage = () => {

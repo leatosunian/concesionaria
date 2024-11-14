@@ -86,7 +86,7 @@ const Section2 = () => {
                       <SiCashapp />
                     </div>
                     <h6 className="text-xl font-semibold">Financiación</h6>
-                    <p className="mt-2 mb-4 text-blueGray-500">
+                    <p className="mt-2 mb-4 text-base md:text-sm 2xl:text-base text-blueGray-500">
                       Varios planes de financiación para que acceder a tu nuevo
                       vehículo sea más fácil que nunca
                     </p>
@@ -112,7 +112,7 @@ const Section2 = () => {
                     <h6 className="text-xl font-semibold">
                       Transferimos tu unidad
                     </h6>
-                    <p className="mt-2 mb-4 text-blueGray-500">
+                    <p className="mt-2 mb-4 text-base md:text-sm 2xl:text-base text-blueGray-500">
                       Nos encargamos de que salgas de la agencia con tu vehículo
                       transferido a tu nombre
                     </p>
@@ -141,7 +141,7 @@ const Section2 = () => {
                     {/* <p className="mt-2 mb-4 text-blueGray-500">
                       Todas las coberturas al mejor precio para que puedas conducir tu nueva unidad
                     </p> */}
-                    <p className="mt-2 mb-4 text-blueGray-500">
+                    <p className="mt-2 mb-4 text-base md:text-sm 2xl:text-base text-blueGray-500">
                       Trabajamos con los mejores brokers de seguros. Todas las
                       coberturas al mejor precio.
                     </p>

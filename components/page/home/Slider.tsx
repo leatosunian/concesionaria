@@ -18,7 +18,7 @@ const Slider = () => {
             Tu próximo auto, cada vez más cerca
           </h3> */}
           <h3
-            className="text-4xl font-semibold sm:text-5xl xl:text-6xl"
+            className="text-4xl font-semibold sm:text-5xl 2xl:text-6xl"
             style={{ letterSpacing: ".5px" }}
           >
             Tu próximo auto está en Distrito Automotor
@@ -33,7 +33,7 @@ const Slider = () => {
             Unimos 6 marcas líderes del mercado en un mismo lugar. Además,
             tenemos más de 700 usados seleccionados para vos.
           </p> */}
-          <p className="text-base md:text-base lg:text-lg">
+          <p className="text-base md:text-base 2xl:text-lg">
             La asesoría personalizada que estabas buscando para comprar tu nuevo
             vehículo. Contamos con una selección de más de 50 vehículos nuevos y usados en óptimo estado para vos
           </p>

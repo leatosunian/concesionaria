@@ -52,11 +52,11 @@ const Search = () => {
             <span className="text-base font-semibold text-red-500 ">
               Buscar unidad
             </span>
-            <h4 className="mb-2 text-2xl font-bold leading-6 lg:text-4xl ">
+            <h4 className="mb-2 text-2xl font-bold leading-6 lg:text-3xl 2xl:text-4xl ">
               Encontrá el vehículo que estás buscando
             </h4>
             <span className="text-xs text-left text-gray-500 sm:text-sm md:text-lg">
-              Tenemos unidades usadas y 0km para todos los gustos y necesidades
+              Tenemos unidades usadas y 0 km para todos los gustos y necesidades
             </span>
           </motion.div>
         </div>

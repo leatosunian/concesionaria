@@ -1,6 +1,12 @@
 import { Separator } from "@radix-ui/react-select";
 import React from "react";
 import LeadInfoForm from "@/components/admin/dashboard/leads/LeadDetails";
+import { Metadata } from "next";
+export const metadata: Metadata = {
+  title: "Gestionar lead | Panel de administración",
+  description:
+    "Distrito Automotor, concesionaria de vehículos ubicada en Mar del Plata, Buenos Aires",
+};
 
 const CreateLeadPage = () => {
   return (

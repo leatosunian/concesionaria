@@ -4,7 +4,12 @@ import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import React from "react";
 import { IoMdAdd } from "react-icons/io";
-
+import { Metadata } from "next";
+export const metadata: Metadata = {
+  title: "Mis vehículos | Panel de administración",
+  description:
+    "Distrito Automotor, concesionaria de vehículos ubicada en Mar del Plata, Buenos Aires",
+};
 const carList = [
   {
     name: "Volkswagen Vento Sportline",

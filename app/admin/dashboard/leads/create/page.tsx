@@ -10,7 +10,7 @@ import { ILead } from "@/app/models/lead";
 const CreateLeadPage = () => {
   const [componentToShow, setComponentToShow] = useState<number>(1);
   const [createdLeadData, setCreatedLeadData] = useState<ILead>();
-
+  
   return (
     <>
       <div className="flex items-center justify-between">
