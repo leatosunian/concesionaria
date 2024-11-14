@@ -13,12 +13,21 @@ export async function GET(
 ) {
   await connectDB();
   try {
+    console.log('params', params.id);
+    
     const lead = await LeadModel.findOne({ _id: params.id });
+    console.log('lead', lead);
+    
     const leadVehicles = await LeadVehiclesModel.findOne({ leadID: params.id });
+    console.log('leadVehicles', leadVehicles);
+    
     const intInVehicle = await CarModel.findOne({
       uuid: leadVehicles.leadPrefVehicleUUID,
     });
+    console.log('intInVehicle', intInVehicle);
+
     const seller = await AdminModel.findOne({ _id: lead.employeeID });
+    console.log('seller', seller);
 
     return NextResponse.json({
       msg: "LEAD_GET",

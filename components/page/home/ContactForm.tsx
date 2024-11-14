@@ -28,6 +28,8 @@ import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import correct from "@/public/correct.png";
+import { motion } from "framer-motion";
+import Link from "next/link";
 
 const ContactForm = () => {
   const [branches, setBranches] = useState<IBranch[]>();
@@ -86,7 +88,12 @@ const ContactForm = () => {
     <>
       <div className="flex flex-col items-center justify-center gap-8 px-8 mx-auto my-20 md:gap-24 lg:flex-row md:my-44 md:px-32 w-fit ">
         <div className="flex flex-col items-start justify-start w-fit ">
-          <div className="flex flex-row items-center justify-start w-full gap-10 h-fit ">
+          <motion.div
+            initial={{ opacity: 0, x: -100 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.9 }}
+            className="flex flex-row items-center justify-start w-full gap-10 h-fit "
+          >
             <div className="w-32">
               <Image alt="" src={contactImg} className="object-cover" />
             </div>
@@ -98,16 +105,28 @@ const ContactForm = () => {
                 ¡No dudes en consultarnos!
               </h4>
             </div>
-          </div>
-          <span className="mt-5 text-sm font-normal text-left text-black md:text-base md:mt-8">
-            Completá el formulario con tus datos y escribinos tu consulta. ¡Te
-            contactamos lo antes posible!
-          </span>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: -100 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.9 }}
+            className="flex flex-row items-center justify-start w-full gap-10 h-fit "
+          >
+            <span className="mt-5 text-sm font-normal text-left text-black md:text-base md:mt-8">
+              Completá el formulario con tus datos y escribinos tu consulta. ¡Te
+              contactamos lo antes posible!
+            </span>
+          </motion.div>
 
           <Separator className="hidden my-7 md:block" />
 
           <div className="hidden w-full h-fit md:flex">
-            <div className="flex flex-col w-full gap-5 h-fit">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 1.3 }}
+              className="flex flex-col w-full gap-5 h-fit"
+            >
               <span className="text-xl font-semibold">Visitanos en</span>
               <div className="flex flex-col gap-3">
                 {branches &&
@@ -122,45 +141,62 @@ const ContactForm = () => {
                     </>
                   ))}
               </div>
-            </div>
+            </motion.div>
           </div>
 
           <Separator className="hidden my-7 md:block" />
 
           <div className="hidden w-full h-fit md:flex">
-            <div className="flex flex-col w-full gap-5 h-fit">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 1.3 }}
+              className="flex flex-col w-full gap-5 h-fit"
+            >
               <span className="text-xl font-semibold">
                 Seguinos en nuestras redes
               </span>
               <div className="flex gap-3">
-                <div className=" lg:mb-0">
-                  <button
-                    className="items-center justify-center w-10 h-10 mr-2 font-normal bg-white rounded-full shadow-lg outline-none text-lightBlue-400 align-center focus:outline-none"
-                    type="button"
-                  >
-                    <FaTwitter className="m-auto" />
-                  </button>
-                  <button
-                    className="items-center justify-center w-10 h-10 mr-2 font-normal bg-white rounded-full shadow-lg outline-none text-lightBlue-600 align-center focus:outline-none"
-                    type="button"
-                  >
-                    <FaInstagram className="m-auto" />
-                  </button>
-                  <button
-                    className="items-center justify-center w-10 h-10 mr-2 font-normal bg-white rounded-full shadow-lg outline-none text-blueGray-800 align-center focus:outline-none"
-                    type="button"
-                  >
-                    <FaFacebook className="m-auto" />
-                  </button>
-                  <button
-                    className="items-center justify-center w-10 h-10 mr-2 font-normal bg-white rounded-full shadow-lg outline-none align-center focus:outline-none"
-                    type="button"
-                  >
-                    <SiMercadopago className="m-auto" />
-                  </button>
+                <div className="flex flex-wrap gap-6 md:gap-3 lg:mb-0">
+                <Link target="_blank" href={"https://www.instagram.com/"}>
+                      <button
+                        className="flex items-center justify-center h-10 gap-3 px-4 font-normal transition duration-300 bg-white border border-gray-200 rounded-full shadow-lg outline-none w-fit hover:ring-1 hover:ring-red-400 align-center hover:shadow-red-100 hover:outline-none"
+                        type="button"
+                      >
+                        <FaInstagram className="m-auto" size={20} />{" "}
+                        <span className="text-xs font-medium">
+                          distrito.automotor
+                        </span>
+                      </button>
+                    </Link>
+                    <Link target="_blank" href={"https://www.facebook.com/"}>
+                      <button
+                        className="flex items-center justify-center h-10 gap-3 px-4 font-normal transition bg-white border border-gray-200 rounded-full shadow-lg outline-none w-fit hover:shadow-red-100duration-300 hover:ring-1 hover:ring-red-400 align-center hover:outline-none"
+                        type="button"
+                      >
+                        <FaFacebook className="m-auto" size={20} />{" "}
+                        <span className="text-xs font-medium">
+                          Distrito Automotor
+                        </span>
+                      </button>
+                    </Link>
+                    <Link
+                      target="_blank"
+                      href={"https://www.mercadolibre.com.ar/"}
+                    >
+                      <button
+                        className="flex items-center justify-center h-10 gap-3 px-4 font-normal transition duration-300 bg-white border border-gray-200 rounded-full shadow-lg outline-none w-fit hover:shadow-red-100 hover:ring-1 hover:ring-red-400 align-center hover:outline-none"
+                        type="button"
+                      >
+                        <SiMercadopago className="m-auto" size={20} />{" "}
+                        <span className="text-xs font-medium">
+                          Distrito Automotor
+                        </span>
+                      </button>
+                    </Link>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
 
@@ -186,7 +222,7 @@ const ContactForm = () => {
                             <FormControl>
                               <input
                                 {...field}
-                                className="w-full px-4 py-2 text-xs font-normal duration-300 bg-gray-100 border border-gray-200 rounded-lg transition  focus:outline-none focus:ring-2 focus:ring-red-400"
+                                className="w-full px-4 py-2 text-xs font-normal transition duration-300 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
                                 placeholder="Ingrese su nombre"
                                 id="name"
                                 type="text"
@@ -209,7 +245,7 @@ const ContactForm = () => {
                             <FormControl>
                               <input
                                 {...field}
-                                className="w-full px-4 py-2 text-xs font-normal duration-300 bg-gray-100 border border-gray-200 rounded-lg transition  focus:outline-none focus:ring-2 focus:ring-red-400"
+                                className="w-full px-4 py-2 text-xs font-normal transition duration-300 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
                                 placeholder="Ingrese su apellido"
                                 id="surname"
                                 type="text"
@@ -234,7 +270,7 @@ const ContactForm = () => {
                           <FormControl>
                             <input
                               {...field}
-                              className="w-full px-4 py-2 text-xs font-normal duration-300 bg-gray-100 border border-gray-200 rounded-lg transition  focus:outline-none focus:ring-2 focus:ring-red-400"
+                              className="w-full px-4 py-2 text-xs font-normal transition duration-300 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
                               placeholder="Ingrese su número de teléfono"
                               id="phone"
                               type="number"
@@ -258,7 +294,7 @@ const ContactForm = () => {
                           <FormControl>
                             <input
                               {...field}
-                              className="w-full px-4 py-2 text-xs font-normal duration-300 bg-gray-100 border border-gray-200 rounded-lg transition  focus:outline-none focus:ring-2 focus:ring-red-400"
+                              className="w-full px-4 py-2 text-xs font-normal transition duration-300 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
                               placeholder="Ingrese su correo"
                               id="email"
                               type="text"
@@ -281,7 +317,7 @@ const ContactForm = () => {
                           </FormLabel>
                           <textarea
                             {...field}
-                            className="w-full px-4 py-2 text-xs font-normal duration-300 bg-gray-100 border border-gray-200 rounded-lg h-28 md:h-24 transition  focus:outline-none focus:ring-2 focus:ring-red-400"
+                            className="w-full px-4 py-2 text-xs font-normal transition duration-300 bg-gray-100 border border-gray-200 rounded-lg h-28 md:h-24 focus:outline-none focus:ring-2 focus:ring-red-400"
                             rows={4}
                             placeholder="Ingrese su consulta"
                             name="message"
