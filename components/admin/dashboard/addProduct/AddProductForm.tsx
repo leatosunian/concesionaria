@@ -98,12 +98,14 @@ const AddProductForm = () => {
   // ADD NEW PRODUCT FUNCTION
   async function onSubmit(values: any) {
     setLoading(true);
-    values.leadID = uuidv4();
+    values.uuid = uuidv4();
     try {
       const vehicle = await fetch("/api/cars", {
         method: "POST",
         body: JSON.stringify(values),
       }).then((response) => response.json());
+      console.log(vehicle);
+
       setOpenCreated(true);
       setCreatedVehicle(vehicle);
       setLoading(false);

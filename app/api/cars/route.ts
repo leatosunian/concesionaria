@@ -2,7 +2,7 @@ import connectDB from "@/lib/db";
 import CarModel from "@/app/models/car";
 import { NextRequest, NextResponse } from "next/server";
 import BranchModel from "@/app/models/branch";
-
+import { v4 as uuidv4 } from "uuid";
 // GET ALL CARS
 export async function GET(request: NextRequest, context: any) {
   await connectDB();
@@ -25,6 +25,8 @@ export async function GET(request: NextRequest, context: any) {
 export async function POST(request: NextRequest) {
   await connectDB();
   const data = await request.json();
+  console.log(data);
+  
   const branchAddress = await BranchModel.findOne({ _id: data.branchID });
   data.branchAddress = branchAddress.address;
   try {
