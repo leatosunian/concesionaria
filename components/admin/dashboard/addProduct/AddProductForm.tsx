@@ -54,6 +54,7 @@ import { ICar } from "@/app/models/car";
 import React from "react";
 import { IBranch } from "@/app/models/branch";
 import { useToast } from "@/hooks/use-toast";
+import { v4 as uuidv4 } from "uuid";
 
 const AddProductForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -90,13 +91,14 @@ const AddProductForm = () => {
       //  `/admin/dashboard/stock/${createdVehicle.uuid}?scrollToDiv=galleryCont`
       //);
       router.push(`/admin/dashboard/stock/${createdVehicle.uuid}`);
-      router.refresh()
+      router.refresh();
     }
   }
 
   // ADD NEW PRODUCT FUNCTION
   async function onSubmit(values: any) {
     setLoading(true);
+    values.leadID = uuidv4();
     try {
       const vehicle = await fetch("/api/cars", {
         method: "POST",

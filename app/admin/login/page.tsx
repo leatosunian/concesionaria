@@ -12,7 +12,9 @@ export const metadata: Metadata = {
 const Login = () => {
   return (
     <>
-      <Image alt="as" src={logo} className="mx-auto mt-6" width={200} />
+      <div className="flex justify-center w-full h-fit">
+        <Image alt="as" src={logo} className="mx-auto mt-6" width={200} />
+      </div>
       <div
         style={{ height: "calc(100vh - 70px)" }}
         className="flex flex-col items-center justify-center w-full dark"

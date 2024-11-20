@@ -96,9 +96,7 @@ const carSchema: Schema = new Schema<ICar>(
   {
     uuid: {
       type: String,
-      required: false,
-      default: uuidv4(),
-      value: uuidv4(),
+      required: true,
     },
     name: {
       type: String,
