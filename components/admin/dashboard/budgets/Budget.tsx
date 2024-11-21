@@ -48,7 +48,7 @@ const Budget = ({
   const { data: session }: any = useSession();
   console.log(session);
   const { toast } = useToast();
-  
+
   function createRandomFiveDigits() {
     return Math.floor(10000 + Math.random() * 90000);
   }
@@ -279,7 +279,7 @@ const Budget = ({
         {/* vehicles and budget details */}
         <div className="flex w-full h-full gap-8 mt-3">
           {/* vehicles' details */}
-          <div className="flex flex-col gap-5 w-fit h-fit">
+          <div className="flex flex-col gap-5 w-1/2 h-fit">
             <Card
               style={{ borderColor: "rgb(228, 228, 231)" }}
               className="flex w-full h-full p-5 bg-white border-border"
@@ -491,7 +491,7 @@ const Budget = ({
           {/* resumen de presupuesto */}
           <Card
             style={{ borderColor: "rgb(228, 228, 231)" }}
-            className="w-full p-5 bg-white h-fit md:w-1/2"
+            className=" p-5 bg-white h-fit w-1/2"
           >
             <div className="flex flex-col gap-0 text-black bg-white">
               <span

@@ -104,8 +104,6 @@ const AddProductForm = () => {
         method: "POST",
         body: JSON.stringify(values),
       }).then((response) => response.json());
-      console.log(vehicle);
-
       setOpenCreated(true);
       setCreatedVehicle(vehicle);
       setLoading(false);
