@@ -393,7 +393,7 @@ const LeadDetails = () => {
       {!loading && (
         <>
           {/* Datos personales */}
-          <div className="flex flex-col py-5">
+          <div className="flex flex-col py-2">
             <div className="flex flex-col items-start justify-between mb-5 sm:items-center md:flex-row">
               <div className="flex flex-wrap justify-between w-full gap-2 md:justify-start md:gap-5">
                 <span className="text-xl font-semibold sm:text-2xl">
