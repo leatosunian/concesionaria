@@ -26,7 +26,7 @@ const Slider = () => {
             Tu próximo auto, cada vez más cerca
           </h3> */}
           <h3
-            className="text-4xl font-semibold sm:text-5xl 2xl:text-6xl"
+            className="text-5xl font-semibold sm:text-5xl 2xl:text-6xl"
             style={{ letterSpacing: ".5px" }}
           >
             Tu próximo auto está en Distrito Automotor
