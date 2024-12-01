@@ -5,7 +5,15 @@ import { motion } from "framer-motion";
 const Slider = () => {
   return (
     <section className={styles.sectionCont}>
-      <div className="flex flex-col w-full gap-16 sm:w-3/5 ">
+      {/* black overlay for background */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.5 }}
+        transition={{ duration: 3, delay: 0, ease: "easeInOut" }}
+        className="absolute left-0 z-10 w-full h-full bg-black"
+      ></motion.div>
+      {/* black overlay for background */}
+      <div className="z-20 flex flex-col w-full gap-16 sm:w-3/5 ">
         <motion.div
           initial={{ opacity: 0, x: -100 }}
           animate={{ opacity: 1, x: 0 }}
@@ -35,7 +43,8 @@ const Slider = () => {
           </p> */}
           <p className="text-base md:text-base 2xl:text-lg">
             La asesoría personalizada que estabas buscando para comprar tu nuevo
-            vehículo. Contamos con una selección de más de 50 vehículos nuevos y usados en óptimo estado para vos
+            vehículo. Contamos con una selección de más de 50 vehículos nuevos y
+            usados en óptimo estado para vos
           </p>
         </motion.div>
         <motion.div
