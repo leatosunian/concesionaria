@@ -21,6 +21,7 @@ import Autoplay from "embla-carousel-autoplay";
 import RelatedVehicles from "@/components/page/home/vehicles/vehicle/RelatedVehicles";
 import LoaderFullscreen from "@/components/page/LoaderFullscreen";
 import { FaLocationDot } from "react-icons/fa6";
+import Link from "next/link";
 
 const VehicleCont = () => {
   const [api, setApi] = React.useState<CarouselApi>();
@@ -241,10 +242,12 @@ const VehicleCont = () => {
                 <span className="mb-3 text-2xl font-semibold md:mb-2">
                   {vehicleData?.currency} ${vehicleData?.price}{" "}
                 </span>
-              </div>
+              </div> 
+              <Link className="w-fit h-fit" href={'https://api.whatsapp.com/send/?phone=542235423025&text&type=phone_number&app_absent=0'}>
               <button className={styles.button}>
                 Consultar por el vehículo
               </button>
+              </Link>
             </div>
           </div>
         </div>

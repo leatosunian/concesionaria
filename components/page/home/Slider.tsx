@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "@/app/css-modules/home.slider.module.css";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 const Slider = () => {
   return (
@@ -47,13 +48,15 @@ const Slider = () => {
             usados en óptimo estado para vos
           </p>
         </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 100 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 1.6 }}
-        >
-          <button className={styles.button}>Ver vehículos</button>
-        </motion.div>
+        <Link href={'/vehicles'} className="w-fit h-fit">
+          <motion.div
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1.6 }}
+          >
+            <button className={styles.button}>Ver vehículos</button>
+          </motion.div>
+        </Link>
       </div>
     </section>
   );

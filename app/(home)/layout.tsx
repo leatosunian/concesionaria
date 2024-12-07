@@ -24,7 +24,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Suspense>{children}</Suspense>
         <Link
-          className="fixed z-50 bottom-0 right-0 m-5 cursor-pointer w-fit h-fit"
+          className="fixed bottom-0 right-0 z-50 m-5 cursor-pointer w-fit h-fit"
           target="_blank"
           href={"https://wa.me/542235423025"}
         >
