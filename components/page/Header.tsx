@@ -224,9 +224,8 @@ export default function Header() {
       {/* Mobile menu */}
       <div
         style={{ zIndex: "9999999" }}
-        className={`fixed inset-0 z-50 md:hidden transition-opacity duration-300 ease-in-out ${
-          isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
+        className={`fixed inset-0 z-50 md:hidden transition-opacity duration-300 ease-in-out ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
       >
         <div
           className="absolute inset-0 bg-black bg-opacity-65 "
@@ -234,32 +233,41 @@ export default function Header() {
         ></div>
         <div
           style={{ width: "210px" }}
-          className={`absolute top-0 pt-2 right-0  h-full bg-black bg-opacity-90 shadow-lg transform transition-transform duration-300 ease-in-out ${
-            isOpen ? "translate-x-0" : "translate-x-full"
-          }`}
+          className={`absolute top-0 pt-2 right-0  h-full bg-black bg-opacity-90 shadow-lg transform transition-transform duration-300 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"
+            }`}
         >
-          <div className="px-2 pt-2 pb-3 mt-16 space-y-2 sm:px-3">
-            <Link
-              href="/vehicles"
-              className="flex items-center gap-2 px-3 py-3 text-sm font-medium transition-colors duration-300 rounded-md backgroundOrangHover"
-              onClick={() => setIsOpen(false)}
-            >
-              Nuestros vehículos
-            </Link>
-            <Link
-              href="/contactus"
-              className="flex items-center gap-2 px-3 py-3 text-sm font-medium transition-colors duration-300 rounded-md backgroundOrangHover"
-              onClick={() => setIsOpen(false)}
-            >
-              Sobre nosotros
-            </Link>
-            <Link
-              href="/contactus"
-              className="flex items-center gap-2 px-3 py-3 text-sm font-medium transition-colors duration-300 rounded-md backgroundOrangHover"
-              onClick={() => setIsOpen(false)}
-            >
-              Contactanos
-            </Link>
+          <div className="px-2 pt-2 pb-3 mt-16 space-y-5 sm:px-3">
+
+            <div className="flex flex-col gap-2">
+              <span className="ml-2 text-xs font-semibold text-gray-400">Nuestras unidades</span>
+              <Link
+                href="/vehicles"
+                className="flex items-center gap-2 px-3 py-3 text-sm font-medium transition-colors duration-300 rounded-md backgroundOrangHover"
+                onClick={() => setIsOpen(false)}
+              >
+                Todos los vehículos
+              </Link>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <span className="ml-2 text-xs font-semibold text-gray-400">Empresa</span>
+              <div className="flex flex-col ">
+                <Link
+                  href="/contactus"
+                  className="flex items-center gap-2 px-3 py-3 text-sm font-medium transition-colors duration-300 rounded-md backgroundOrangHover"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Sobre nosotros
+                </Link>
+                <Link
+                  href="/contactus"
+                  className="flex items-center gap-2 px-3 py-2 text-sm font-medium transition-colors duration-300 rounded-md backgroundOrangHover"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Contactanos
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </div>

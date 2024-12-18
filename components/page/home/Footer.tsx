@@ -70,27 +70,24 @@ const Footer = () => {
                   <ul className="list-unstyled">
                     <li>
                       <Link
-                        target="_blank"
-                        className="block pb-2 text-sm font-medium text-blueGray-600 hover:text-blueGray-800"
-                        href="https://www.creative-tim.com/presentation?ref=njs-profile"
+                        className="block pb-2 text-sm font-medium text-blueGray-600 hover:text-red-600 transition-all duration-200 ease-in-out"
+                        href="/vehicles"
                       >
                         Vehículos
                       </Link>
                     </li>
                     <li>
                       <Link
-                        target="_blank"
-                        className="block pb-2 text-sm font-medium text-blueGray-600 hover:text-blueGray-800"
-                        href="https://blog.creative-tim.com?ref=njs-profile"
+                        className="block pb-2 text-sm font-medium text-blueGray-600 hover:text-red-600 transition-all duration-200 ease-in-out"
+                        href="/contactus"
                       >
                         Sobre nosotros
                       </Link>
                     </li>
                     <li>
                       <Link
-                        target="_blank"
-                        className="block pb-2 text-sm font-medium text-blueGray-600 hover:text-blueGray-800"
-                        href="https://www.github.com/creativetimofficial?ref=njs-profile"
+                        className="block pb-2 text-sm font-medium text-blueGray-600 hover:text-red-600 transition-all duration-200 ease-in-out"
+                        href="/contactus"
                       >
                         Contacto
                       </Link>
@@ -126,7 +123,7 @@ const Footer = () => {
                     <li>
                       <Link
                         target="_blank"
-                        className="block pb-2 text-sm font-medium text-blueGray-600 hover:text-blueGray-800"
+                        className="block pb-2 text-sm font-medium text-blueGray-600 hover:text-red-600 transition-all duration-200 ease-in-out"
                         href="https://wa.me/5492235423025"
                       >
                         +54 9 223 542-2030
@@ -135,7 +132,7 @@ const Footer = () => {
                     <li>
                       <Link
                         target="_blank"
-                        className="block pb-2 text-sm font-medium text-blueGray-600 hover:text-blueGray-800"
+                        className="block pb-2 text-sm font-medium text-blueGray-600 hover:text-red-600 transition-all duration-200 ease-in-out"
                         href="https://wa.me/5492235423025"
                       >
                         +54 9 223 442-5537
@@ -143,7 +140,7 @@ const Footer = () => {
                     </li>
                     <li>
                       <span
-                        className="block pb-2 text-sm font-medium text-blueGray-600 hover:text-blueGray-800"
+                        className="block pb-2 text-sm font-medium text-blueGray-600 hover:text-red-600 transition-all duration-200 ease-in-out"
                       >
                         info@distritoautomotor.com.ar
                       </span>
@@ -162,7 +159,7 @@ const Footer = () => {
                   Distrito Automotor by{" "}
                   <a
                     href={"https://www.creative-tim.com?ref=njs-profile"}
-                    className="text-blueGray-500 hover:text-blueGray-800"
+                    className="text-blueGray-500 hover:text-red-600"
                   >
                     tosunian.dev
                   </a>

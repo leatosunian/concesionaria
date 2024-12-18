@@ -38,7 +38,7 @@ const Search = () => {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ amount: "some", once: true }}
             transition={{ duration: 0.7, ease: "easeInOut", delay: 0.3 }}
-            className="z-50 flex flex-col gap-2 px-2 my-auto overflow-hidden w-fit h-hit"
+            className="z-50  hidden sm:flex flex-col gap-2 px-2 my-auto overflow-hidden w-fit h-hit"
           >
             <Image src={searchimg} alt="" className="hidden sm:block" />
           </motion.div>

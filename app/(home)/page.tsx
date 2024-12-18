@@ -41,7 +41,7 @@ const Home = () => {
     <>
       <Suspense>
         {loading && <LoaderFullscreen />}
-        <div className="w-full">
+        {!loading && <div className="w-full">
           <Header />
           <Slider />
           <Search />
@@ -57,13 +57,13 @@ const Home = () => {
           <NewProducts vehicles={latestVehicles} />
           {/* <div className="w-full h-20" ></div> */}
           <Section2 />
-{/* 
+          {/* 
           <div className="w-full h-20"></div> */}
 
-          <ContactForm/>
+          <ContactForm />
 
           <Footer />
-        </div>
+        </div>}
       </Suspense>
     </>
   );
