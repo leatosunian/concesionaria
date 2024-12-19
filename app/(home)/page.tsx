@@ -12,6 +12,7 @@ import Section3 from "@/components/page/home/Section3";
 import Search from "@/components/page/home/Search";
 import LoaderFullscreen from "@/components/page/LoaderFullscreen";
 import ContactForm from "@/components/page/home/ContactForm";
+import Counters from "@/components/page/home/Counters";
 
 
 const Home = () => {
@@ -57,6 +58,7 @@ const Home = () => {
           <NewProducts vehicles={latestVehicles} />
           {/* <div className="w-full h-20" ></div> */}
           <Section2 />
+          <Counters />
           {/* 
           <div className="w-full h-20"></div> */}
 
